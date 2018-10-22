@@ -174,6 +174,19 @@ class PastingDiagram:
         """
         return self.shapeSequent.target
 
+    def toTex(self) -> str:
+        if self.degeneracy is None:
+            if self.nodes is None:
+                raise RuntimeError("[Pasting diagram, to TeX] Both the "
+                                   "degeneracy and node dict of the pasting "
+                                   "diagram are None. In valid derivations, "
+                                   "this should not happen")
+            lines = [addr.toTex() + " \\sep " + self.nodes[addr].toTex()
+                     for addr in self.nodes.keys()]
+            return "\\opetope{" + " \\\\ ".join(lines) + "}"
+        else:
+            return "\\degenopetope{" + self.degeneracy.toTex() + "}"
+
 
 class Type:
     """
@@ -198,6 +211,18 @@ class Type:
                                  should = source.shapeTarget()))
         self.source = source
         self.target = target
+
+    def __repr__(self) -> str:
+        return "{src} → {tgt}".format(
+            src = repr(self.source), tgt = repr(self.target))
+
+    def __str__(self) -> str:
+        return "{src} → {tgt}".format(
+            src = str(self.source), tgt = str(self.target))
+
+    def toTex(self) -> str:
+        return "{src} \\longrightarrow {tgt}".format(
+            src = self.source.toTex(), tgt = self.target.toTex())
 
 
 class Typing:
@@ -228,6 +253,10 @@ class Typing:
 
     def __str__(self):
         return str(self.term) + " : " + str(self.type)
+
+    def toTex(self):
+        return "{var} : {type}".format(
+            var = self.variable.toTex(), type = self.type.toTex())
 
 
 class Context(Set[Typing]):
@@ -266,6 +295,9 @@ class Context(Set[Typing]):
     def __str__(self):
         return ", ".join([str(t) for t in self])
 
+    def toTex(self) -> str:
+        return ", ".join([t.toTex() for t in self])
+
 
 class Sequent:
     """
@@ -297,3 +329,10 @@ class Sequent:
         if self.pastingDiagram is not None:
             pd = str(self.pastingDiagram)
         return "{ctx} ⊢ {pd}".format(ctx = str(self.context), pd = pd)
+
+    def toTex(self) -> str:
+        pd = ""
+        if self.pastingDiagram is not None:
+            pd = self.pastingDiagram.toTex()
+        return "{ctx} \\vdash {pd}".format(
+            ctx = self.context.toTex(), pd = pd)
