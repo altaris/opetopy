@@ -23,7 +23,8 @@ class Variable:
     """
 
     name: str
-    shapeSequent: UnnamedOpetope.Sequent
+    shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance
+    shapeSequent: UnnamedOpetope.Sequent  # For optimization purposes
 
     def __eq__(self, other) -> bool:
         """
@@ -37,6 +38,7 @@ class Variable:
     def __init__(self, name: str,
                  shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance) -> None:
         self.name = name
+        self.shapeProof = shapeProof
         self.shapeSequent = shapeProof.eval()
 
     def __ne__(self, other) -> bool:
@@ -96,7 +98,8 @@ class PastingDiagram:
 
     degeneracy: Optional[Variable]
     nodes: Optional[Dict[UnnamedOpetope.Address, Variable]]
-    shapeSequent: UnnamedOpetope.Sequent
+    shapeSequent: UnnamedOpetope.Sequent  # For optimization purposes
+    shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance
 
     @staticmethod
     def degeneratePastingDiagram(
@@ -107,6 +110,7 @@ class PastingDiagram:
         """
         res = PastingDiagram()
         res.nodes = None
+        res.shapeProof = shapeProof
         res.shapeSequent = shapeProof.eval()
         if not res.shape.isDegenerate:
             raise ValueError("[Degenerate pasting diagram, creation] Provided "
@@ -143,6 +147,7 @@ class PastingDiagram:
         """
         res = PastingDiagram()
         res.degeneracy = None
+        res.shapeProof = shapeProof
         res.shapeSequent = shapeProof.eval()
         if res.shape.isDegenerate:
             raise ValueError("[Non degenerate pasting diagram, creation] "
@@ -189,11 +194,14 @@ class PastingDiagram:
                                    "degeneracy and node dict of the pasting "
                                    "diagram are None. In valid derivations, "
                                    "this should not happen")
-            lines = [repr(addr) + " ← " + repr(self.nodes[addr])
-                     for addr in self.nodes.keys()]
-            return "PD({})".format(", ".join(lines))
+            if self.shape == UnnamedOpetope.point().source:
+                return "⧫"
+            else:
+                lines = [repr(addr) + " ← " + self.nodes[addr].name
+                         for addr in self.nodes.keys()]
+                return "PD({})".format(", ".join(lines))
         else:
-            return "DPD({})".format(repr(self.degeneracy))
+            return "DPD({})".format(self.degeneracy.name)
 
     def __str__(self) -> str:
         if self.degeneracy is None:
@@ -202,9 +210,12 @@ class PastingDiagram:
                                    "degeneracy and node dict of the pasting "
                                    "diagram are None. In valid derivations, "
                                    "this should not happen")
-            lines = [str(addr) + " ← " + str(self.nodes[addr])
-                     for addr in self.nodes.keys()]
-            return "PastingDiagram({})".format(", ".join(lines))
+            if self.shape == UnnamedOpetope.point().source:
+                return "⧫"
+            else:
+                lines = [str(addr) + " ← " + str(self.nodes[addr])
+                         for addr in self.nodes.keys()]
+                return "PastingDiagram({})".format(", ".join(lines))
         else:
             return "DegeneratePastingDiagram({})".format(str(self.degeneracy))
 
@@ -215,9 +226,12 @@ class PastingDiagram:
                                    "degeneracy and node dict of the pasting "
                                    "diagram are None. In valid derivations, "
                                    "this should not happen")
-            lines = [addr.toTex() + " \\sep " + self.nodes[addr].toTex()
-                     for addr in self.nodes.keys()]
-            return "\\opetope{" + " \\\\ ".join(lines) + "}"
+            if self.shape == UnnamedOpetope.point().source:
+                return "\\zeroOpt"
+            else:
+                lines = [addr.toTex() + " \\sep " + self.nodes[addr].toTex()
+                         for addr in self.nodes.keys()]
+                return "\\opetope{" + " \\\\ ".join(lines) + "}"
         else:
             return "\\degenopetope{" + self.degeneracy.toTex() + "}"
 
@@ -407,4 +421,14 @@ def point(seq: Sequent, name: str) -> Sequent:
     res = deepcopy(seq)
     res.context = res.context + Typing(
         var, Type(PastingDiagram.point(), None))
+    return res
+
+
+def degen(seq: Sequent, name: str) -> Sequent:
+    if seq.pastingDiagram is not None:
+        raise ValueError("[degen rule] Sequent cannot have a pasting diagram")
+    var = seq.context[name].variable
+    res = deepcopy(seq)
+    res.pastingDiagram = PastingDiagram.degeneratePastingDiagram(
+        UnnamedOpetope.Degen(var.shapeProof), var)
     return res
