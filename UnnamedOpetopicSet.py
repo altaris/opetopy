@@ -127,6 +127,14 @@ class PastingDiagram:
         return res
 
     @staticmethod
+    def point():
+        """
+        Creates the trivial pasting diagram with shape the point
+        """
+        return PastingDiagram.nonDegeneratePastingDiagram(
+            UnnamedOpetope.Point(), {})
+
+    @staticmethod
     def nonDegeneratePastingDiagram(
             shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance,
             nodes: Dict[UnnamedOpetope.Address, Variable]) -> 'PastingDiagram':
@@ -174,6 +182,32 @@ class PastingDiagram:
         """
         return self.shapeSequent.target
 
+    def __repr__(self) -> str:
+        if self.degeneracy is None:
+            if self.nodes is None:
+                raise RuntimeError("[Pasting diagram, repr] Both the "
+                                   "degeneracy and node dict of the pasting "
+                                   "diagram are None. In valid derivations, "
+                                   "this should not happen")
+            lines = [repr(addr) + " ← " + repr(self.nodes[addr])
+                     for addr in self.nodes.keys()]
+            return "PD({})".format(", ".join(lines))
+        else:
+            return "DPD({})".format(repr(self.degeneracy))
+
+    def __str__(self) -> str:
+        if self.degeneracy is None:
+            if self.nodes is None:
+                raise RuntimeError("[Pasting diagram, to string] Both the "
+                                   "degeneracy and node dict of the pasting "
+                                   "diagram are None. In valid derivations, "
+                                   "this should not happen")
+            lines = [str(addr) + " ← " + str(self.nodes[addr])
+                     for addr in self.nodes.keys()]
+            return "PastingDiagram({})".format(", ".join(lines))
+        else:
+            return "DegeneratePastingDiagram({})".format(str(self.degeneracy))
+
     def toTex(self) -> str:
         if self.degeneracy is None:
             if self.nodes is None:
@@ -200,10 +234,15 @@ class Type:
     """
 
     source: PastingDiagram
-    target: Variable
+    target: Optional[Variable]
 
-    def __init__(self, source: PastingDiagram, target: Variable) -> None:
-        if source.shapeTarget() != target.shape:
+    def __init__(self, source: PastingDiagram,
+                 target: Optional[Variable]) -> None:
+        if target is None:
+            if source.shape != UnnamedOpetope.Point().eval().source:
+                raise ValueError("[Type, creation] Source pasting diagram is "
+                                 "not a point, but target is unspecified")
+        elif source.shapeTarget() != target.shape:
             raise ValueError("[Type, creation] Target variable {var} has "
                              "shape {shape}, should have {should}".format(
                                  var = str(target),
@@ -213,16 +252,25 @@ class Type:
         self.target = target
 
     def __repr__(self) -> str:
-        return "{src} → {tgt}".format(
-            src = repr(self.source), tgt = repr(self.target))
+        if self.target is None:
+            return repr(self.source)
+        else:
+            return "{src} → {tgt}".format(
+                src = repr(self.source), tgt = repr(self.target))
 
     def __str__(self) -> str:
-        return "{src} → {tgt}".format(
-            src = str(self.source), tgt = str(self.target))
+        if self.target is None:
+            return str(self.source)
+        else:
+            return "{src} → {tgt}".format(
+                src = str(self.source), tgt = str(self.target))
 
     def toTex(self) -> str:
-        return "{src} \\longrightarrow {tgt}".format(
-            src = self.source.toTex(), tgt = self.target.toTex())
+        if self.target is None:
+            return self.source.toTex()
+        else:
+            return "{src} \\longrightarrow {tgt}".format(
+                src = self.source.toTex(), tgt = self.target.toTex())
 
 
 class Typing:
@@ -289,6 +337,16 @@ class Context(Set[Typing]):
                 return True
         return False
 
+    def __getitem__(self, name: str) -> Typing:
+        """
+        Returns typing whose variable name is `name`.
+        """
+        for t in self:
+            if t.variable.name == name:
+                return t
+        raise ValueError("[Context, get typing] Variable {name} not typed in "
+                         "context".format(name = name))
+
     def __repr__(self) -> str:
         return str(self)
 
@@ -336,3 +394,17 @@ class Sequent:
             pd = self.pastingDiagram.toTex()
         return "{ctx} \\vdash {pd}".format(
             ctx = self.context.toTex(), pd = pd)
+
+
+def point(seq: Sequent, name: str) -> Sequent:
+    if seq.pastingDiagram is not None:
+        raise ValueError("[point rule] Sequent cannot have a pasting diagram")
+    var = Variable(name, UnnamedOpetope.Point())
+    if var in seq.context:
+        raise ValueError("[point rule] Point shaped variable {name} is "
+                         "already typed in context {ctx}".format(
+                             name = name, ctx = str(seq.context)))
+    res = deepcopy(seq)
+    res.context = res.context + Typing(
+        var, Type(PastingDiagram.point(), None))
+    return res

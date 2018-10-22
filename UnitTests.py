@@ -527,6 +527,9 @@ class UnnamedOpetopicSetPastingDiagramTest(unittest.TestCase):
                 UnnamedOpetope.OpetopicInteger(1),
                 UnnamedOpetopicSet.Variable("d", UnnamedOpetope.Point()))
 
+    def test_point(self):
+        UnnamedOpetopicSet.PastingDiagram.point()
+
     def test_nonDegeneratePastingDiagram(self):
         UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(2),
@@ -579,6 +582,10 @@ class UnnamedOpetopicSetTypeTest(unittest.TestCase):
             UnnamedOpetopicSet.Type(
                 self.s, UnnamedOpetopicSet.Variable(
                     "t", UnnamedOpetope.Point()))
+        UnnamedOpetopicSet.Type(
+            UnnamedOpetopicSet.PastingDiagram.point(), None)
+        with self.assertRaises(ValueError):
+            UnnamedOpetopicSet.Type(self.s, None)
 
 
 class UnnamedOpetopicSetTypingTest(unittest.TestCase):
@@ -642,20 +649,25 @@ class UnnamedOpetopicSetContextTest(unittest.TestCase):
                                 "x", UnnamedOpetope.Arrow())
                     }),
                 UnnamedOpetopicSet.Variable("y", UnnamedOpetope.Arrow())))
+        self.ctx = UnnamedOpetopicSet.Context() + self.a + self.c
 
     def test___add__(self):
-        ctx = UnnamedOpetopicSet.Context() + self.a + self.c
         with self.assertRaises(ValueError):
-            ctx + self.a
-        ctx + self.b
+            self.ctx + self.a
+        self.ctx + self.b
         with self.assertRaises(ValueError):
-            ctx + self.c
+            self.ctx + self.c
 
     def test___contains__(self):
-        ctx = UnnamedOpetopicSet.Context() + self.a + self.c
-        self.assertIn(self.a.variable, ctx)
-        self.assertNotIn(self.b.variable, ctx)
-        self.assertIn(self.c.variable, ctx)
+        self.assertIn(self.a.variable, self.ctx)
+        self.assertNotIn(self.b.variable, self.ctx)
+        self.assertIn(self.c.variable, self.ctx)
+
+    def test___getitem__(self):
+        self.assertEqual(self.ctx["a"].variable, self.a.variable)
+        with self.assertRaises(ValueError):
+            self.ctx["b"]
+        self.assertEqual(self.ctx["c"].variable, self.c.variable)
 
 
 class NamedOpetopeVariableTest(unittest.TestCase):
