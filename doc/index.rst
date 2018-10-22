@@ -9,7 +9,7 @@ opetopy
     :alt: Build Status
 
 .. image:: https://readthedocs.org/projects/opetopy/badge/?version=latest
-    :target: https://readthedocs.io/en/latest/?badge=latest
+    :target: https://opetopy.readthedocs.io/en/latest/
     :alt: Documentation Status
 
 .. contents:: Contents

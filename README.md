@@ -2,7 +2,7 @@ opetopy
 =======
 
 [![Build status](https://travis-ci.com/altaris/opetopy.svg?branch=master)](https://travis-ci.com/altaris/opetopy)
-[![Documentation](https://readthedocs.org/projects/opetopy/badge/?version=latest)](https://travis-ci.com/altaris/opetopy)
+[![Documentation](https://readthedocs.org/projects/opetopy/badge/?version=latest)](https://opetopy.readthedocs.io/en/latest/)
 
 # Introduction
 
