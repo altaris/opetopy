@@ -660,10 +660,10 @@ class Preopetope:
         if self.dimension == -1:
             return "\\emptyset"
         elif self.dimension == 0:
-            return "\\zeroOpt"
+            return "\\optZero"
         elif self == Preopetope.fromDictOfPreopetopes({
                 Address.epsilon(0): Preopetope.point()}):
-            return "\\oneOpt"
+            return "\\optOne"
         elif self.isDegenerate:
             if self.degeneracy is None:
                 raise ValueError("[Preopetope, toTex] Preopetope marked "

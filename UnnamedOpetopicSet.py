@@ -227,7 +227,7 @@ class PastingDiagram:
                                    "diagram are None. In valid derivations, "
                                    "this should not happen")
             if self.shape == UnnamedOpetope.point().source:
-                return "\\zeroOpt"
+                return "\\optZero"
             else:
                 lines = [addr.toTex() + " \\sep " + self.nodes[addr].toTex()
                          for addr in self.nodes.keys()]

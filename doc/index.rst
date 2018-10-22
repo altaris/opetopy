@@ -131,13 +131,14 @@ Exporting to :math:`\TeX`
 
     \usepackage{amsmath}
     \usepackage{bussproofs}
+    \usepackage{fdsymbol}
     \usepackage{MnSymbol}
 
-    \newcommand{\degenopetope}[1]{\left\{ \opetope{#1} \right.}
-    \newcommand{\oneOpt}{\mbox{\raisebox{.01cm}{\tiny $\blacksquare$}}}
-    \newcommand{\opetope}[1]{\left\{ \begin{matrix} #1 \end{matrix} \right.}
-    \newcommand{\sep}{\::\:}
-    \newcommand{\zeroOpt}{\mbox{\raisebox{.01cm}{\scriptsize $\blacklozenge$}}}
+    \newcommand{\degenopetope}[1]{\left\lbrace \!\! \opetope{#1} \right.}
+    \newcommand{\opetope}[1]{\left\lbrace \begin{matrix*}[l] #1 \end{matrix*} \right.}
+    \newcommand{\optOne}{\mbox{\raisebox{.01cm}{\tiny $\blacksquare$}}}
+    \newcommand{\optZero}{\mbox{\raisebox{.01cm}{\scriptsize $\blacklozenge$}}}
+    \newcommand{\sep}{\leftarrow}
 
     \begin{document}
 
