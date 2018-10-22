@@ -153,6 +153,7 @@ Documentation
 .. toctree::
     :maxdepth: 2
     
+    common
     namedopetope
     namedopetopicset
     unnamedopetope

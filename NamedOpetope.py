@@ -10,7 +10,9 @@
 """
 
 from copy import deepcopy
-from typing import Any, ClassVar, Dict, List, Optional, Set, Tuple
+from typing import ClassVar, Dict, List, Optional, Set, Tuple
+
+from common import AbstractRuleInstance
 
 
 class Variable:
@@ -938,29 +940,7 @@ def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
     return Sequent(theory, context, Typing(term, type))
 
 
-class RuleInstance:
-    """
-    Abstract class representing a rule instance in a proof tree.
-    """
-
-    def _toTex(self) -> str:
-        raise NotImplementedError()
-
-    def eval(self) -> Any:
-        """
-        Pure virtual method evaluating a proof tree and returning the final
-        conclusion sequent, or raising an exception if the proof is invalid.
-        """
-        raise NotImplementedError()
-
-    def toTex(self) -> str:
-        """
-        Converts the proof tree in TeX code.
-        """
-        return "\\begin{prooftree}\n\t" + self._toTex() + "\n\\end{prooftree}"
-
-
-class NamedOpetopeRuleInstance(RuleInstance):
+class RuleInstance(AbstractRuleInstance):
 
     def eval(self) -> Sequent:
         """
@@ -970,7 +950,7 @@ class NamedOpetopeRuleInstance(RuleInstance):
         raise NotImplementedError()
 
 
-class Point(NamedOpetopeRuleInstance):
+class Point(RuleInstance):
     """
     A class representing an instance of the ``point`` rule in a proof tree.
     """
@@ -1002,12 +982,12 @@ class Point(NamedOpetopeRuleInstance):
         return point(self.variable)
 
 
-class Degen(NamedOpetopeRuleInstance):
+class Degen(RuleInstance):
     """
     A class representing an instance of the ``degen`` rule in a proof tree.
     """
 
-    def __init__(self, p: NamedOpetopeRuleInstance) -> None:
+    def __init__(self, p: RuleInstance) -> None:
         """
         Creates an instance of the ``degen`` rule and plugs proof tree `p`
         on the unique premise.
@@ -1040,12 +1020,12 @@ class Degen(NamedOpetopeRuleInstance):
         return degen(self.p.eval())
 
 
-class Fill(NamedOpetopeRuleInstance):
+class Fill(RuleInstance):
     """
     A class representing an instance of the ``fill`` rule in a proof tree.
     """
 
-    def __init__(self, p: NamedOpetopeRuleInstance, var: Variable) -> None:
+    def __init__(self, p: RuleInstance, var: Variable) -> None:
         self.p = p
         self.variable = var
         self.eval()
@@ -1070,13 +1050,13 @@ class Fill(NamedOpetopeRuleInstance):
         return fill(self.p.eval(), self.variable)
 
 
-class DegenFill(NamedOpetopeRuleInstance):
+class DegenFill(RuleInstance):
     """
     A class representing an instance of the ``degen-fill`` rule in a proof
     tree.
     """
 
-    def __init__(self, p: NamedOpetopeRuleInstance, var: Variable) -> None:
+    def __init__(self, p: RuleInstance, var: Variable) -> None:
         self.p = Fill(Degen(p), var)
         self.eval()
 
@@ -1098,13 +1078,13 @@ class DegenFill(NamedOpetopeRuleInstance):
         return self.p.eval()
 
 
-class Graft(NamedOpetopeRuleInstance):
+class Graft(RuleInstance):
     """
     A class representing an instance of the ``graft`` rule in a proof tree.
     """
 
-    def __init__(self, p1: NamedOpetopeRuleInstance,
-                 p2: NamedOpetopeRuleInstance, a: Variable) -> None:
+    def __init__(self, p1: RuleInstance,
+                 p2: RuleInstance, a: Variable) -> None:
         """
         Creates an instance of the ``graft`` rule at variable `a`, and plugs
         proof tree `p1` on the first premise, and `p2` on the second.

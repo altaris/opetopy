@@ -11,14 +11,15 @@
 
 from copy import deepcopy
 
-from NamedOpetope import *
+import NamedOpetope
+from common import AbstractRuleInstance
 
 
-def repres(seq: Sequent) -> OCMT:
+def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
     """
     The ``repr`` rule.
     """
-    res = OCMT(deepcopy(seq.theory), deepcopy(seq.context))
+    res = NamedOpetope.OCMT(deepcopy(seq.theory), deepcopy(seq.context))
     # new context
     for typing in seq.context:
         v = typing.term.variable
@@ -27,8 +28,9 @@ def repres(seq: Sequent) -> OCMT:
                              "invalid / null term. In valid proof trees, this "
                              "should not happen")
         for i in range(1, v.dimension + 1):
-            res.context += Typing(Term(res.target(v, i)),
-                                  Type(typing.type.terms[i:]))
+            res.context += NamedOpetope.Typing(
+              NamedOpetope.Term(res.target(v, i)),
+              NamedOpetope.Type(typing.type.terms[i:]))
     # new theory
     for tup in seq.context.graftTuples():
         b, a = tup
@@ -68,7 +70,8 @@ def repres(seq: Sequent) -> OCMT:
     return res
 
 
-def sum(ocmt1: OCMT, ocmt2: OCMT) -> OCMT:
+def sum(ocmt1: NamedOpetope.OCMT,
+        ocmt2: NamedOpetope.OCMT) -> NamedOpetope.OCMT:
     """
     The ``sum`` rule.
     """
@@ -78,15 +81,17 @@ def sum(ocmt1: OCMT, ocmt2: OCMT) -> OCMT:
                          "the following variables {inter}"
                          .format(inter = ocmt1.context.variables() &
                                  ocmt2.context.variables()))
-    return OCMT(ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
+    return NamedOpetope.OCMT(
+      ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
 
 
-def fold(ocmt: OCMT, a: Variable, b: Variable) -> OCMT:
+def fold(ocmt: NamedOpetope.OCMT, a: NamedOpetope.Variable,
+         b: NamedOpetope.Variable) -> NamedOpetope.OCMT:
     """
     The ``fold`` rule.
     """
     if a.dimension != b.dimension:
-        raise ValueError("[fold rule] Variables {a} and {b} cannot be "
+        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} cannot be "
                          "identified as they do not have the same dimension "
                          "(have respectively {da} and {db})".format(
                              a = str(a),
@@ -96,7 +101,7 @@ def fold(ocmt: OCMT, a: Variable, b: Variable) -> OCMT:
     elif a.dimension != 0 and not \
         (ocmt.equal(ocmt.source(a), ocmt.source(b)) and
          ocmt.theory.equal(ocmt.target(a), ocmt.target(b))):
-        raise ValueError("[fold rule] Variables {a} and {b} cannot be "
+        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} cannot be "
                          "identified as they are not parallel: sa = {sa}, "
                          "sb = {sb}, ta = {ta}, tb = {tb}".format(
                              a = str(a), b = str(b),
@@ -109,16 +114,17 @@ def fold(ocmt: OCMT, a: Variable, b: Variable) -> OCMT:
     return res
 
 
-def zero() -> OCMT:
+def zero() -> NamedOpetope.OCMT:
     """
     The ``zero`` rule.
     """
-    return OCMT(EquationalTheory(), Context())
+    return NamedOpetope.OCMT(
+      NamedOpetope.EquationalTheory(), NamedOpetope.Context())
 
 
-class NamedOpetopicSetRuleInstance(RuleInstance):
+class RuleInstance(AbstractRuleInstance):
 
-    def eval(self) -> OCMT:
+    def eval(self) -> NamedOpetope.OCMT:
         """
         Pure virtual method evaluating a proof tree and returning the final
         conclusion sequent, or raising an exception if the proof is invalid.
@@ -126,12 +132,12 @@ class NamedOpetopicSetRuleInstance(RuleInstance):
         raise NotImplementedError()
 
 
-class Repr(NamedOpetopicSetRuleInstance):
+class Repr(RuleInstance):
     """
     A class representing an instance of the ``repr`` rule in a proof tree.
     """
 
-    def __init__(self, p: NamedOpetopeRuleInstance) -> None:
+    def __init__(self, p: NamedOpetope.RuleInstance) -> None:
         self.p = p
 
     def __repr__(self) -> str:
@@ -150,17 +156,17 @@ class Repr(NamedOpetopicSetRuleInstance):
             "\n\t\\RightLabel{\\texttt{repr}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
-    def eval(self) -> OCMT:
+    def eval(self) -> NamedOpetope.OCMT:
         return repres(self.p.eval())
 
 
-class Sum(NamedOpetopicSetRuleInstance):
+class Sum(RuleInstance):
     """
     A class representing an instance of the ``sum`` rule in a proof tree.
     """
 
-    def __init__(self, p1: NamedOpetopicSetRuleInstance,
-                 p2: NamedOpetopicSetRuleInstance) -> None:
+    def __init__(self, p1: RuleInstance,
+                 p2: RuleInstance) -> None:
         """
         Creates an instance of the ``graft`` rule at variable `a`, and plugs
         proof tree `p1` on the first premise, and `p2` on the second.
@@ -186,17 +192,17 @@ class Sum(NamedOpetopicSetRuleInstance):
             "\n\t\\RightLabel{\\texttt{sum}" + \
             "}\n\t\\BinaryInfC{$" + self.eval().toTex() + "$}"
 
-    def eval(self) -> OCMT:
+    def eval(self) -> NamedOpetope.OCMT:
         return sum(self.p1.eval(), self.p2.eval())
 
 
-class Fold(NamedOpetopicSetRuleInstance):
+class Fold(RuleInstance):
     """
     A class representing an instance of the ``fold`` rule in a proof tree.
     """
 
-    def __init__(self, p: NamedOpetopicSetRuleInstance, a: Variable,
-                 b: Variable) -> None:
+    def __init__(self, p: RuleInstance, a: NamedOpetope.Variable,
+                 b: NamedOpetope.Variable) -> None:
         self.p = p
         self.a = a
         self.b = b
@@ -222,7 +228,7 @@ class Fold(NamedOpetopicSetRuleInstance):
             self.b.toTex() + ")$}\n\t\\UnaryInfC{$" + self.eval().toTex() + \
             "$}"
 
-    def eval(self) -> OCMT:
+    def eval(self) -> NamedOpetope.OCMT:
         """
         Evaluates this instance of ``graft`` by first evaluating its premises,
         and then applying :func:`NamedOpetope.graft` at variable
@@ -231,7 +237,7 @@ class Fold(NamedOpetopicSetRuleInstance):
         return fold(self.p.eval(), self.a, self.b)
 
 
-class Zero(NamedOpetopicSetRuleInstance):
+class Zero(RuleInstance):
     """
     A class representing an instance of the ``zero`` rule in a proof tree.
     """
@@ -251,5 +257,5 @@ class Zero(NamedOpetopicSetRuleInstance):
         def __str__(self) -> str:
             return "Zero()"
 
-    def eval(self) -> OCMT:
+    def eval(self) -> NamedOpetope.OCMT:
         return zero()

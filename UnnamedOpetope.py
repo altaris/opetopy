@@ -11,7 +11,7 @@
 from copy import deepcopy
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from NamedOpetope import RuleInstance
+from common import AbstractRuleInstance
 
 
 class Address:
@@ -800,7 +800,7 @@ def graft(seq1: Sequent, seq2: Sequent, addr: Address) -> Sequent:
     )
 
 
-class UnamedOpetopeRuleInstance(RuleInstance):
+class RuleInstance(AbstractRuleInstance):
 
     def eval(self) -> Sequent:
         """
@@ -810,7 +810,7 @@ class UnamedOpetopeRuleInstance(RuleInstance):
         raise NotImplementedError()
 
 
-class Point(UnamedOpetopeRuleInstance):
+class Point(RuleInstance):
     """
     A class representing an instance of the ``point`` rule in a proof tree.
     """
@@ -824,7 +824,7 @@ class Point(UnamedOpetopeRuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        directly, use :meth:`UnnamedOpetope.RuleInstance.toTex`
         instead.
         """
         return "\\AxiomC{}\n\t\\RightLabel{\\texttt{point}}\n\t" + \
@@ -838,12 +838,12 @@ class Point(UnamedOpetopeRuleInstance):
         return point()
 
 
-class Degen(UnamedOpetopeRuleInstance):
+class Degen(RuleInstance):
     """
     A class representing an instance of the ``degen`` rule in a proof tree.
     """
 
-    def __init__(self, p: UnamedOpetopeRuleInstance) -> None:
+    def __init__(self, p: RuleInstance) -> None:
         """
         Creates an instance of the ``degen`` rule and plugs proof tree `p`
         on the unique premise.
@@ -859,7 +859,7 @@ class Degen(UnamedOpetopeRuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        directly, use :meth:`UnnamedOpetope.RuleInstance.toTex`
         instead.
         """
         return self.p._toTex() + \
@@ -875,12 +875,12 @@ class Degen(UnamedOpetopeRuleInstance):
         return degen(self.p.eval())
 
 
-class Shift(UnamedOpetopeRuleInstance):
+class Shift(RuleInstance):
     """
     A class representing an instance of the ``shift`` rule in a proof tree.
     """
 
-    def __init__(self, p: UnamedOpetopeRuleInstance) -> None:
+    def __init__(self, p: RuleInstance) -> None:
         """
         Creates an instance of the ``shift`` rule and plugs proof tree `p`
         on the unique premise.
@@ -896,7 +896,7 @@ class Shift(UnamedOpetopeRuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        directly, use :meth:`UnnamedOpetope.RuleInstance.toTex`
         instead.
         """
         return self.p._toTex() + \
@@ -912,13 +912,13 @@ class Shift(UnamedOpetopeRuleInstance):
         return shift(self.p.eval())
 
 
-class Graft(UnamedOpetopeRuleInstance):
+class Graft(RuleInstance):
     """
     A class representing an instance of the ``graft`` rule in a proof tree.
     """
 
-    def __init__(self, p1: UnamedOpetopeRuleInstance,
-                 p2: UnamedOpetopeRuleInstance,
+    def __init__(self, p1: RuleInstance,
+                 p2: RuleInstance,
                  addr: Address) -> None:
         """
         Creates an instance of the ``graft`` rule at address `addr`, and plugs
@@ -943,7 +943,7 @@ class Graft(UnamedOpetopeRuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        directly, use :meth:`UnnamedOpetope.RuleInstance.toTex`
         instead.
         """
         return self.p1._toTex() + "\n\t" + self.p2._toTex() + \
@@ -959,14 +959,14 @@ class Graft(UnamedOpetopeRuleInstance):
         return graft(self.p1.eval(), self.p2.eval(), self.addr)
 
 
-def Arrow() -> UnamedOpetopeRuleInstance:
+def Arrow() -> RuleInstance:
     """
     Returns the proof tree of the arrow.
     """
     return Shift(Point())
 
 
-def OpetopicInteger(n: int) -> UnamedOpetopeRuleInstance:
+def OpetopicInteger(n: int) -> RuleInstance:
     """
     Returns the sequent nth opetopic integer.
     """

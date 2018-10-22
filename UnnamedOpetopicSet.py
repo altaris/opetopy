@@ -23,7 +23,7 @@ class Variable:
     """
 
     name: str
-    shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance
+    shapeProof: UnnamedOpetope.RuleInstance
     shapeSequent: UnnamedOpetope.Sequent  # For optimization purposes
 
     def __eq__(self, other) -> bool:
@@ -36,7 +36,7 @@ class Variable:
         return self.name == other.name and self.shape == other.shape
 
     def __init__(self, name: str,
-                 shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance) -> None:
+                 shapeProof: UnnamedOpetope.RuleInstance) -> None:
         self.name = name
         self.shapeProof = shapeProof
         self.shapeSequent = shapeProof.eval()
@@ -58,7 +58,7 @@ class Variable:
         """
         Returns the actual shape (:class:`UnnamedOpetope.Preopetope`) of the
         variable, from the proof tree
-        (:class:`UnnamedOpetope.UnamedOpetopeRuleInstance`) that was provided
+        (:class:`UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.source
@@ -67,7 +67,7 @@ class Variable:
         """
         Returns the shape target (:class:`UnnamedOpetope.Preopetope`) of the
         variable, from the proof tree
-        (:class:`UnnamedOpetope.UnamedOpetopeRuleInstance`) that was provided
+        (:class:`UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.target
@@ -99,11 +99,11 @@ class PastingDiagram:
     degeneracy: Optional[Variable]
     nodes: Optional[Dict[UnnamedOpetope.Address, Variable]]
     shapeSequent: UnnamedOpetope.Sequent  # For optimization purposes
-    shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance
+    shapeProof: UnnamedOpetope.RuleInstance
 
     @staticmethod
     def degeneratePastingDiagram(
-            shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance,
+            shapeProof: UnnamedOpetope.RuleInstance,
             degeneracy: Variable) -> 'PastingDiagram':
         """
         Creates a degenerate pasting diagram.
@@ -140,7 +140,7 @@ class PastingDiagram:
 
     @staticmethod
     def nonDegeneratePastingDiagram(
-            shapeProof: UnnamedOpetope.UnamedOpetopeRuleInstance,
+            shapeProof: UnnamedOpetope.RuleInstance,
             nodes: Dict[UnnamedOpetope.Address, Variable]) -> 'PastingDiagram':
         """
         Creates a non degenerate pasting diagram.
@@ -173,7 +173,7 @@ class PastingDiagram:
         """
         Returns the actual shape (:class:`UnnamedOpetope.Preopetope`) of the
         pasting diagram, from the proof tree
-        (:class:`UnnamedOpetope.UnamedOpetopeRuleInstance`) that was provided
+        (:class:`UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.source
@@ -182,7 +182,7 @@ class PastingDiagram:
         """
         Returns the shape target (:class:`UnnamedOpetope.Preopetope`) of the
         pasting diagram, from the proof tree
-        (:class:`UnnamedOpetope.UnamedOpetopeRuleInstance`) that was provided
+        (:class:`UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.target
