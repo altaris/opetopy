@@ -101,6 +101,21 @@ class PastingDiagram:
     shapeSequent: UnnamedOpetope.Sequent  # For optimization purposes
     shapeProof: UnnamedOpetope.RuleInstance
 
+    def __getitem__(self, addr: UnnamedOpetope.Address) -> Variable:
+        """
+        Returns the source variable at `addr` of a non degenerate pasting
+        diagram.
+        """
+        if self.nodes is None:
+            raise ValueError("[Pasting diagram, source] Cannot compute a "
+                             "source of a degenerate pasting diagram")
+        elif addr not in self.nodes.keys():
+            raise ValueError("[Pasting diagram, source] Address {addr} is "
+                             "not an address of the pasting diagram {pd}"
+                             .format(addr = repr(addr), pd = repr(self)))
+        else:
+            return self.nodes[addr]
+
     @staticmethod
     def degeneratePastingDiagram(
             shapeProof: UnnamedOpetope.RuleInstance,
@@ -366,6 +381,30 @@ class Context(Set[Typing]):
 
     def __str__(self) -> str:
         return ", ".join([str(t) for t in self])
+
+    def source(self, name: str, addr: UnnamedOpetope.Address) -> Variable:
+        """
+        Returns the source at address `addr` of the variable whose name is
+        `name`.
+        """
+        return self[name].type.source[addr]
+
+    def target(self, name: str) -> Variable:
+        """
+        Returns the target of the variable whose name is `name`.
+        """
+        res = self[name].type.target
+        if self[name].type.source.shape == \
+                UnnamedOpetope.Point().eval().source:
+            raise ValueError("[Context, target of variable] Variable {var} is "
+                             "a point, and do not have a target".format(
+                                 var = name))
+        elif res is None:
+            raise RuntimeError("[Context, target of variable] Variable {var} "
+                               "is not a point, but has no target. In valid "
+                               "derivations, this should not happen".format(
+                                   var = name))
+        return res
 
     def toTex(self) -> str:
         return ", ".join([t.toTex() for t in self])

@@ -513,6 +513,29 @@ class UnnamedOpetopicSetPastingDiagramTest(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test___getitem__(self):
+        d = UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
+            UnnamedOpetope.OpetopicInteger(0),
+            UnnamedOpetopicSet.Variable("d", UnnamedOpetope.Point()))
+        p = UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
+            UnnamedOpetope.OpetopicInteger(2),
+            {
+                UnnamedOpetope.Address.epsilon(1):
+                    UnnamedOpetopicSet.Variable(
+                        "a", UnnamedOpetope.Arrow()),
+                UnnamedOpetope.Address.epsilon(0).shift():
+                    UnnamedOpetopicSet.Variable(
+                        "b", UnnamedOpetope.Arrow())
+            })
+        with self.assertRaises(ValueError):
+            d[UnnamedOpetope.Address.epsilon(0)]
+        self.assertEqual(p[UnnamedOpetope.Address.epsilon(1)],
+                         UnnamedOpetopicSet.Variable(
+                             "a", UnnamedOpetope.Arrow()))
+        self.assertEqual(p[UnnamedOpetope.Address.epsilon(0).shift()],
+                         UnnamedOpetopicSet.Variable(
+                             "b", UnnamedOpetope.Arrow()))
+
     def test_degeneratePastingDiagram(self):
         UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(0),
@@ -618,6 +641,10 @@ class UnnamedOpetopicSetTypingTest(unittest.TestCase):
 class UnnamedOpetopicSetContextTest(unittest.TestCase):
 
     def setUp(self):
+        self.p = UnnamedOpetopicSet.Typing(
+            UnnamedOpetopicSet.Variable("p", UnnamedOpetope.Point()),
+            UnnamedOpetopicSet.Type(
+                UnnamedOpetopicSet.PastingDiagram.point(), None))
         self.a = UnnamedOpetopicSet.Typing(
             UnnamedOpetopicSet.Variable(
                 "a", UnnamedOpetope.OpetopicInteger(0)),
@@ -646,10 +673,10 @@ class UnnamedOpetopicSetContextTest(unittest.TestCase):
                                 "x", UnnamedOpetope.Arrow()),
                         UnnamedOpetope.Address.epsilon(0).shift():
                             UnnamedOpetopicSet.Variable(
-                                "x", UnnamedOpetope.Arrow())
+                                "y", UnnamedOpetope.Arrow())
                     }),
-                UnnamedOpetopicSet.Variable("y", UnnamedOpetope.Arrow())))
-        self.ctx = UnnamedOpetopicSet.Context() + self.a + self.c
+                UnnamedOpetopicSet.Variable("z", UnnamedOpetope.Arrow())))
+        self.ctx = UnnamedOpetopicSet.Context() + self.p + self.a + self.c
 
     def test___add__(self):
         with self.assertRaises(ValueError):
@@ -668,6 +695,21 @@ class UnnamedOpetopicSetContextTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.ctx["b"]
         self.assertEqual(self.ctx["c"].variable, self.c.variable)
+
+    def test_source(self):
+        self.assertEqual(
+            self.ctx.source("c", UnnamedOpetope.Address.epsilon(1)),
+            UnnamedOpetopicSet.Variable("x", UnnamedOpetope.Arrow()))
+        self.assertEqual(
+            self.ctx.source("c", UnnamedOpetope.Address.epsilon(0).shift()),
+            UnnamedOpetopicSet.Variable("y", UnnamedOpetope.Arrow()))
+
+    def test_target(self):
+        self.assertEqual(
+            self.ctx.target("c"),
+            UnnamedOpetopicSet.Variable("z", UnnamedOpetope.Arrow()))
+        with self.assertRaises(ValueError):
+            self.ctx.target("p")
 
 
 class NamedOpetopeVariableTest(unittest.TestCase):
