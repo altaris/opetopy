@@ -248,13 +248,13 @@ class Typing:
         self.type = type
         self.variable = variable
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-    def __str__(self):
-        return str(self.term) + " : " + str(self.type)
+    def __str__(self) -> str:
+        return str(self.variable) + " : " + str(self.type)
 
-    def toTex(self):
+    def toTex(self) -> str:
         return "{var} : {type}".format(
             var = self.variable.toTex(), type = self.type.toTex())
 
@@ -264,7 +264,7 @@ class Context(Set[Typing]):
     A context is a set of tyings (see :class:`UnnamedOpetopicSet.Typing`).
     """
 
-    def __add__(self, typing: Typing):
+    def __add__(self, typing: Typing) -> 'Context':
         """
         Adds a variable typing to a deep copy of the context context, if the
         typed variable isn't already typed in the context.
@@ -278,7 +278,7 @@ class Context(Set[Typing]):
             res.add(typing)
             return res
 
-    def __contains__(self, var):
+    def __contains__(self, var) -> bool:
         """
         Tests wether the variable `var` is typed in this context.
         """
@@ -289,10 +289,10 @@ class Context(Set[Typing]):
                 return True
         return False
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return ", ".join([str(t) for t in self])
 
     def toTex(self) -> str:
