@@ -265,3 +265,35 @@ class Context(Set[Typing]):
 
     def __str__(self):
         return ", ".join([str(t) for t in self])
+
+
+class Sequent:
+    """
+    A sequent is composed of
+
+    * a context (:class:`UnnamedOpetopicSet.Context`);
+    * optionally, a pasting diagram
+      (:class:`UnnamedOpetopicSet`.PastingDiagram).
+    """
+
+    context: Context
+    pastingDiagram: Optional[PastingDiagram]
+
+    def __init__(self) -> None:
+        """
+        Creates a sequent with an empty context, and no pasting diagram.
+        """
+        self.context = Context()
+        self.pastingDiagram = None
+
+    def __repr__(self) -> str:
+        pd = ""
+        if self.pastingDiagram is not None:
+            pd = repr(self.pastingDiagram)
+        return "{ctx} ⊢ {pd}".format(ctx = repr(self.context), pd = pd)
+
+    def __str__(self) -> str:
+        pd = ""
+        if self.pastingDiagram is not None:
+            pd = str(self.pastingDiagram)
+        return "{ctx} ⊢ {pd}".format(ctx = str(self.context), pd = pd)
