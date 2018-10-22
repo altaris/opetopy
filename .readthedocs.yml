@@ -1,0 +1,9 @@
+build:
+  image: latest
+
+formats: []
+
+python:
+  version: 3.6
+
+requirements_file: requirements.txt

@@ -1,0 +1,162 @@
+.. role:: python(code)
+    :language: python
+
+opetopy
+*******
+
+.. image:: https://travis-ci.com/altaris/svg?branch=master
+    :target: https://travis-ci.com/altaris/opetopy
+    :alt: Build Status
+
+.. image:: https://readthedocs.org/projects/opetopy/badge/?version=latest
+    :target: https://readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
+.. contents:: Contents
+    :depth: 2
+
+
+Introduction
+============
+
+
+This project is the Python implementation of the opetope derivation systems
+presented in [CHM18]_ and some other work in progress.
+
+The :mod:`opetopy` module is decomposed as follow:
+
++--------------------------+------------------------+-------------------------------+
+| Module                   | Syntactical construct  | Derivation system             |
++==========================+========================+===============================+
+| :mod:`NamedOpetope`      | Named opetopes         | :math:`\textbf{Opt${}^!$}`    |
++--------------------------+------------------------+-------------------------------+
+| :mod:`NamedOpetopicSet`  | Named opetopic sets    | :math:`\textbf{OptSet${}^!$}` |
++--------------------------+------------------------+-------------------------------+
+| :mod:`UnamedOpetope`     | Unnamed opetopes       | :math:`\textbf{Opt${}^?$}`    |
++--------------------------+------------------------+-------------------------------+
+| :mod:`UnamedOpetopicSet` | Unnamed opetopic sets  | :math:`\textbf{OptSet${}^?$}` |
++--------------------------+------------------------+-------------------------------+
+
+Each implement the following:
+
+1. the syntactical constructs required to describe opetopes / opetopic sets and their sequents;
+2. the derivation rules of the relevant system;
+3. wrappers of those rules to describe proof trees.
+
++-------------------------------+-----------------------------+----------------------------------+-----------------------------------+
+| Derivation system             | Rule                        | Implementation                   | Proof tree node                   |
++===============================+=============================+==================================+===================================+
+| :math:`\textbf{Opt${}^!$}`    | :math:`\texttt{point}`      | :func:`NamedOpetope.point`       | :class:`NamedOpetope.Point`       |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{degen}`      | :func:`NamedOpetope.degen`       | :class:`NamedOpetope.Degen`       |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{degen-fill}` | :func:`NamedOpetope.degenfill`   | :class:`NamedOpetope.DegenFill`   |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{fill}`       | :func:`NamedOpetope.fill`        | :class:`NamedOpetope.Fill`        |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{graft}`      | :func:`NamedOpetope.graft`       | :class:`NamedOpetope.Graft`       |
++-------------------------------+-----------------------------+----------------------------------+-----------------------------------+
+| :math:`\textbf{OptSet${}^!$}` | :math:`\texttt{repr}`       | :func:`NamedOpetopicSet.repres`  | :class:`NamedOpetopicSet.Repr`    |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{zero}`       | :func:`NamedOpetopicSet.zero`    | :class:`NamedOpetopicSet.Zero`    |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{sum}`        | :func:`NamedOpetopicSet.sum`     | :class:`NamedOpetopicSet.Sum`     |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{fold}`       | :func:`NamedOpetopicSet.fold`    | :class:`NamedOpetopicSet.Fold`    |
++-------------------------------+-----------------------------+----------------------------------+-----------------------------------+
+| :math:`\textbf{Opt${}^?$}`    | :math:`\texttt{point}`      | :func:`UnnamedOpetope.point`     | :class:`UnnamedOpetope.Point`     |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{degen}`      | :func:`UnnamedOpetope.degen`     | :class:`UnnamedOpetope.Degen`     |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{shift}`      | :func:`UnnamedOpetope.shift`     | :class:`UnnamedOpetope.Shift`     |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{graft}`      | :func:`UnnamedOpetope.graft`     | :class:`UnnamedOpetope.Graft`     |
++-------------------------------+-----------------------------+----------------------------------+-----------------------------------+
+| :math:`\textbf{OptSet${}^?$}` | :math:`\texttt{point}`      | :func:`UnnamedOpetopicSet.point` | :class:`UnnamedOpetopicSet.Point` |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{degen}`      | :func:`UnnamedOpetopicSet.degen` | :class:`UnnamedOpetopicSet.Degen` |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{graft}`      | :func:`UnnamedOpetopicSet.graft` | :class:`UnnamedOpetopicSet.Graft` |
++                               +-----------------------------+----------------------------------+-----------------------------------+
+|                               | :math:`\texttt{fill}`       | :func:`UnnamedOpetopicSet.fill`  | :class:`UnnamedOpetopicSet.Fill`  |
++-------------------------------+-----------------------------+----------------------------------+-----------------------------------+
+
+
+Usage
+=====
+
+
+Derivations and proof trees
+---------------------------
+
+A derivation / proof tree in any of those system can then be written as a Python expression. If it evaluates without raising the :python:`ValueError` exceptions, it is considered correct.
+
+For example, in system :math:`\textbf{Opt${}^?$}`, the unique :math:`1`-opetope has the following expression:
+
+.. code-block:: python
+
+    from UnnamedOpetope import *
+    shift(point())
+
+
+which indeed evaluates without raising exceptions.
+
+The preferred way to construct proof trees is to use the proof tree node classes (see table above), who act as instances of those rules. They behave as their function counterparts, taking proof trees instead of sequents as constructor arguments. Then, a proof tree can be evaluated with the :func:`eval` method. For instance, the proof tree described above is written as:
+
+.. code-block:: python
+
+    from UnnamedOpetope import *
+    proof = Shift(Point())
+
+
+and evaluated as:
+
+.. code-block:: python
+
+    proof.eval()
+
+
+which again evaluates without raising exceptions.
+
+
+Exporting to :math:`\TeX`
+-------------------------
+
+
+:mod:`opetopy`'s main classes can be translated to :math:`\TeX` code using method :func:`toTeX`. Here is the minimal template to compile the returned code
+
+.. code-block:: TeX
+
+    \documentclass{article}
+
+    \usepackage{amsmath}
+    \usepackage{bussproofs}
+    \usepackage{MnSymbol}
+
+    \newcommand{\degenopetope}[1]{\left\{ \opetope{#1} \right.}
+    \newcommand{\oneOpt}{\mbox{\raisebox{.01cm}{\tiny $\blacksquare$}}}
+    \newcommand{\opetope}[1]{\left\{ \begin{matrix} #1 \end{matrix} \right.}
+    \newcommand{\sep}{\::\:}
+    \newcommand{\zeroOpt}{\mbox{\raisebox{.01cm}{\scriptsize $\blacklozenge$}}}
+
+    \begin{document}
+
+    Your code here.
+
+    \end{document}
+
+
+Documentation
+=============
+
+
+.. toctree::
+    :maxdepth: 2
+    
+    namedopetope
+    namedopetopicset
+    unnamedopetope
+    unnamedopetopicset
+
+
+.. [CHM18] Pierre-Louis Curien, Cédric Ho Thanh, and Samuel Mimram. Type theoretical approaches to opetopes. In preparation.

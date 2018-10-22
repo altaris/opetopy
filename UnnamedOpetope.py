@@ -1,0 +1,982 @@
+# -*- coding: utf-8 -*-
+
+"""
+.. module:: opetopy.UnnamedOpetope
+   :synopsis: Implementation of the unnamed approach for opetopes
+
+.. moduleauthor:: Cédric HT
+
+"""
+
+from copy import deepcopy
+from typing import Any, Dict, List, Optional, Set, Tuple
+
+from NamedOpetope import RuleInstance
+
+
+class Address:
+    """
+    Main class of the module.
+
+    The :math:`0`-address :math:`*` is construced as::
+
+      Address.epsilon(0)
+
+    More generally, the :math:`\epsilon` is construced as::
+
+      Address.epsilon(n)
+
+    Recall that an :math:`n`-address is by definition a sequence of
+    :math:`(n-1)`-addresses. To append an :math:`(n-1)`-address to a
+    :math:`n`-address, use the :meth:`UnnamedOpetope.Address.__add__`
+    method. For instance, the following yields the :math:`1`-address
+    :math:`[**]`::
+
+      Address.epsilon(1) + Address.epsilon(0) + Address.epsilon(0)
+
+    Given two :math:`n`-addresses, it is possible to concatenate them using
+    the :meth:`UnnamedOpetope.Address.__mul__` method. Following up
+    on the previous examples, the following expression yields the address
+    :math:`[****]`::
+
+      x = Address.epsilon(1) + Address.epsilon(0) + Address.epsilon(0)
+      x * x
+
+    """
+
+    dimension: int
+    edges: List['Address']
+
+    def __add__(self, other) -> 'Address':
+        """
+        Adds the :math:`(n-1)`-address `other` at the end of the sequence of
+        :math:`(n-1)`-addresses that make up the :math:`n`-address `self`.
+
+        :warning: This is **not** concatenation (see
+          :meth:`UnnamedOpetope.Address.__mul__`).
+        """
+        if (self.dimension != other.dimension + 1):
+            raise ValueError("[Address extension] Dimension mismatch: address "
+                             "{self} is {sdim} dimensional and cannot be "
+                             "extended by {other} which is {odim} dimensional"
+                             .format(self = str(self),
+                                     sdim = self.dimension,
+                                     other = str(other),
+                                     odim = other.dimension))
+        result = deepcopy(self)
+        result.edges += [other]
+        return result
+
+    def __eq__(self, other) -> bool:
+        """
+        Compares two addresses. Two addresses are equal if they have the same
+        dimension and the same underlying list of addresses.
+        """
+        if not isinstance(other, Address):
+            raise NotImplementedError
+        elif self.dimension == other.dimension and \
+                len(self.edges) == len(other.edges):
+            for i in range(len(self.edges)):
+                if self.edges[i] != other.edges[i]:
+                    return False
+            return True
+        else:
+            return False
+
+    def __hash__(self):
+        return hash(str(self))
+
+    def __init__(self, dim: int) -> None:
+        """
+        Creates an :math:`\epsilon` address of dimension `dim` :math:`\geq 0`.
+        """
+        if (dim < 0):
+            raise ValueError("[Address creation] New address must have "
+                             "dimension >= 0 (is {})".format(dim))
+        self.dimension = dim
+        self.edges = []  # type: List[Address]
+
+    def __lt__(self, other: 'Address') -> bool:
+        """
+        Compares two addresses with respect to the lexicographical order.
+        """
+        if self.dimension != other.dimension:
+            raise ValueError("[Address comparison] Cannot compare addresses "
+                             "{self} and {other} as dimensions do not match "
+                             "(are respectively {sdim} and {odim})".format(
+                                 self = str(self),
+                                 other = str(other),
+                                 sdim = self.dimension,
+                                 odim = other.dimension))
+        for i in range(min(len(self.edges), len(other.edges))):
+            if self.edges[i] < other.edges[i]:
+                return True
+            elif self.edges[i] > other.edges[i]:
+                return False
+        return len(self.edges) < len(other.edges)
+
+    def __mul__(self, other: 'Address') -> 'Address':
+        """
+        Concatenates two :math:`n`-addresses by concatenating the underlying
+        lists of :math:`(n-1)`-addresses.
+        """
+        if (self.dimension != other.dimension):
+            raise ValueError("[Address concatenation] Cannot concatenate "
+                             "addresses {self} and {other} as dimensions do "
+                             "not match (are respectively {sdim} and {odim})"
+                             .format(self = str(self),
+                                     other = str(other),
+                                     sdim = self.dimension,
+                                     odim = other.dimension))
+        result = deepcopy(self)
+        result.edges += other.edges
+        return result
+
+    def __repr__(self) -> str:
+        return "Address({str}, {dim})".format(
+            str = str(self),
+            dim = str(self.dimension))
+
+    def __str__(self) -> str:
+        """
+        Converts an address to a human readable string. The
+        :math:`0`-dimensional :math:`\epsilon` address is represented by the
+        symbol ``*``.
+        """
+        if self == Address.epsilon(0):
+            return '*'
+        elif len(self.edges) == 0:
+            return '[ε]'
+        else:
+            return '[' + ''.join(map(str, self.edges)) + ']'
+
+    @staticmethod
+    def epsilon(dim: int) -> 'Address':
+        """
+        Creates an :math:`\epsilon` address of dimension `dim` :math:`\geq 0`.
+        Internally just calls :meth:`UnnamedOpetope.Address.__init__`.
+        """
+        return Address(dim)
+
+    @staticmethod
+    def fromList(l: List[Any], dim: int) -> 'Address':
+        """
+        Recursibely create an address of dimension `dim` from a list of lists
+        that themselves represent addresses. The :math:`\epsilon` address is
+        represented by ['ε'], and ```'*'``` represents the
+        :math:`0`-dimensional :math:`\epsilon` address.
+
+        :raises: ValueError
+        """
+        if (dim < 0):
+            raise ValueError("[Address creation] New address must have "
+                             "dimension >= 0 (is {})".format(dim))
+        if len(l) == 0:
+            return Address.epsilon(dim)
+        la = []  # type: List[Address]
+        for x in l:
+            if x == ['ε']:
+                la += [Address.epsilon(dim - 1)]
+            elif x == '*':
+                la += [Address.epsilon(0)]
+            else:
+                la += [Address.fromList(x, dim - 1)]
+        return Address.fromListOfAddresses(la)
+
+    @staticmethod
+    def fromListOfAddresses(l: List['Address']) -> 'Address':
+        """
+        Creates an address from a non empty list of addresses.
+
+        :raises: ValueError
+        """
+        if len(l) == 0:
+            raise ValueError("[Address creation] Cannot create address from "
+                             "an empty list of addresses")
+        else:
+            a = l[0].shift()
+            for b in l[1:]:
+                a += b
+            return a
+
+    def shift(self, n: int = 1) -> 'Address':
+        """
+        Returns the curent address shifted by :math:`n` dimensions.
+
+        Example:
+          :math:`[[\epsilon][*]]` ``.shift(2)`` is :math:`[[[[\epsilon][*]]]]`
+        """
+        if n < 0:
+            raise ValueError("[Address shift] Shift exponent must be >= 0 "
+                             "(is {})".format(n))
+        elif n == 0:
+            return self
+        else:
+            return Address.epsilon(self.dimension + n) + self.shift(n - 1)
+
+    @staticmethod
+    def substitution(a: 'Address', b: 'Address', c: 'Address') -> 'Address':
+        """
+        If the underlying sequence of `b` is a prefix of that of `a`, then
+        replaces this prefix by the underlying sequence of `c`.
+
+        Example:
+          ``substitution(`` :math:`[[*][**]]` ``,`` :math:`[[*]]` ``,``
+          :math:`[[\epsilon][\epsilon]]` ``)`` is
+          :math:`[[\epsilon][\epsilon][**]]`
+        """
+        if not (a.dimension == b.dimension and b.dimension == c.dimension):
+            raise ValueError("[Address substitution] Cannot substitute prefix "
+                             "{a} of {b} by {c} as dimensions do not match "
+                             "(are respectively {ad}, {bd}, and {cd})".format(
+                                 a = str(a), b = str(b), c = str(c),
+                                 ad = str(a.dimension), bd = str(b.dimension),
+                                 cd = str(c.dimension)))
+        if a.edges[0:len(b.edges)] == b.edges:
+            r = deepcopy(a)
+            r.edges[0:len(b.edges)] = c.edges
+            return r
+        else:
+            return a
+
+    def toTex(self) -> str:
+        """
+        Converts the address to TeX code.
+        """
+        if self == Address.epsilon(0):
+            return '*'
+        elif len(self.edges) == 0:
+            return '[\\epsilon]'
+        else:
+            return '[' + ''.join(map(Address.toTex, self.edges)) + ']'
+
+
+class Context(Dict[Address, Address]):
+    """
+    A :math:`(n+1)`-context can be seen as a partial injective function from
+    the set :math:`\mathbb{A}_n` of :math:`n`-addresses to the set
+    :math:`\mathbb{A}_{n-1}` of :math:`(n-1)`-addresses.
+    """
+
+    dimension: int
+
+    def __add__(self, other: Tuple[Address, Address]) -> 'Context':
+        """
+        Adds a tuple of the form (math:`n`-address, :math:`(n-1)`-address) to
+        the :math:`(n+1)`-context `self`.
+        """
+        if other[0].dimension != other[1].dimension + 1:
+            raise ValueError("[Context extension] New mapping {a} -> {b} is "
+                             "ill-formed as dimensions do not match (are "
+                             "respectively {ad} and {bd}".format(
+                                 a = str(other[0]), b = str(other[1]),
+                                 ad = str(other[0].dimension),
+                                 bd = str(other[1].dimension)))
+        elif other[0].dimension + 1 != self.dimension:
+            raise ValueError("[Context extension] New mapping {a} -> {b} "
+                             "cannot be added to context {self} as dimension "
+                             "do not match (context has dimension {sdim}, "
+                             "first address has dimension {ad}, should have "
+                             "dimension {should}".format(
+                                 a = str(other[0]), b = str(other[1]),
+                                 self = str(self), sdim = self.dimension,
+                                 ad = str(other[0].dimension),
+                                 should = str(self.dimension - 1)))
+        elif other[0] in self.keys():
+            raise ValueError("[Context extension] New mapping {a} -> {b} "
+                             "cannot be added to context {self} as first "
+                             "address is already present in context".format(
+                                 a = str(other[0]), b = str(other[1]),
+                                 self = str(self)))
+        elif other[1] in self.values():
+            raise ValueError("[Context extension] New mapping {a} -> {b} "
+                             "cannot be added to context {self} as second "
+                             "address is already present in context".format(
+                                 a = str(other[0]), b = str(other[1]),
+                                 self = str(self)))
+        r = deepcopy(self)
+        r[other[0]] = other[1]
+        return r
+
+    def __call__(self, addr: Address) -> Address:
+        """
+        If `self` is an `(n+1)`-context, returns the node :math:`(n-1)`-address
+        associated to the given leaf :math:`n`-address `addr`. Raises an
+        exception if not defined.
+        """
+        if not self.definedOnLeaf(addr):
+            raise ValueError("[Context call] Context {self} is not defined "
+                             "on leaf {addr}".format(self = str(self),
+                                                     addr = str(addr)))
+        return self[addr]
+
+    def __eq__(self, other) -> bool:
+        """
+        Tests equality between two contexts. Two contexts are equal if they
+        have the same dimension and if the partial mapping
+        :math:`\mathbb{A}_n \longrightarrow \mathbb{A}_{n-1}` they represent
+        are (extentionally) equal.
+        """
+        if not isinstance(other, Context):
+            raise NotImplementedError
+        return self.dimension == other.dimension and dict.__eq__(self, other)
+
+    def __init__(self, dim: int) -> None:
+        """
+        Creates an empty context of dimension `dim` :math:`\geq 0`.
+        """
+        if (dim < 0):
+            raise ValueError("[Context creation] Context must have dimension "
+                             ">= 0 (is {})".format(dim))
+        self.dimension = dim
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    def __str__(self) -> str:
+        """
+        Converts a context to a human readable string.
+        """
+        res = [str(x) + " → " + str(self[x])
+               for x in sorted(list(self.keys()))]
+        return "{\n    " + "\n    ".join(res) + "\n}"
+
+    def __sub__(self, addr: Address) -> 'Context':
+        """
+        Removes a address `addr` from the domain of definition of the context.
+        """
+        if not self.definedOnLeaf(addr):
+            raise ValueError("[Context restriction] Context {self} does not "
+                             "contain leaf {addr}".format(self = str(self),
+                                                          addr = str(addr)))
+        r = deepcopy(self)
+        del r[addr]
+        return r
+
+    def definedOnLeaf(self, addr: Address) -> bool:
+        """
+        Returns wether the context is defined on address `addr`.
+        """
+        return addr in self.keys()
+
+    def leaves(self) -> Set[Address]:
+        """
+        Returns the set of addresses on which the context is defined.
+        """
+        return set(self.keys())
+
+    def toTex(self) -> str:
+        res = ["\\frac{" + x.toTex() + "}{" + self(x).toTex() + "}"
+               for x in sorted(self.leaves())]
+        return ", ".join(res)
+
+
+class Preopetope:
+    """
+    Main class of the module.
+    """
+
+    dimension: int
+    degeneracy: Optional['Preopetope']
+    isDegenerate: bool
+    nodes: Dict[Address, 'Preopetope']
+
+    def __add__(self, t: Tuple[Address, 'Preopetope']) -> 'Preopetope':
+        """
+        Adds a (:math:`(n-1)`-address, :math:`(n-1)`-preopetope) tuple `t` to
+        the non degenerate `self` :math:`n`-preopetope. The
+        :math:`(n-1)`-address must not be present in `self`.
+        """
+        if self.isDegenerate:
+            raise ValueError("[Preopetope extension] Cannot add an address to "
+                             "a degenerate preopetope")
+        elif t[0].dimension != t[1].dimension:
+            raise ValueError("[Preopetope extension] Cannot add address "
+                             "{addr} to preopetope {self} as dimension do not "
+                             "match (are respectively {adim} and {sdim})"
+                             .format(addr = str(t[0]),
+                                     self = str(self),
+                                     adim = t[0].dimension,
+                                     sdim = self.dimension))
+        elif t[0].dimension + 1 != self.dimension:
+            raise ValueError("[Preopetope extension] Specified extension "
+                             "{addr} : {p} cannot be added to preopetope "
+                             "as dimension don't match (address dimension is "
+                             "{adim}, should be {should})".format(
+                                 addr = str(t[0]),
+                                 p = str(t[1]),
+                                 adim = t[0].dimension,
+                                 should = self.dimension - 1))
+        elif t[0] in self.nodes.keys():
+            raise ValueError("[Preopetope extension] Address {addr} already "
+                             "present in preopetope {self}".format(
+                                 addr = str(t[0]), self = str(self)))
+        else:
+            u = deepcopy(self)
+            u.nodes[t[0]] = t[1]
+            return u
+
+    def __eq__(self, other):
+        """
+        Tests equality between two preopetopes. Two preopetopes are equal if
+        they have the same dimension, and if either
+
+        * they are both degenerate on the same preopetope;
+        * they are both non degenerate, have the same (address, preopetope)
+          tuples.
+        """
+        if not isinstance(other, Preopetope):
+            raise NotImplementedError
+        elif self.dimension != other.dimension:
+            return False
+        elif self.isDegenerate ^ other.isDegenerate:
+            return False
+        elif set(self.nodes.keys()) != set(other.nodes.keys()):
+            return False
+        else:
+            for k in self.nodes.keys():
+                if self.nodes[k] != other.nodes[k]:
+                    return False
+            return True
+
+    def __init__(self, dim: int) -> None:
+        """
+        Inits an **invalid** preopetope of dimension `dim`. This method should
+        not be called directly.
+        """
+        if (dim < -1):
+            raise ValueError("[Preopetope creation] Preopetope must have "
+                             "dimension >= -1 (is {})".format(dim))
+        self.dimension = dim
+        self.isDegenerate = False
+        self.nodes = {}
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    def __str__(self) -> str:
+        """
+        Converts a preopetope to a human readable string. The
+        :math:`(-1)`-preopetope is represented by ``∅``, the
+        :math:`0`-preopetope by ``⧫``, and the unique
+        :math:`1`-preopetope by ``■``.
+        """
+        if self.dimension == -1:
+            return "∅"
+        elif self.dimension == 0:
+            return "⧫"
+        elif self == Preopetope.fromDictOfPreopetopes({
+                Address.epsilon(0): Preopetope.point()}):
+            return "■"
+        elif self.isDegenerate:
+            return "degen({d})".format(d = str(self.degeneracy))
+        else:
+            res = [str(x) + ": " + str(self.nodes[x]).replace("\n", "\n    ")
+                   for x in sorted(self.nodes)]
+            return "{\n    " + "\n    ".join(res) + "\n}"
+
+    def __sub__(self, addr: Address) -> 'Preopetope':
+        """
+        Removes source at address `addr`.
+        """
+        if addr not in self.nodeAddresses():
+            raise ValueError("[Preopetope restriction] Cannot remove address "
+                             "{addr} from preopetope {self} as it is not "
+                             "present".format(addr = str(addr),
+                                              self = str(self)))
+        r = deepcopy(self)
+        del r.nodes[addr]
+        return r
+
+    @staticmethod
+    def degenerate(q: 'Preopetope') -> 'Preopetope':
+        """
+        Constructs the degenerate preopetope at `q`.
+        """
+        if q.dimension < 0:
+            raise ValueError("[Preopetope degeneration] Cannot degenerate the "
+                             "(-1)-preopetope")
+        p = Preopetope(q.dimension + 2)
+        p.degeneracy = q
+        p.isDegenerate = True
+        return p
+
+    @staticmethod
+    def empty() -> 'Preopetope':
+        """
+        Constructs the unique :math:`(-1)`-preopetope.
+        """
+        return Preopetope(-1)
+
+    @staticmethod
+    def fromDictOfPreopetopes(d: Dict[Address, 'Preopetope']) -> 'Preopetope':
+        """
+        Creates a non degenerate preopetope from a ``dict`` of preopetopes
+        indexed by their addresses.
+        """
+        if len(d) == 0:
+            raise ValueError("[Preopetope creation] Cannot create preopetope "
+                             "from an empty dictionnary")
+        items = list(d.items())
+        p = Preopetope(items[0][0].dimension + 1) + items[0]
+        for t in items[1:]:
+            p += t
+        return p
+
+    @staticmethod
+    def grafting(p: 'Preopetope', addr: Address,
+                 q: 'Preopetope') -> 'Preopetope':
+        """
+        Grafts the :math:`n`-preopetope `q` on the :math:`n`-preopetope `p` at
+        address `addr`.
+        For improper grafting, see
+        :meth:`UnnamedOpetope.Preopetope.improperGrafting`
+        """
+        if p.dimension != q.dimension:
+            raise ValueError("[Preopetope grafting] Cannot graft preopetope "
+                             "{q} on {p} as dimensions do not match (are "
+                             "respectively {qd} and {pd}".format(
+                                 p = str(p), q = str(q),
+                                 pd = p.dimension, qd = q.dimension))
+        elif p.dimension != addr.dimension + 1:
+            raise ValueError("[Preopetope grafting] Cannot graft preopetope "
+                             "{q} on {p} at address {addr} as dimensions of "
+                             "address do not match that of the preopetopes "
+                             "(preopetopes have dimension {d}, address has "
+                             "dimension {ad}, should have {should}".format(
+                                 p = str(p), q = str(q),
+                                 d = p.dimension, ad = addr.dimension,
+                                 should = p.dimension - 1))
+        else:
+            r = p
+            for t in list(q.nodes.items()):
+                r += (addr * t[0], t[1])
+            return r
+
+    @staticmethod
+    def improperGrafting(p: 'Preopetope', addr: Address, q: 'Preopetope'):
+        """
+        Performs the improper grafting of the :math:`(n-1)`-preopetope `q` on
+        the :math:`n`-preopetope `p` at address `addr`.
+        For proper grafting, see
+        :meth:`UnnamedOpetope.Preopetope.grafting`
+        """
+        return p + (addr, q)
+
+    def leafAddresses(self) -> Set[Address]:
+        """
+        Returnst the set of leaf addresses of the preopetope.
+        """
+        res = []  # type: List[Address]
+        for p in self.nodeAddresses():
+            for q in self.source(p).nodeAddresses():
+                if p + q not in self.nodeAddresses():
+                    res += [p + q]
+        return set(res)
+
+    def nodeAddresses(self) -> Set[Address]:
+        """
+        Returns the set of node addresses of the preopetope.
+        """
+        return set(self.nodes.keys())
+
+    @staticmethod
+    def point() -> 'Preopetope':
+        """
+        Constructs the unique :math:`0`-preopetope.
+        """
+        return Preopetope(0)
+
+    def source(self, addr: Address) -> 'Preopetope':
+        if addr not in self.nodes.keys():
+            raise ValueError("[Preopetope source] Address {addr} not in "
+                             "preopetope {self}".format(addr = str(addr),
+                                                        self = str(self)))
+        return self.nodes[addr]
+
+    @staticmethod
+    def substitution(p: 'Preopetope', addr: Address, ctx: Context,
+                     q: 'Preopetope'):
+        """
+        In the :math:`n`-preopetope `p`, substitute the source at address
+        `addr` by the :math:`(n-1)`-preopetope `q`. The context `ctx` must be
+        defined on all leaves of `q` (see
+        :meth:`UnnamedOpetope.Context.__call__`).
+        """
+        for leaf in q.leafAddresses():
+            if not ctx.definedOnLeaf(leaf):
+                raise ValueError("[Preopetope substitution] Cannot substitute "
+                                 "with {q} in {p} as ambient context "
+                                 "{ctx} is not defined on leaf {leaf}".format(
+                                     p = str(p), q = str(q), ctx = str(ctx),
+                                     leaf = str(leaf)))
+        if addr not in p.nodeAddresses():
+            raise ValueError("[Preopetope substitution] Cannot substitute in "
+                             "{p} at address {addr} as it is not in the "
+                             "preopetope".format(p = str(p), addr = str(addr)))
+        elif addr.dimension + 1 != q.dimension:
+            raise ValueError("[Preopetope substitution] Cannot substitute "
+                             "with {q} in {p} as dimensions mismatch (the "
+                             "former has dimension {qd}, should have {pd}"
+                             .format(p = str(p), q = str(q),
+                                     pd = p.dimension, qd = q.dimension))
+
+        if q.isDegenerate:
+
+            if len(p.nodeAddresses()) == 1:  # if p has only one node
+                return q
+            else:  # otherwise, the node at addr must be globular
+                r = Preopetope(p.dimension)
+                for a in p.nodeAddresses():
+                    r += (
+                        Address.substitution(
+                            a,
+                            addr + Address.epsilon(p.dimension - 2),
+                            addr
+                        ),
+                        p.source(a)
+                    )
+                return r
+
+        else:
+
+            r = Preopetope(p.dimension)
+            for a in q.nodeAddresses():  # adding nodes of q
+                r += (addr * a, q.source(a))
+            for a in (p - addr).nodeAddresses():  # adding nodes of p
+                b = a
+                for l in ctx.leaves():
+                    c = Address.substitution(a, addr + ctx(l), addr * l)
+                    if c != a:
+                        b = c
+                        break
+                r += (b, p.source(a))
+            return r
+
+    def toTex(self) -> str:
+        """
+        Converts the preopetope to TeX code.
+        """
+        if self.dimension == -1:
+            return "\\emptyset"
+        elif self.dimension == 0:
+            return "\\zeroOpt"
+        elif self == Preopetope.fromDictOfPreopetopes({
+                Address.epsilon(0): Preopetope.point()}):
+            return "\\oneOpt"
+        elif self.isDegenerate:
+            if self.degeneracy is None:
+                raise ValueError("[Preopetope, toTex] Preopetope marked "
+                                 "degenerate but the underlying preopetope is "
+                                 "undefined. In valid proof trees, this "
+                                 "should not happen")
+            return "\\degenopetope{" + self.degeneracy.toTex() + "}"
+        else:
+            res = [x.toTex() + " \sep " + self.nodes[x].toTex()
+                   for x in sorted(self.nodes)]
+            return "\\opetope{" + " \\\\ ".join(res) + "}"
+
+
+class Sequent:
+    """
+    A sequent is a triple consisting of an :math:`n`-context, a source
+    :math:`n`-preopetope, and a target :math:`(n-1)`-preopetope.
+    """
+
+    context: Context
+    source: Preopetope
+    target: Preopetope
+
+    def __init__(self, ctx: Context, s: Preopetope, t: Preopetope) -> None:
+        """
+        Creates a sequent from an :math:`n`-context `ctx`, an
+        :math:`n`-preopetope `s`, and an :math:`(n-1)`-preopetope `t`.
+        """
+        if not (ctx.dimension == s.dimension and
+                s.dimension == t.dimension + 1):
+            raise ValueError("[Sequent] Dimension mismatch between the "
+                             "context, source, and target (are respectively "
+                             "{cd}, {sd}, and {td}): the context and source "
+                             "should have the same dimension, while the "
+                             "target should have 1 less".format(
+                                 cd = ctx.dimension,
+                                 sd = s.dimension,
+                                 td = t.dimension))
+        self.context = ctx
+        self.source = s
+        self.target = t
+
+    def __repr__(self) -> str:
+        return str(self)
+
+    def __str__(self) -> str:
+        """
+        Converts a sequent to a human readable string.
+        """
+        return "ctx = {ctx}\nsrc = {src}\ntgt = {tgt}".format(
+            ctx = self.context,
+            src = self.source,
+            tgt = self.target
+        )
+
+    def toTex(self) -> str:
+        return self.context.toTex() + " \\vdash " + self.source.toTex() + \
+            " \\longrightarrow " + self.target.toTex()
+
+
+def point() -> Sequent:
+    """
+    The ``point`` rule. Create the unique :math:`0`-opetope with no premises.
+    """
+    return Sequent(Context(0), Preopetope.point(), Preopetope.empty())
+
+
+def degen(seq: Sequent) -> Sequent:
+    """
+    The ``degen`` rule. From an :math:`n`-opetope :math:`\omega`, creates the
+    degenerate :math:`(n+2)`-opetope :math:`\lbrace \lbrace \omega`.
+    """
+    n = seq.source.dimension
+    return Sequent(
+        Context(n + 2) + (Address.epsilon(n + 1), Address.epsilon(n)),
+        Preopetope.degenerate(seq.source),
+        Preopetope.fromDictOfPreopetopes({
+            Address.epsilon(n): seq.source
+        })
+    )
+
+
+def shift(seq: Sequent) -> Sequent:
+    """
+    The ``shift`` rule. From an :math:`n`-opetope :math:`\omega`, creates the
+    globular :math:`(n+1)`-opetope
+    :math:`\lbrace [\epsilon]: \omega`.
+    """
+    n = seq.source.dimension
+    ctx = Context(n + 1)
+    for a in seq.source.nodeAddresses():
+        ctx += (a.shift(), a)
+
+    return Sequent(
+        ctx,
+        Preopetope.fromDictOfPreopetopes({
+            Address.epsilon(n): seq.source
+        }),
+        seq.source
+    )
+
+
+def graft(seq1: Sequent, seq2: Sequent, addr: Address) -> Sequent:
+    """
+    The ``graft`` rule. From an :math:`n`-opetope :math:`\omega` (in sequent
+    `seq1`), an :math:`(n-1)`-opetope :math:`\psi` (in sequent `seq2`), and a
+    leaf of :math:`\omega`, creates the opetope
+    :math:`\omega \circ_{\mathrm{addr}} \mathsf{Y}_{\psi}`.
+    """
+    r = seq1.context(addr)
+
+    ctx = Context(seq1.context.dimension)
+    for a in seq2.source.nodeAddresses():
+        ctx += (addr + a, r * a)
+    for a in (seq1.context - addr).leaves():
+        b = seq1.context(a)
+        for x in seq2.context.leaves():
+            y = seq2.context(x)
+            c = Address.substitution(b, r + y, r * x)
+            if b != c:
+                b = c
+                break
+        ctx += (a, b)
+
+    return Sequent(
+        ctx,
+        Preopetope.improperGrafting(seq1.source, addr, seq2.source),
+        Preopetope.substitution(
+            seq1.target,
+            r,
+            seq2.context,
+            seq2.source
+        )
+    )
+
+
+class UnamedOpetopeRuleInstance(RuleInstance):
+
+    def eval(self) -> Sequent:
+        """
+        Pure virtual method evaluating a proof tree and returning the final
+        conclusion sequent, or raising an exception if the proof is invalid.
+        """
+        raise NotImplementedError()
+
+
+class Point(UnamedOpetopeRuleInstance):
+    """
+    A class representing an instance of the ``point`` rule in a proof tree.
+    """
+
+    def __repr__(self):
+        return "Point()"
+
+    def __str__(self):
+        return "Point()"
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        instead.
+        """
+        return "\\AxiomC{}\n\t\\RightLabel{\\texttt{point}}\n\t" + \
+            "\\UnaryInfC{$" + self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates the proof tree, in this cases returns the point sequent by
+        calling :func:`UnnamedOpetope.point`.
+        """
+        return point()
+
+
+class Degen(UnamedOpetopeRuleInstance):
+    """
+    A class representing an instance of the ``degen`` rule in a proof tree.
+    """
+
+    def __init__(self, p: UnamedOpetopeRuleInstance) -> None:
+        """
+        Creates an instance of the ``degen`` rule and plugs proof tree `p`
+        on the unique premise.
+        """
+        self.p = p
+
+    def __repr__(self):
+        return "Degen({})".format(repr(self.p))
+
+    def __str__(self):
+        return "Degen({})".format(str(self.p))
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        instead.
+        """
+        return self.p._toTex() + \
+            "\n\t\\RightLabel{\\texttt{degen}}\n\t\\UnaryInfC{$" + \
+            self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates this instance of ``degen`` by first evaluating its premise,
+        and then applying :func:`UnnamedOpetope.degen` on the resulting
+        sequent.
+        """
+        return degen(self.p.eval())
+
+
+class Shift(UnamedOpetopeRuleInstance):
+    """
+    A class representing an instance of the ``shift`` rule in a proof tree.
+    """
+
+    def __init__(self, p: UnamedOpetopeRuleInstance) -> None:
+        """
+        Creates an instance of the ``shift`` rule and plugs proof tree `p`
+        on the unique premise.
+        """
+        self.p = p
+
+    def __repr__(self):
+        return "Shift({})".format(repr(self.p))
+
+    def __str__(self):
+        return "Shift({})".format(str(self.p))
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        instead.
+        """
+        return self.p._toTex() + \
+            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
+            self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates this instance of ``shift`` by first evaluating its premise,
+        and then applying :func:`UnnamedOpetope.shift` on the resulting
+        sequent.
+        """
+        return shift(self.p.eval())
+
+
+class Graft(UnamedOpetopeRuleInstance):
+    """
+    A class representing an instance of the ``graft`` rule in a proof tree.
+    """
+
+    def __init__(self, p1: UnamedOpetopeRuleInstance,
+                 p2: UnamedOpetopeRuleInstance,
+                 addr: Address) -> None:
+        """
+        Creates an instance of the ``graft`` rule at address `addr`, and plugs
+        proof tree `p1` on the first premise, and `p2` on the second. Recall
+        that the opetope described in the second premise will be impropely
+        grafted on that of the first. See :func:`UnnamedOpetope.graft`.
+        """
+        self.p1 = p1
+        self.p2 = p2
+        self.addr = addr
+
+    def __repr__(self):
+        return "Graft({p1}, {p2}, {addr})".format(p1 = repr(self.p1),
+                                                  p2 = repr(self.p2),
+                                                  addr = repr(self.addr))
+
+    def __str__(self):
+        return "Graft({p1}, {p2}, {addr})".format(p1 = str(self.p1),
+                                                  p2 = str(self.p2),
+                                                  addr = str(self.addr))
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetope.UnamedOpetopeRuleInstance.toTex`
+        instead.
+        """
+        return self.p1._toTex() + "\n\t" + self.p2._toTex() + \
+            "\n\t\\RightLabel{\\texttt{graft-}$" + self.addr.toTex() + \
+            "$}\n\t\\BinaryInfC{$" + self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates this instance of ``graft`` by first evaluating its premises,
+        and then applying :func:`UnnamedOpetope.graft` at address
+        `self.addr` on the resulting sequents.
+        """
+        return graft(self.p1.eval(), self.p2.eval(), self.addr)
+
+
+def Arrow() -> UnamedOpetopeRuleInstance:
+    """
+    Returns the proof tree of the arrow.
+    """
+    return Shift(Point())
+
+
+def OpetopicInteger(n: int) -> UnamedOpetopeRuleInstance:
+    """
+    Returns the sequent nth opetopic integer.
+    """
+    if n < 0:
+        raise ValueError("[Opetopic integer] n is expected to be >= 0")
+    elif n == 0:
+        return Degen(Point())
+    elif n == 1:
+        return Shift(Arrow())
+    else:
+        return Graft(OpetopicInteger(n - 1),
+                     Arrow(),
+                     Address.fromList(['*'] * (n - 1), 1))
