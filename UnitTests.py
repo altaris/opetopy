@@ -712,6 +712,35 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
             self.ctx.target("p")
 
 
+class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_degen(self):
+        s = UnnamedOpetopicSet.point(UnnamedOpetopicSet.Sequent(), "x")
+        with self.assertRaises(ValueError):
+            UnnamedOpetopicSet.degen(s, "y")
+        s = UnnamedOpetopicSet.degen(s, "x")
+        self.assertIsNotNone(s.pastingDiagram.degeneracy)
+        self.assertEqual(s.pastingDiagram.degeneracy.name, "x")
+        self.assertEqual(
+            s.pastingDiagram.degeneracy.shape, UnnamedOpetope.point().source)
+        self.assertIsNone(s.pastingDiagram.nodes)
+        with self.assertRaises(ValueError):
+            UnnamedOpetopicSet.degen(s, "x")
+
+    def test_point(self):
+        s = UnnamedOpetopicSet.point(UnnamedOpetopicSet.Sequent(), "x")
+        s = UnnamedOpetopicSet.point(s, "y")
+        self.assertEqual(len(s.context), 2)
+        with self.assertRaises(ValueError):
+            UnnamedOpetopicSet.point(s, "x")
+        s.pastingDiagram = UnnamedOpetopicSet.PastingDiagram.point()
+        with self.assertRaises(ValueError):
+            UnnamedOpetopicSet.point(s, "z")
+
+
 class Test_NamedOpetope_Variable(unittest.TestCase):
 
     def setUp(self):
