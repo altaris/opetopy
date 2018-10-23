@@ -82,17 +82,17 @@ class Variable:
 
 class PastingDiagram:
     """
-    A pasting diagram consist in a shape :math:`\omega`
+    A pasting diagram consist in a shape :math:`\\omega`
     (:class:`UnnamedOpetope.Preopetope`) and
 
-    * if :math:`\omega` is not degenerate, a mapping
-      :math:`f : \omega^\\bullet \longrightarrow \mathbb{V}` such that
-      :math:`f (\mathsf{s}_{[p]} \omega)^\\natural = f([p])^\\natural`, where
-      :math:`\mathbb{V}` is the set of variable
+    * if :math:`\\omega` is not degenerate, a mapping
+      :math:`f : \\omega^\\bullet \\longrightarrow \\mathbb{V}` such that
+      :math:`f (\\mathsf{s}_{[p]} \\omega)^\\natural = f([p])^\\natural`, where
+      :math:`\\mathbb{V}` is the set of variable
       (:class:`UnnamedOpetopicSet.Variable`); this case is implemented in
       :class:`UnnamedOpetopicSet.NonDegeneratePastingDiagram`;
-    * if :math:`\omega` is degenerate, say :math:`\omega = \{\{\phi`, a
-      variable of shape :math:`\phi`; this case is implemented in
+    * if :math:`\\omega` is degenerate, say :math:`\\omega = \\{\\{\\phi`, a
+      variable of shape :math:`\\phi`; this case is implemented in
       :class:`UnnamedOpetopicSet.DegeneratePastingDiagram`.
     """
 
@@ -256,10 +256,10 @@ class Type:
     A type consist in
 
     * a source pasting diagram (:class:`UnnamedOpetopicSet.PastingDiagram`),
-      say :math:`\mathbf{P}`,
+      say :math:`\\mathbf{P}`,
     * a target variable (:class:`UnnamedOpetopicSet.Variable`), say :math:`x`,
 
-    such that :math:`\mathsf{t} \mathbf{P}^\\natural = x^\\natural`
+    such that :math:`\\mathsf{t} \\mathbf{P}^\\natural = x^\\natural`
     """
 
     source: PastingDiagram
@@ -308,9 +308,9 @@ class Typing:
 
     * a variable :class:`UnnamedOpetopicSet.Variable`, say :math:`v`,
     * a type :class:`UnnamedOpetopicSet.Type`, say
-      :math:`\mathbf{P} \longrightarrow t`
+      :math:`\\mathbf{P} \\longrightarrow t`
 
-    such that :math:`x^\\natural = \mathbf{P}^\\natural`.
+    such that :math:`x^\\natural = \\mathbf{P}^\\natural`.
     """
 
     type: Type
@@ -450,6 +450,9 @@ class Sequent:
 
 
 def point(seq: Sequent, name: str) -> Sequent:
+    """
+    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{point}` rule.
+    """
     if seq.pastingDiagram is not None:
         raise ValueError("[point rule] Sequent cannot have a pasting diagram")
     var = Variable(name, UnnamedOpetope.Point())
@@ -464,6 +467,9 @@ def point(seq: Sequent, name: str) -> Sequent:
 
 
 def degen(seq: Sequent, name: str) -> Sequent:
+    """
+    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{degen}` rule.
+    """
     if seq.pastingDiagram is not None:
         raise ValueError("[degen rule] Sequent cannot have a pasting diagram")
     var = seq.context[name].variable
@@ -474,6 +480,9 @@ def degen(seq: Sequent, name: str) -> Sequent:
 
 
 def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
+    """
+    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{graft}` rule.
+    """
     if pd.nodes is None:
         raise ValueError("[graft rule] Parameter pasting diagram cannot be "
                          "degenerate")
@@ -502,6 +511,9 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
 
 
 def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
+    """
+    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{fill}` rule.
+    """
     if seq.pastingDiagram is None:
         raise ValueError("[fill rule] Sequent must have a pasting diagram")
     P = seq.pastingDiagram

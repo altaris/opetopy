@@ -17,7 +17,7 @@ from common import AbstractRuleInstance
 
 def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
     """
-    The ``repr`` rule.
+    The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{repr}` rule.
     """
     res = NamedOpetope.OCMT(deepcopy(seq.theory), deepcopy(seq.context))
     # new context
@@ -29,8 +29,8 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
                              "should not happen")
         for i in range(1, v.dimension + 1):
             res.context += NamedOpetope.Typing(
-              NamedOpetope.Term(res.target(v, i)),
-              NamedOpetope.Type(typing.type.terms[i:]))
+                NamedOpetope.Term(res.target(v, i)),
+                NamedOpetope.Type(typing.type.terms[i:]))
     # new theory
     for tup in seq.context.graftTuples():
         b, a = tup
@@ -73,7 +73,7 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
 def sum(ocmt1: NamedOpetope.OCMT,
         ocmt2: NamedOpetope.OCMT) -> NamedOpetope.OCMT:
     """
-    The ``sum`` rule.
+    The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{sum}` rule.
     """
     if len(ocmt1.context.variables() & ocmt2.context.variables()) != 0:
         raise ValueError("[sum rule] The two premiss OCTM are expected to "
@@ -82,18 +82,18 @@ def sum(ocmt1: NamedOpetope.OCMT,
                          .format(inter = ocmt1.context.variables() &
                                  ocmt2.context.variables()))
     return NamedOpetope.OCMT(
-      ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
+        ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
 
 
 def fold(ocmt: NamedOpetope.OCMT, a: NamedOpetope.Variable,
          b: NamedOpetope.Variable) -> NamedOpetope.OCMT:
     """
-    The ``fold`` rule.
+    The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{fold}` rule.
     """
     if a.dimension != b.dimension:
-        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} cannot be "
-                         "identified as they do not have the same dimension "
-                         "(have respectively {da} and {db})".format(
+        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} "
+                         "cannot be identified as they do not have the same "
+                         "dimension (have respectively {da} and {db})".format(
                              a = str(a),
                              b = str(b),
                              da = a.dimension,
@@ -101,9 +101,9 @@ def fold(ocmt: NamedOpetope.OCMT, a: NamedOpetope.Variable,
     elif a.dimension != 0 and not \
         (ocmt.equal(ocmt.source(a), ocmt.source(b)) and
          ocmt.theory.equal(ocmt.target(a), ocmt.target(b))):
-        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} cannot be "
-                         "identified as they are not parallel: sa = {sa}, "
-                         "sb = {sb}, ta = {ta}, tb = {tb}".format(
+        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} "
+                         "cannot be identified as they are not parallel: "
+                         "sa = {sa}, sb = {sb}, ta = {ta}, tb = {tb}".format(
                              a = str(a), b = str(b),
                              sa = str(ocmt.source(a)),
                              sb = str(ocmt.source(b)),
@@ -116,13 +116,16 @@ def fold(ocmt: NamedOpetope.OCMT, a: NamedOpetope.Variable,
 
 def zero() -> NamedOpetope.OCMT:
     """
-    The ``zero`` rule.
+    The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{zero}` rule.
     """
     return NamedOpetope.OCMT(
-      NamedOpetope.EquationalTheory(), NamedOpetope.Context())
+        NamedOpetope.EquationalTheory(), NamedOpetope.Context())
 
 
 class RuleInstance(AbstractRuleInstance):
+    """
+    A rule instance of system :math:`\\textbf{OptSet${}^!$}`.
+    """
 
     def eval(self) -> NamedOpetope.OCMT:
         """

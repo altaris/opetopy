@@ -22,7 +22,7 @@ class Address:
 
       Address.epsilon(0)
 
-    More generally, the :math:`\epsilon` is construced as::
+    More generally, the :math:`\\epsilon` is construced as::
 
       Address.epsilon(n)
 
@@ -88,7 +88,8 @@ class Address:
 
     def __init__(self, dim: int) -> None:
         """
-        Creates an :math:`\epsilon` address of dimension `dim` :math:`\geq 0`.
+        Creates an :math:`\\epsilon` address of dimension `dim`
+        :math:`\\geq 0`.
         """
         if (dim < 0):
             raise ValueError("[Address creation] New address must have "
@@ -140,7 +141,7 @@ class Address:
     def __str__(self) -> str:
         """
         Converts an address to a human readable string. The
-        :math:`0`-dimensional :math:`\epsilon` address is represented by the
+        :math:`0`-dimensional :math:`\\epsilon` address is represented by the
         symbol ``*``.
         """
         if self == Address.epsilon(0):
@@ -153,8 +154,9 @@ class Address:
     @staticmethod
     def epsilon(dim: int) -> 'Address':
         """
-        Creates an :math:`\epsilon` address of dimension `dim` :math:`\geq 0`.
-        Internally just calls :meth:`UnnamedOpetope.Address.__init__`.
+        Creates an :math:`\\epsilon` address of dimension `dim`
+        :math:`\\geq 0`. Internally just calls
+        :meth:`UnnamedOpetope.Address.__init__`.
         """
         return Address(dim)
 
@@ -174,7 +176,7 @@ class Address:
     def isEpsilon(self) -> bool:
         """
         Simply tells wither the current address is of the form
-        :math:`[\epsilon]`.
+        :math:`[\\epsilon]`.
         """
         return len(self.edges) == 0
 
@@ -182,9 +184,9 @@ class Address:
     def fromList(l: List[Any], dim: int) -> 'Address':
         """
         Recursibely create an address of dimension `dim` from a list of lists
-        that themselves represent addresses. The :math:`\epsilon` address is
+        that themselves represent addresses. The :math:`\\epsilon` address is
         represented by ['ε'], and ```'*'``` represents the
-        :math:`0`-dimensional :math:`\epsilon` address.
+        :math:`0`-dimensional :math:`\\epsilon` address.
 
         :raises: ValueError
         """
@@ -224,7 +226,8 @@ class Address:
         Returns the curent address shifted by :math:`n` dimensions.
 
         Example:
-          :math:`[[\epsilon][*]]` ``.shift(2)`` is :math:`[[[[\epsilon][*]]]]`
+          :math:`[[\\epsilon][*]]` ``.shift(2)`` is
+          :math:`[[[[\\epsilon][*]]]]`
         """
         if n < 0:
             raise ValueError("[Address shift] Shift exponent must be >= 0 "
@@ -242,8 +245,8 @@ class Address:
 
         Example:
           ``substitution(`` :math:`[[*][**]]` ``,`` :math:`[[*]]` ``,``
-          :math:`[[\epsilon][\epsilon]]` ``)`` is
-          :math:`[[\epsilon][\epsilon][**]]`
+          :math:`[[\\epsilon][\\epsilon]]` ``)`` is
+          :math:`[[\\epsilon][\\epsilon][**]]`
         """
         if not (a.dimension == b.dimension and b.dimension == c.dimension):
             raise ValueError("[Address substitution] Cannot substitute prefix "
@@ -274,8 +277,8 @@ class Address:
 class Context(Dict[Address, Address]):
     """
     A :math:`(n+1)`-context can be seen as a partial injective function from
-    the set :math:`\mathbb{A}_n` of :math:`n`-addresses to the set
-    :math:`\mathbb{A}_{n-1}` of :math:`(n-1)`-addresses.
+    the set :math:`\\mathbb{A}_n` of :math:`n`-addresses to the set
+    :math:`\\mathbb{A}_{n-1}` of :math:`(n-1)`-addresses.
     """
 
     dimension: int
@@ -334,7 +337,7 @@ class Context(Dict[Address, Address]):
         """
         Tests equality between two contexts. Two contexts are equal if they
         have the same dimension and if the partial mapping
-        :math:`\mathbb{A}_n \longrightarrow \mathbb{A}_{n-1}` they represent
+        :math:`\\mathbb{A}_n \\longrightarrow \\mathbb{A}_{n-1}` they represent
         are (extentionally) equal.
         """
         if not isinstance(other, Context):
@@ -343,7 +346,7 @@ class Context(Dict[Address, Address]):
 
     def __init__(self, dim: int) -> None:
         """
-        Creates an empty context of dimension `dim` :math:`\geq 0`.
+        Creates an empty context of dimension `dim` :math:`\\geq 0`.
         """
         if (dim < 0):
             raise ValueError("[Context creation] Context must have dimension "
@@ -692,7 +695,7 @@ class Preopetope:
                                  "should not happen")
             return "\\degenopetope{" + self.degeneracy.toTex() + "}"
         else:
-            res = [x.toTex() + " \sep " + self.nodes[x].toTex()
+            res = [x.toTex() + " \\sep " + self.nodes[x].toTex()
                    for x in sorted(self.nodes)]
             return "\\opetope{" + " \\\\ ".join(res) + "}"
 
@@ -746,15 +749,17 @@ class Sequent:
 
 def point() -> Sequent:
     """
-    The ``point`` rule. Create the unique :math:`0`-opetope with no premises.
+    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{point}` rule.
+    Create the unique :math:`0`-opetope with no premises.
     """
     return Sequent(Context(0), Preopetope.point(), Preopetope.empty())
 
 
 def degen(seq: Sequent) -> Sequent:
     """
-    The ``degen`` rule. From an :math:`n`-opetope :math:`\omega`, creates the
-    degenerate :math:`(n+2)`-opetope :math:`\lbrace \lbrace \omega`.
+    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{degen}` rule.
+    From an :math:`n`-opetope :math:`\\omega`, creates the
+    degenerate :math:`(n+2)`-opetope :math:`\\lbrace \\lbrace \\omega`.
     """
     n = seq.source.dimension
     return Sequent(
@@ -768,9 +773,10 @@ def degen(seq: Sequent) -> Sequent:
 
 def shift(seq: Sequent) -> Sequent:
     """
-    The ``shift`` rule. From an :math:`n`-opetope :math:`\omega`, creates the
+    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{shift}` rule.
+    From an :math:`n`-opetope :math:`\\omega`, creates the
     globular :math:`(n+1)`-opetope
-    :math:`\lbrace [\epsilon]: \omega`.
+    :math:`\\lbrace [\\epsilon]: \\omega`.
     """
     n = seq.source.dimension
     ctx = Context(n + 1)
@@ -788,10 +794,11 @@ def shift(seq: Sequent) -> Sequent:
 
 def graft(seq1: Sequent, seq2: Sequent, addr: Address) -> Sequent:
     """
-    The ``graft`` rule. From an :math:`n`-opetope :math:`\omega` (in sequent
-    `seq1`), an :math:`(n-1)`-opetope :math:`\psi` (in sequent `seq2`), and a
-    leaf of :math:`\omega`, creates the opetope
-    :math:`\omega \circ_{\mathrm{addr}} \mathsf{Y}_{\psi}`.
+    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{graft}` rule.
+    From an :math:`n`-opetope :math:`\\omega` (in sequent
+    `seq1`), an :math:`(n-1)`-opetope :math:`\\psi` (in sequent `seq2`), and a
+    leaf of :math:`\\omega`, creates the opetope
+    :math:`\\omega \\circ_{\\mathrm{addr}} \\mathsf{Y}_{\\psi}`.
     """
     r = seq1.context(addr)
 
@@ -821,6 +828,9 @@ def graft(seq1: Sequent, seq2: Sequent, addr: Address) -> Sequent:
 
 
 class RuleInstance(AbstractRuleInstance):
+    """
+    A rule instance of system :math:`\\textbf{Opt${}^?$}`.
+    """
 
     def eval(self) -> Sequent:
         """

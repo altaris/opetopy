@@ -192,7 +192,7 @@ class Term(Dict[Variable, 'Term']):
         """
         This helper function constructs the set of tuples (b, a) for all
         variables a and b such that the expression
-        :math:`b \leftarrow a (\ldots)` occurs in the term.
+        :math:`b \\leftarrow a (\\ldots)` occurs in the term.
         """
         res = set()  # type: Set[Tuple[Variable, Variable]]
         for k in self.keys():
@@ -252,7 +252,7 @@ class Term(Dict[Variable, 'Term']):
 class Type:
     """
     An :math:`n`-type is a sequence of :math:`(n+1)` terms of dimension
-    :math:`(n-1), (n-2), \ldots, -1`.
+    :math:`(n-1), (n-2), \\ldots, -1`.
 
     """
 
@@ -418,7 +418,7 @@ class Context(Set[Typing]):
 
     def graftTuples(self) -> Set[Tuple[Variable, Variable]]:
         """
-        Returns all tuples (b, a) for :math:`b \leftarrow a (\ldots)` a
+        Returns all tuples (b, a) for :math:`b \\leftarrow a (\\ldots)` a
         grafting occurring in a term in a type in the context.
 
         :see: :meth:`NamedOpetope.Term.graftTuples`
@@ -714,7 +714,7 @@ class Sequent(OCMT):
         """
         Grafts term (:class:`NamedOpetope.Term`) u on term t via
         variable (:class:`NamedOpetope.Variable`) x. In other words,
-        computes :math:`t(x \leftarrow u)`.
+        computes :math:`t(x \\leftarrow u)`.
         """
         for k in t.keys():
             if self.theory.equal(k, x):
@@ -818,7 +818,8 @@ class Sequent(OCMT):
 
 def point(x: Variable) -> Sequent:
     """
-    The ``point`` rule introduces a :math:`0`-variable `x`.
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{point}` rule.
+    Introduces a :math:`0`-variable with name `x`.
     """
     if x.dimension != 0:
         raise ValueError("[point rule] New variable must have dimension 0 "
@@ -829,7 +830,8 @@ def point(x: Variable) -> Sequent:
 
 def fill(seq: Sequent, x: Variable) -> Sequent:
     """
-    The ``fill`` rule takes a sequent `seq` typing a term `t` and introduces
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{fill}` rule.
+    Takes a sequent `seq` typing a term `t` and introduces
     a new variable `x` having `t` as :math:`1`-source.
     """
     res = deepcopy(seq)
@@ -841,7 +843,8 @@ def fill(seq: Sequent, x: Variable) -> Sequent:
 
 def degen(seq: Sequent) -> Sequent:
     """
-    The ``degen`` rule takes a sequent typing a variable and produces a new
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{degen}` rule.
+    Takes a sequent typing a variable and produces a new
     sequent typing the degeneracy at that variable.
     """
     if not seq.typing.term.isVariable():
@@ -857,14 +860,16 @@ def degen(seq: Sequent) -> Sequent:
 
 def degenfill(seq: Sequent, x: Variable) -> Sequent:
     """
-    The ``degen-fill`` rules applies the degen and the fill rule consecutively.
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{degen-fill}` rule.
+    Applies the degen and the fill rule consecutively.
     """
     return fill(degen(seq), x)
 
 
 def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
     """
-    The ``graft`` rule takes the following arguments:
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{graft}` rule.
+    Takes the following arguments:
 
     1. `seqt` typing an :math:`n` term  :math:`t`
     2. `seqx` second typing an :math:`n` variable :math:`x`
@@ -872,7 +877,7 @@ def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
 
     such that the two sequents are compatible, and the intersection of their
     context is essentially the context typing `a` and its variables. It then
-    produces the :math:`n` term :math:`t(a \leftarrow x)`.
+    produces the :math:`n` term :math:`t(a \\leftarrow x)`.
 
     The way the intersection condition is checked is by verifying that the only
     variables typed in both contexts (modulo both theories) are those appearing
@@ -941,6 +946,9 @@ def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
 
 
 class RuleInstance(AbstractRuleInstance):
+    """
+    A rule instance of system :math:`\\textbf{Opt${}^!$}`.
+    """
 
     def eval(self) -> Sequent:
         """

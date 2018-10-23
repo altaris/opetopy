@@ -25,17 +25,17 @@ presented in [CHM18]_ and some other work in progress.
 
 The :mod:`opetopy` module is decomposed as follow:
 
-+--------------------------+------------------------+-------------------------------+
-| Module                   | Syntactical construct  | Derivation system             |
-+==========================+========================+===============================+
-| :mod:`NamedOpetope`      | Named opetopes         | :math:`\textbf{Opt${}^!$}`    |
-+--------------------------+------------------------+-------------------------------+
-| :mod:`NamedOpetopicSet`  | Named opetopic sets    | :math:`\textbf{OptSet${}^!$}` |
-+--------------------------+------------------------+-------------------------------+
-| :mod:`UnamedOpetope`     | Unnamed opetopes       | :math:`\textbf{Opt${}^?$}`    |
-+--------------------------+------------------------+-------------------------------+
-| :mod:`UnamedOpetopicSet` | Unnamed opetopic sets  | :math:`\textbf{OptSet${}^?$}` |
-+--------------------------+------------------------+-------------------------------+
++---------------------------+------------------------+-------------------------------+
+| Module                    | Syntactical construct  | Derivation system             |
++===========================+========================+===============================+
+| :mod:`NamedOpetope`       | Named opetopes         | :math:`\textbf{Opt${}^!$}`    |
++---------------------------+------------------------+-------------------------------+
+| :mod:`NamedOpetopicSet`   | Named opetopic sets    | :math:`\textbf{OptSet${}^!$}` |
++---------------------------+------------------------+-------------------------------+
+| :mod:`UnnamedOpetope`     | Unnamed opetopes       | :math:`\textbf{Opt${}^?$}`    |
++---------------------------+------------------------+-------------------------------+
+| :mod:`UnnamedOpetopicSet` | Unnamed opetopic sets  | :math:`\textbf{OptSet${}^?$}` |
++---------------------------+------------------------+-------------------------------+
 
 Each implement the following:
 
