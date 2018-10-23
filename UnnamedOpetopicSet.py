@@ -12,6 +12,7 @@ from copy import deepcopy
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import UnnamedOpetope
+from common import AbstractRuleInstance
 
 
 class Variable:
@@ -558,3 +559,176 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
         Variable(name, seq.pastingDiagram.shapeProof),
         Type(deepcopy(seq.pastingDiagram), x))
     return res
+
+
+class RuleInstance(AbstractRuleInstance):
+    """
+    A rule instance of system :math:`\\textbf{OptSet${}^?$}`.
+    """
+
+    def eval(self) -> Sequent:
+        """
+        Pure virtual method evaluating a proof tree and returning the final
+        conclusion sequent, or raising an exception if the proof is invalid.
+        """
+        raise NotImplementedError()
+
+
+class Point(RuleInstance):
+    """
+    A class representing an instance of the :math:`\\textt{point}` rule in a
+    proof tree.
+    """
+
+    name: str
+    proofTree: Optional[RuleInstance]
+
+    def __init__(self, name: str, p: Optional[RuleInstance] = None) -> None:
+        self.name = name
+        self.proofTree = p
+
+    def __repr__(self) -> str:
+        if self.proofTree is None:
+            prepr = ""
+        else:
+            prepr = repr(self.proofTree)
+        return "Point(" + prepr + "," + self.name + ")"
+
+    def __str__(self) -> str:
+        if self.proofTree is None:
+            pstr = ""
+        else:
+            pstr = str(self.proofTree)
+        return "Point(" + pstr + ", " + self.name + ")"
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        if self.proofTree is None:
+            ptex = "\\AxiomC{}"
+        else:
+            ptex = self.proofTree._toTex()
+        return ptex + "\n\t\\RightLabel{\\texttt{point-$" + self.name + \
+            "$}}\n\t\\UnaryInfC{$" + self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates the proof tree.
+        """
+        if self.proofTree is None:
+            return point(Sequent(), self.name)
+        else:
+            return point(self.proofTree.eval(), self.name)
+
+
+class Degen(RuleInstance):
+    """
+    A class representing an instance of the :math:`\\textt{degen}` rule in a
+    proof tree.
+    """
+
+    name: str
+    proofTree: RuleInstance
+
+    def __init__(self, name: str, p: RuleInstance) -> None:
+        self.name = name
+        self.proofTree = p
+
+    def __repr__(self) -> str:
+        return "Degen(" + repr(self.proofTree) + "," + self.name + ")"
+
+    def __str__(self) -> str:
+        return "Degen(" + str(self.proofTree) + ", " + self.name + ")"
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{degen}}\n\t\\UnaryInfC{$" + \
+            self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates the proof tree.
+        """
+        return degen(self.proofTree.eval(), self.name)
+
+
+class Graft(RuleInstance):
+    """
+    A class representing an instance of the :math:`\\textt{graft}` rule in a
+    proof tree.
+    """
+
+    pastingDiagram: PastingDiagram
+    proofTree: RuleInstance
+
+    def __init__(self, pd: PastingDiagram, p: RuleInstance) -> None:
+        self.pastingDiagram = pd
+        self.proofTree = p
+
+    def __repr__(self) -> str:
+        return "Graft({})".format(repr(self.proofTree))
+
+    def __str__(self) -> str:
+        return "Graft({})".format(str(self.proofTree))
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{graft}}\n\t\\UnaryInfC{$" + \
+            self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates the proof tree.
+        """
+        return graft(self.proofTree.eval(), self.pastingDiagram)
+
+
+class Fill(RuleInstance):
+    """
+    A class representing an instance of the :math:`\\textt{fill}` rule in a
+    proof tree.
+    """
+
+    name: str
+    proofTree: RuleInstance
+    targetName: str
+
+    def __init__(self, targetName: str, name: str, p: RuleInstance) -> None:
+        self.name = name
+        self.proofTree = p
+        self.targetName = targetName
+
+    def __repr__(self) -> str:
+        return "Fill(" + repr(self.proofTree) + "," + self.name + ")"
+
+    def __str__(self) -> str:
+        return "Fill(" + str(self.proofTree) + ", " + self.name + ")"
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
+            self.eval().toTex() + "$}"
+
+    def eval(self) -> Sequent:
+        """
+        Evaluates the proof tree.
+        """
+        return fill(self.proofTree.eval(), self.targetName, self.name)
