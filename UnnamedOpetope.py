@@ -358,6 +358,9 @@ class Context(Dict[Address, Address]):
                 dim = dim)
         self.dimension = dim
 
+    def __ne__(self, other) -> bool:
+        return not (self == other)
+
     def __repr__(self) -> str:
         return str(self)
 

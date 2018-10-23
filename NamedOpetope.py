@@ -154,8 +154,6 @@ class Term(Dict[Variable, 'Term']):
         self.variable = var
 
     def __ne__(self, other) -> bool:
-        if not isinstance(other, Term):
-            raise NotImplementedError
         return not (self == other)
 
     def __repr__(self) -> str:

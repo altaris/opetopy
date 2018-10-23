@@ -42,10 +42,10 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         )
 
     def test___eq__(self):
-        self.assertTrue(self.a == self.a)
-        self.assertTrue(self.e == self.e)
-        self.assertFalse(self.a == self.b)
-        self.assertFalse(self.b == self.c)
+        self.assertEqual(self.a, self.a)
+        self.assertEqual(self.e, self.e)
+        self.assertNotEqual(self.a, self.b)
+        self.assertNotEqual(self.b, self.c)
 
     def test___init__(self):
         with self.assertRaises(DerivationError):
@@ -56,10 +56,10 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         with self.assertRaises(DerivationError):
             self.a < self.b
         self.assertFalse(self.c < self.c)
-        self.assertTrue(self.c < self.d)
+        self.assertLess(self.c, self.d)
         self.assertFalse(self.d < self.c)
-        self.assertTrue(self.e < self.e + self.d)
-        self.assertTrue(self.e + self.c < self.e + self.d)
+        self.assertLess(self.e, self.e + self.d)
+        self.assertLess(self.e + self.c, self.e + self.d)
 
     def test___mul__(self):
         with self.assertRaises(DerivationError):
@@ -227,17 +227,17 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
         )
 
     def test___eq__(self):
-        self.assertTrue(self.a == self.a)
-        self.assertTrue(self.b == self.b)
-        self.assertTrue(self.c == self.c)
-        self.assertTrue(self.d == self.d)
-        self.assertTrue(self.e == self.e)
-        self.assertTrue(self.f == self.f)
-        self.assertFalse(self.a == self.b)
-        self.assertFalse(self.b == self.c)
-        self.assertFalse(self.b == self.d)
-        self.assertFalse(self.c == self.d)
-        self.assertFalse(self.e == self.f)
+        self.assertEqual(self.a, self.a)
+        self.assertEqual(self.b, self.b)
+        self.assertEqual(self.c, self.c)
+        self.assertEqual(self.d, self.d)
+        self.assertEqual(self.e, self.e)
+        self.assertEqual(self.f, self.f)
+        self.assertNotEqual(self.a, self.b)
+        self.assertNotEqual(self.b, self.c)
+        self.assertNotEqual(self.b, self.d)
+        self.assertNotEqual(self.c, self.d)
+        self.assertNotEqual(self.e, self.f)
 
     def test___init__(self):
         with self.assertRaises(DerivationError):
@@ -295,17 +295,17 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
                          self.f)
 
     def test___eq__(self):
-        self.assertTrue(self.a == self.a)
-        self.assertTrue(self.b == self.b)
-        self.assertTrue(self.c == self.c)
-        self.assertTrue(self.b == self.b)
-        self.assertTrue(self.e == self.e)
-        self.assertTrue(self.f == self.f)
-        self.assertFalse(self.a == self.b)
-        self.assertFalse(self.b == self.c)
-        self.assertFalse(self.c == self.d)
-        self.assertFalse(self.c == self.e)
-        self.assertFalse(self.e == self.f)
+        self.assertEqual(self.a, self.a)
+        self.assertEqual(self.b, self.b)
+        self.assertEqual(self.c, self.c)
+        self.assertEqual(self.b, self.b)
+        self.assertEqual(self.e, self.e)
+        self.assertEqual(self.f, self.f)
+        self.assertNotEqual(self.a, self.b)
+        self.assertNotEqual(self.b, self.c)
+        self.assertNotEqual(self.c, self.d)
+        self.assertNotEqual(self.c, self.e)
+        self.assertNotEqual(self.e, self.f)
 
     def test___init__(self):
         with self.assertRaises(DerivationError):
@@ -939,20 +939,20 @@ class Test_NamedOpetope_Type(unittest.TestCase):
              NamedOpetope.Term(self.a), NamedOpetope.Term()])
 
     def test___contains__(self):
-        self.assertFalse(self.a in self.t0)
-        self.assertFalse(self.f in self.t0)
-        self.assertFalse(self.alpha in self.t0)
-        self.assertTrue(self.a in self.t1)
-        self.assertFalse(self.f in self.t1)
-        self.assertFalse(self.alpha in self.t1)
-        self.assertTrue(self.a in self.t2)
-        self.assertTrue(self.f in self.t2)
-        self.assertFalse(self.alpha in self.t2)
-        self.assertTrue(self.a in self.t3)
-        self.assertTrue(self.f in self.t3)
-        self.assertTrue(self.alpha in self.t3)
-        self.assertFalse(NamedOpetope.Variable("β", 2) in self.t3)
-        self.assertFalse(NamedOpetope.Variable("a", 2) in self.t3)
+        self.assertNotIn(self.a, self.t0)
+        self.assertNotIn(self.f, self.t0)
+        self.assertNotIn(self.alpha, self.t0)
+        self.assertIn(self.a, self.t1)
+        self.assertNotIn(self.f, self.t1)
+        self.assertNotIn(self.alpha, self.t1)
+        self.assertIn(self.a, self.t2)
+        self.assertIn(self.f, self.t2)
+        self.assertNotIn(self.alpha, self.t2)
+        self.assertIn(self.a, self.t3)
+        self.assertIn(self.f, self.t3)
+        self.assertIn(self.alpha, self.t3)
+        self.assertNotIn(NamedOpetope.Variable("β", 2), self.t3)
+        self.assertNotIn(NamedOpetope.Variable("a", 2), self.t3)
 
     def test___init__(self):
         with self.assertRaises(DerivationError):
@@ -1084,14 +1084,14 @@ class Test_NamedOpetope_Context(unittest.TestCase):
             self.ctx1.typeOf(NamedOpetope.Variable("a", 0))
         with self.assertRaises(DerivationError):
             self.ctx2.typeOf(NamedOpetope.Variable("b", 0))
-        self.assertTrue(self.ctx5.typeOf(NamedOpetope.Variable("a", 0)).terms,
-                        self.typing1.terms)
-        self.assertTrue(self.ctx5.typeOf(NamedOpetope.Variable("f", 1)).terms,
-                        self.typing2.terms)
-        self.assertTrue(self.ctx5.typeOf(NamedOpetope.Variable("α", 2)).terms,
-                        self.typing3.terms)
-        self.assertTrue(self.ctx5.typeOf(NamedOpetope.Variable("A", 3)).terms,
-                        self.typing4.terms)
+        self.assertEqual(self.ctx5.typeOf(NamedOpetope.Variable("a", 0)).terms,
+                         self.typing1.terms)
+        self.assertEqual(self.ctx5.typeOf(NamedOpetope.Variable("f", 1)).terms,
+                         self.typing2.terms)
+        self.assertEqual(self.ctx5.typeOf(NamedOpetope.Variable("α", 2)).terms,
+                         self.typing3.terms)
+        self.assertEqual(self.ctx5.typeOf(NamedOpetope.Variable("A", 3)).terms,
+                         self.typing4.terms)
 
 
 class Test_NamedOpetope_EquationalTheory(unittest.TestCase):
