@@ -471,3 +471,30 @@ def degen(seq: Sequent, name: str) -> Sequent:
     res.pastingDiagram = PastingDiagram.degeneratePastingDiagram(
         UnnamedOpetope.Degen(var.shapeProof), var)
     return res
+
+
+def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
+    if pd.nodes is None:
+        raise ValueError("[graft rule] Parameter pasting diagram cannot be "
+                         "degenerate")
+    for var in pd.nodes.values():
+        if var not in seq.context:
+            raise ValueError("[graft rule] Variable {var} in parameter "
+                             "pasting diagram is not typed in context"
+                             .format(var = var))
+    for pj in pd.nodes.keys():
+        if not pj.isEpsilon():
+            pi, q = pj.innerEdgeDecomposition()
+            xi = pd.nodes[pi]
+            xj = pd.nodes[pj]
+            if seq.context.target(xj.name) != seq.context.source(xi.name, q):
+                raise ValueError("[graft rule] Parameter pasting diagram "
+                                 "doesn't satisfy axiom [Inner]: variables "
+                                 "{xi} and {xj} don't agree on the "
+                                 "decoration of edge {edge}".format(
+                                     xi = repr(xi),
+                                     xj = repr(xj),
+                                     edge = repr(pj)))
+    res = deepcopy(seq)
+    res.pastingDiagram = deepcopy(pd)
+    return res

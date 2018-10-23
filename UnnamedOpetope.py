@@ -158,6 +158,26 @@ class Address:
         """
         return Address(dim)
 
+    def innerEdgeDecomposition(self) -> Tuple['Address', 'Address']:
+        """
+        If the current address is of the form :math:`[p[q]]` (or equivalently,
+        not an epsilon address), returns the tuple :math:`([p], [q])`.
+        """
+        if self.isEpsilon():
+            raise ValueError("[Address, inner edge decomposition] Current "
+                             "is not an epsilon address")
+        p = Address(self.dimension)
+        p.edges = self.edges[:-1]
+        q = self.edges[-1]
+        return (p, q)
+
+    def isEpsilon(self) -> bool:
+        """
+        Simply tells wither the current address is of the form
+        :math:`[\epsilon]`.
+        """
+        return len(self.edges) == 0
+
     @staticmethod
     def fromList(l: List[Any], dim: int) -> 'Address':
         """
