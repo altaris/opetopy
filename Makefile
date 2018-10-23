@@ -8,7 +8,7 @@ doc:
 	cd doc && make html
 
 .PHONY: unittests
-unittests: typecheck
+unittests:
 	$(RUN) UnitTests.py
 
 .PHONY: typecheck
