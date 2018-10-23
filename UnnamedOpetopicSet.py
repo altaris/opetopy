@@ -482,9 +482,10 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
             raise ValueError("[graft rule] Variable {var} in parameter "
                              "pasting diagram is not typed in context"
                              .format(var = var))
+    # [Inner] axiom
     for pj in pd.nodes.keys():
         if not pj.isEpsilon():
-            pi, q = pj.innerEdgeDecomposition()
+            pi, q = pj.edgeDecomposition()
             xi = pd.nodes[pi]
             xj = pd.nodes[pj]
             if seq.context.target(xj.name) != seq.context.source(xi.name, q):
@@ -497,4 +498,51 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
                                      edge = repr(pj)))
     res = deepcopy(seq)
     res.pastingDiagram = deepcopy(pd)
+    return res
+
+
+def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
+    if seq.pastingDiagram is None:
+        raise ValueError("[fill rule] Sequent must have a pasting diagram")
+    P = seq.pastingDiagram
+    omega = P.shape
+    readdress = P.shapeProof.eval().context
+    n = omega.dimension
+    x = seq.context[targetName].variable
+    Q = seq.context[targetName].type.source
+    a = seq.context[targetName].type.target
+    if x.shape != P.shapeTarget():
+        raise ValueError("[fill rule] Target variable {var} has shape {shape} "
+                         "should have {should}".format(
+                             var = repr(x), shape = repr(x.shape),
+                             should = repr(P.shapeTarget())))
+    if omega.isDegenerate:
+        # [Degen] axiom
+        if Q.nodes != {UnnamedOpetope.Address.epsilon(n - 2): a}:
+            raise ValueError("[fill rule] Target variable {var}'s source "
+                             "is expected to be globular at {var}'s target"
+                             .format(var = repr(x)))
+    else:
+        # [Glob1] axiom
+        b = seq.context.target(P[UnnamedOpetope.Address.epsilon(n - 1)].name)
+        if b != a:
+            raise ValueError("[fill rule] Axiom [Glob1] is not satisfied: "
+                             "variable {x} has target {a}, should have "
+                             "{should}".format(x = repr(x), a = repr(a),
+                                               should = repr(b)))
+        # [Glob2] axiom
+        for l in omega.leafAddresses():
+            p, q = l.edgeDecomposition()
+            sP = seq.context.source(P[p].name, q)
+            sx = seq.context.source(x.name, readdress(l))
+            if sP != sx:
+                raise ValueError("[fill rule] Axiom [Glob2] is not satisfied: "
+                                 "variable {x} has {addr} source {sx}, should "
+                                 "have {should}".format(
+                                     x = repr(x), addr = repr(readdress(l)),
+                                     sx = repr(sx), should = repr(sP)))
+    res = Sequent()
+    res.context = seq.context + Typing(
+        Variable(name, seq.pastingDiagram.shapeProof),
+        Type(deepcopy(seq.pastingDiagram), x))
     return res

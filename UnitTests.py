@@ -85,18 +85,18 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         self.assertFalse(self.d.isEpsilon())
         self.assertFalse(self.e.isEpsilon())
 
-    def test_innerEdgeDecomposition(self):
+    def test_edgeDecomposition(self):
         with self.assertRaises(ValueError):
-            self.a.innerEdgeDecomposition()
+            self.a.edgeDecomposition()
         with self.assertRaises(ValueError):
-            self.b.innerEdgeDecomposition()
-        p, q = self.c.innerEdgeDecomposition()
+            self.b.edgeDecomposition()
+        p, q = self.c.edgeDecomposition()
         self.assertEqual(p, self.b)
         self.assertEqual(q, self.a)
-        p, q = self.d.innerEdgeDecomposition()
+        p, q = self.d.edgeDecomposition()
         self.assertEqual(p, self.c)
         self.assertEqual(q, self.a)
-        p, q = self.e.innerEdgeDecomposition()
+        p, q = self.e.edgeDecomposition()
         self.assertEqual(
             p, UnnamedOpetope.Address.fromList([['*'], ['*', '*']], 2))
         self.assertEqual(q, self.b)
@@ -740,6 +740,28 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
     def setUp(self):
         self.type_point = UnnamedOpetopicSet.Type(
             UnnamedOpetopicSet.PastingDiagram.point(), None)
+        self.a = UnnamedOpetopicSet.Variable("a", UnnamedOpetope.Point())
+        self.b = UnnamedOpetopicSet.Variable("b", UnnamedOpetope.Point())
+        self.c = UnnamedOpetopicSet.Variable("c", UnnamedOpetope.Point())
+        self.d = UnnamedOpetopicSet.Variable("d", UnnamedOpetope.Point())
+        self.ab = UnnamedOpetopicSet.Variable("ab", UnnamedOpetope.Arrow())
+        self.ac = UnnamedOpetopicSet.Variable("ac", UnnamedOpetope.Arrow())
+        self.bc = UnnamedOpetopicSet.Variable("bc", UnnamedOpetope.Arrow())
+        self.cd = UnnamedOpetopicSet.Variable("cd", UnnamedOpetope.Arrow())
+        self.seq = UnnamedOpetopicSet.Sequent()
+        self.seq.context = UnnamedOpetopicSet.Context() + \
+            UnnamedOpetopicSet.Typing(self.a, self.type_point) + \
+            UnnamedOpetopicSet.Typing(self.b, self.type_point) + \
+            UnnamedOpetopicSet.Typing(self.c, self.type_point) + \
+            UnnamedOpetopicSet.Typing(self.d, self.type_point) + \
+            UnnamedOpetopicSet.Typing(
+                self.ab, self.type_arrow(self.a, self.b)) + \
+            UnnamedOpetopicSet.Typing(
+                self.ac, self.type_arrow(self.a, self.c)) + \
+            UnnamedOpetopicSet.Typing(
+                self.bc, self.type_arrow(self.b, self.c)) + \
+            UnnamedOpetopicSet.Typing(
+                self.cd, self.type_arrow(self.c, self.d))
 
     def type_arrow(
             self,
@@ -767,6 +789,20 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.degen(s, "x")
 
+    def test_fill(self):
+        s = UnnamedOpetopicSet.graft(
+            self.seq,
+            UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
+                UnnamedOpetope.OpetopicInteger(1),
+                {
+                    UnnamedOpetope.Address.epsilon(1): self.ac
+                }))
+        with self.assertRaises(ValueError):
+            UnnamedOpetopicSet.fill(s, "ab", "A")
+        with self.assertRaises(ValueError):
+            UnnamedOpetopicSet.fill(s, "bc", "A")
+        UnnamedOpetopicSet.fill(s, "ac", "A")
+
     def test_graft(self):
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.graft(
@@ -784,39 +820,24 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                             UnnamedOpetopicSet.Variable(
                                 "x", UnnamedOpetope.Point())
                     }))
-        a = UnnamedOpetopicSet.Variable("a", UnnamedOpetope.Point())
-        b = UnnamedOpetopicSet.Variable("b", UnnamedOpetope.Point())
-        c = UnnamedOpetopicSet.Variable("c", UnnamedOpetope.Point())
-        d = UnnamedOpetopicSet.Variable("d", UnnamedOpetope.Point())
-        ab = UnnamedOpetopicSet.Variable("ab", UnnamedOpetope.Arrow())
-        bc = UnnamedOpetopicSet.Variable("bc", UnnamedOpetope.Arrow())
-        cd = UnnamedOpetopicSet.Variable("cd", UnnamedOpetope.Arrow())
-        seq = UnnamedOpetopicSet.Sequent()
-        seq.context = UnnamedOpetopicSet.Context() + \
-            UnnamedOpetopicSet.Typing(a, self.type_point) + \
-            UnnamedOpetopicSet.Typing(b, self.type_point) + \
-            UnnamedOpetopicSet.Typing(c, self.type_point) + \
-            UnnamedOpetopicSet.Typing(d, self.type_point) + \
-            UnnamedOpetopicSet.Typing(ab, self.type_arrow(a, b)) + \
-            UnnamedOpetopicSet.Typing(bc, self.type_arrow(b, c)) + \
-            UnnamedOpetopicSet.Typing(cd, self.type_arrow(c, d))
         # Incorrect grafting: ab on top of cd
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.graft(
-                seq,
+                self.seq,
                 UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                     UnnamedOpetope.OpetopicInteger(2),
                     {
-                        UnnamedOpetope.Address.epsilon(1): cd,
-                        UnnamedOpetope.Address.epsilon(0).shift(): ab
+                        UnnamedOpetope.Address.epsilon(1): self.cd,
+                        UnnamedOpetope.Address.epsilon(0).shift(): self.ab
                     }))
         # Correct grafting: ab on top of bc
         UnnamedOpetopicSet.graft(
-            seq, UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
+            self.seq,
+            UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(2),
                 {
-                    UnnamedOpetope.Address.epsilon(1): bc,
-                    UnnamedOpetope.Address.epsilon(0).shift(): ab
+                    UnnamedOpetope.Address.epsilon(1): self.bc,
+                    UnnamedOpetope.Address.epsilon(0).shift(): self.ab
                 }))
 
     def test_point(self):

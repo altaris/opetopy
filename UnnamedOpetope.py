@@ -158,7 +158,7 @@ class Address:
         """
         return Address(dim)
 
-    def innerEdgeDecomposition(self) -> Tuple['Address', 'Address']:
+    def edgeDecomposition(self) -> Tuple['Address', 'Address']:
         """
         If the current address is of the form :math:`[p[q]]` (or equivalently,
         not an epsilon address), returns the tuple :math:`([p], [q])`.
