@@ -4,7 +4,7 @@
 opetopy
 *******
 
-.. image:: https://travis-ci.com/altaris/svg?branch=master
+.. image:: https://travis-ci.com/altaris/opetopy.svg?branch=master
     :target: https://travis-ci.com/altaris/opetopy
     :alt: Build Status
 
