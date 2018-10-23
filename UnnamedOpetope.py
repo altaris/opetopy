@@ -11,7 +11,7 @@
 from copy import deepcopy
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-from common import AbstractRuleInstance
+from common import *
 
 
 class Address:
@@ -56,13 +56,13 @@ class Address:
           :meth:`UnnamedOpetope.Address.__mul__`).
         """
         if (self.dimension != other.dimension + 1):
-            raise ValueError("[Address extension] Dimension mismatch: address "
-                             "{self} is {sdim} dimensional and cannot be "
-                             "extended by {other} which is {odim} dimensional"
-                             .format(self = str(self),
-                                     sdim = self.dimension,
-                                     other = str(other),
-                                     odim = other.dimension))
+            raise DerivationError(
+                "Address extension",
+                "Dimension mismatch: address {this} is {sdim} dimensional "
+                "and cannot be extended by {other} which is {odim} "
+                "dimensional",
+                this = str(self), sdim = self.dimension, other = str(other),
+                odim = other.dimension)
         result = deepcopy(self)
         result.edges += [other]
         return result
@@ -92,8 +92,10 @@ class Address:
         :math:`\\geq 0`.
         """
         if (dim < 0):
-            raise ValueError("[Address creation] New address must have "
-                             "dimension >= 0 (is {})".format(dim))
+            raise DerivationError(
+                "Address creation",
+                "New address must have dimension >= 0 (is {dim})",
+                dim = dim)
         self.dimension = dim
         self.edges = []  # type: List[Address]
 
@@ -102,13 +104,12 @@ class Address:
         Compares two addresses with respect to the lexicographical order.
         """
         if self.dimension != other.dimension:
-            raise ValueError("[Address comparison] Cannot compare addresses "
-                             "{self} and {other} as dimensions do not match "
-                             "(are respectively {sdim} and {odim})".format(
-                                 self = str(self),
-                                 other = str(other),
-                                 sdim = self.dimension,
-                                 odim = other.dimension))
+            raise DerivationError(
+                "Address comparison",
+                "Cannot compare addresses {this} and {other} as dimensions do "
+                "not match (are respectively {sdim} and {odim})",
+                this = str(self), other = str(other), sdim = self.dimension,
+                odim = other.dimension)
         for i in range(min(len(self.edges), len(other.edges))):
             if self.edges[i] < other.edges[i]:
                 return True
@@ -122,13 +123,12 @@ class Address:
         lists of :math:`(n-1)`-addresses.
         """
         if (self.dimension != other.dimension):
-            raise ValueError("[Address concatenation] Cannot concatenate "
-                             "addresses {self} and {other} as dimensions do "
-                             "not match (are respectively {sdim} and {odim})"
-                             .format(self = str(self),
-                                     other = str(other),
-                                     sdim = self.dimension,
-                                     odim = other.dimension))
+            raise DerivationError(
+                "Address concatenation",
+                "Cannot concatenate addresses {this} and {other} as "
+                "dimensions do not match (are respectively {sdim} and {odim})",
+                this = str(self), other = str(other), sdim = self.dimension,
+                odim = other.dimension)
         result = deepcopy(self)
         result.edges += other.edges
         return result
@@ -166,8 +166,9 @@ class Address:
         not an epsilon address), returns the tuple :math:`([p], [q])`.
         """
         if self.isEpsilon():
-            raise ValueError("[Address, inner edge decomposition] Current "
-                             "is not an epsilon address")
+            raise DerivationError(
+                "Address, inner edge decomposition",
+                "Current is not an epsilon address")
         p = Address(self.dimension)
         p.edges = self.edges[:-1]
         q = self.edges[-1]
@@ -189,8 +190,10 @@ class Address:
         :math:`0`-dimensional :math:`\\epsilon` address.
         """
         if (dim < 0):
-            raise ValueError("[Address creation] New address must have "
-                             "dimension >= 0 (is {})".format(dim))
+            raise DerivationError(
+                "Address creation",
+                "New address must have dimension >= 0 (is {dim})",
+                dim = dim)
         if len(l) == 0:
             return Address.epsilon(dim)
         la = []  # type: List[Address]
@@ -209,8 +212,9 @@ class Address:
         Creates an address from a non empty list of addresses.
         """
         if len(l) == 0:
-            raise ValueError("[Address creation] Cannot create address from "
-                             "an empty list of addresses")
+            raise DerivationError(
+                "Address creation",
+                "Cannot create address from an empty list of addresses")
         else:
             a = l[0].shift()
             for b in l[1:]:
@@ -226,8 +230,10 @@ class Address:
           :math:`[[[[\\epsilon][*]]]]`
         """
         if n < 0:
-            raise ValueError("[Address shift] Shift exponent must be >= 0 "
-                             "(is {})".format(n))
+            raise DerivationError(
+                "Address shift",
+                "Shift exponent must be >= 0 (is {dim})",
+                dim = n)
         elif n == 0:
             return self
         else:
@@ -245,12 +251,12 @@ class Address:
           :math:`[[\\epsilon][\\epsilon][**]]`
         """
         if not (a.dimension == b.dimension and b.dimension == c.dimension):
-            raise ValueError("[Address substitution] Cannot substitute prefix "
-                             "{a} of {b} by {c} as dimensions do not match "
-                             "(are respectively {ad}, {bd}, and {cd})".format(
-                                 a = str(a), b = str(b), c = str(c),
-                                 ad = str(a.dimension), bd = str(b.dimension),
-                                 cd = str(c.dimension)))
+            raise DerivationError(
+                "Address substitution",
+                "Cannot substitute prefix {a} of {b} by {c} as dimensions do "
+                "not match (are respectively {ad}, {bd}, and {cd})",
+                a = str(a), b = str(b), c = str(c), ad = str(a.dimension),
+                bd = str(b.dimension), cd = str(c.dimension))
         if a.edges[0:len(b.edges)] == b.edges:
             r = deepcopy(a)
             r.edges[0:len(b.edges)] = c.edges
@@ -285,34 +291,34 @@ class Context(Dict[Address, Address]):
         the :math:`(n+1)`-context ``self``.
         """
         if other[0].dimension != other[1].dimension + 1:
-            raise ValueError("[Context extension] New mapping {a} -> {b} is "
-                             "ill-formed as dimensions do not match (are "
-                             "respectively {ad} and {bd}".format(
-                                 a = str(other[0]), b = str(other[1]),
-                                 ad = str(other[0].dimension),
-                                 bd = str(other[1].dimension)))
+            raise DerivationError(
+                "Context extension",
+                "New mapping {a} -> {b} is ill-formed as dimensions do not "
+                "match (are respectively {ad} and {bd}",
+                a = str(other[0]), b = str(other[1]),
+                ad = str(other[0].dimension), bd = str(other[1].dimension))
         elif other[0].dimension + 1 != self.dimension:
-            raise ValueError("[Context extension] New mapping {a} -> {b} "
-                             "cannot be added to context {self} as dimension "
-                             "do not match (context has dimension {sdim}, "
-                             "first address has dimension {ad}, should have "
-                             "dimension {should}".format(
-                                 a = str(other[0]), b = str(other[1]),
-                                 self = str(self), sdim = self.dimension,
-                                 ad = str(other[0].dimension),
-                                 should = str(self.dimension - 1)))
+            raise DerivationError(
+                "Context extension",
+                "New mapping {a} -> {b} cannot be added to context {this} as "
+                "dimension do not match (context has dimension {sdim}, "
+                "first address has dimension {ad}, should have dimension "
+                "{should}",
+                a = str(other[0]), b = str(other[1]), this = str(self),
+                sdim = self.dimension, ad = str(other[0].dimension),
+                should = str(self.dimension - 1))
         elif other[0] in self.keys():
-            raise ValueError("[Context extension] New mapping {a} -> {b} "
-                             "cannot be added to context {self} as first "
-                             "address is already present in context".format(
-                                 a = str(other[0]), b = str(other[1]),
-                                 self = str(self)))
+            raise DerivationError(
+                "Context extension",
+                "New mapping {a} -> {b} cannot be added to context {this} as "
+                "first address is already present in context",
+                a = str(other[0]), b = str(other[1]), this = str(self))
         elif other[1] in self.values():
-            raise ValueError("[Context extension] New mapping {a} -> {b} "
-                             "cannot be added to context {self} as second "
-                             "address is already present in context".format(
-                                 a = str(other[0]), b = str(other[1]),
-                                 self = str(self)))
+            raise DerivationError(
+                "Context extension",
+                "New mapping {a} -> {b} cannot be added to context {this} as "
+                "second address is already present in context",
+                a = str(other[0]), b = str(other[1]), this = str(self))
         r = deepcopy(self)
         r[other[0]] = other[1]
         return r
@@ -324,9 +330,10 @@ class Context(Dict[Address, Address]):
         :math:`n`-address ``addr``. Raises an exception if not defined.
         """
         if not self.definedOnLeaf(addr):
-            raise ValueError("[Context call] Context {self} is not defined "
-                             "on leaf {addr}".format(self = str(self),
-                                                     addr = str(addr)))
+            raise DerivationError(
+                "Context call",
+                "Context {this} is not defined on leaf {addr}",
+                this = str(self), addr = str(addr))
         return self[addr]
 
     def __eq__(self, other) -> bool:
@@ -345,8 +352,10 @@ class Context(Dict[Address, Address]):
         Creates an empty context of dimension :math:`\\geq 0`.
         """
         if (dim < 0):
-            raise ValueError("[Context creation] Context must have dimension "
-                             ">= 0 (is {})".format(dim))
+            raise DerivationError(
+                "Context creation",
+                "Context must have dimension >= 0 (is {dim})",
+                dim = dim)
         self.dimension = dim
 
     def __repr__(self) -> str:
@@ -366,9 +375,10 @@ class Context(Dict[Address, Address]):
         context.
         """
         if not self.definedOnLeaf(addr):
-            raise ValueError("[Context restriction] Context {self} does not "
-                             "contain leaf {addr}".format(self = str(self),
-                                                          addr = str(addr)))
+            raise DerivationError(
+                "Context restriction",
+                "Context {this} does not contain leaf {addr}",
+                this = str(self), addr = str(addr))
         r = deepcopy(self)
         del r[addr]
         return r
@@ -408,29 +418,29 @@ class Preopetope:
         :math:`(n-1)`-address must not be present.
         """
         if self.isDegenerate:
-            raise ValueError("[Preopetope extension] Cannot add an address to "
-                             "a degenerate preopetope")
+            raise DerivationError(
+                "Preopetope extension",
+                "Cannot add an address to a degenerate preopetope")
         elif t[0].dimension != t[1].dimension:
-            raise ValueError("[Preopetope extension] Cannot add address "
-                             "{addr} to preopetope {self} as dimension do not "
-                             "match (are respectively {adim} and {sdim})"
-                             .format(addr = str(t[0]),
-                                     self = str(self),
-                                     adim = t[0].dimension,
-                                     sdim = self.dimension))
+            raise DerivationError(
+                "Preopetope extension",
+                "Cannot add address {addr} to preopetope {this} as dimension "
+                "do not match (are respectively {adim} and {sdim})",
+                addr = str(t[0]), this = str(self), adim = t[0].dimension,
+                sdim = self.dimension)
         elif t[0].dimension + 1 != self.dimension:
-            raise ValueError("[Preopetope extension] Specified extension "
-                             "{addr} : {p} cannot be added to preopetope "
-                             "as dimension don't match (address dimension is "
-                             "{adim}, should be {should})".format(
-                                 addr = str(t[0]),
-                                 p = str(t[1]),
-                                 adim = t[0].dimension,
-                                 should = self.dimension - 1))
+            raise DerivationError(
+                "Preopetope extension",
+                "Specified extension {addr} : {p} cannot be added to "
+                "preopetope as dimension don't match (address dimension is "
+                "{adim}, should be {should})",
+                addr = str(t[0]), p = str(t[1]), adim = t[0].dimension,
+                should = self.dimension - 1)
         elif t[0] in self.nodes.keys():
-            raise ValueError("[Preopetope extension] Address {addr} already "
-                             "present in preopetope {self}".format(
-                                 addr = str(t[0]), self = str(self)))
+            raise DerivationError(
+                "Preopetope extension",
+                "Address {addr} already present in preopetope {this}",
+                addr = str(t[0]), this = str(self))
         else:
             u = deepcopy(self)
             u.nodes[t[0]] = t[1]
@@ -465,8 +475,10 @@ class Preopetope:
         should not be called directly.
         """
         if (dim < -1):
-            raise ValueError("[Preopetope creation] Preopetope must have "
-                             "dimension >= -1 (is {})".format(dim))
+            raise DerivationError(
+                "Preopetope creation",
+                "Preopetope must have dimension >= -1 (is {dim})",
+                dim = dim)
         self.dimension = dim
         self.isDegenerate = False
         self.nodes = {}
@@ -500,10 +512,11 @@ class Preopetope:
         Removes source at address ``addr``.
         """
         if addr not in self.nodeAddresses():
-            raise ValueError("[Preopetope restriction] Cannot remove address "
-                             "{addr} from preopetope {self} as it is not "
-                             "present".format(addr = str(addr),
-                                              self = str(self)))
+            raise DerivationError(
+                "Preopetope restriction",
+                "Cannot remove address {addr} from preopetope {this} as it is "
+                "not present",
+                addr = str(addr), this = str(self))
         r = deepcopy(self)
         del r.nodes[addr]
         return r
@@ -514,8 +527,9 @@ class Preopetope:
         Constructs the degenerate preopetope at ``q``.
         """
         if q.dimension < 0:
-            raise ValueError("[Preopetope degeneration] Cannot degenerate the "
-                             "(-1)-preopetope")
+            raise DerivationError(
+                "Preopetope degeneration",
+                "Cannot degenerate the (-1)-preopetope")
         p = Preopetope(q.dimension + 2)
         p.degeneracy = q
         p.isDegenerate = True
@@ -535,8 +549,9 @@ class Preopetope:
         indexed by their addresses.
         """
         if len(d) == 0:
-            raise ValueError("[Preopetope creation] Cannot create preopetope "
-                             "from an empty dictionnary")
+            raise DerivationError(
+                "Preopetope creation",
+                "Cannot create preopetope from an empty dictionnary")
         items = list(d.items())
         p = Preopetope(items[0][0].dimension + 1) + items[0]
         for t in items[1:]:
@@ -553,20 +568,20 @@ class Preopetope:
         :meth:`UnnamedOpetope.Preopetope.improperGrafting`
         """
         if p.dimension != q.dimension:
-            raise ValueError("[Preopetope grafting] Cannot graft preopetope "
-                             "{q} on {p} as dimensions do not match (are "
-                             "respectively {qd} and {pd}".format(
-                                 p = str(p), q = str(q),
-                                 pd = p.dimension, qd = q.dimension))
+            raise DerivationError(
+                "Preopetope grafting",
+                "Cannot graft preopetope {q} on {p} as dimensions do not "
+                "match (are respectively {qd} and {pd}",
+                p = str(p), q = str(q), pd = p.dimension, qd = q.dimension)
         elif p.dimension != addr.dimension + 1:
-            raise ValueError("[Preopetope grafting] Cannot graft preopetope "
-                             "{q} on {p} at address {addr} as dimensions of "
-                             "address do not match that of the preopetopes "
-                             "(preopetopes have dimension {d}, address has "
-                             "dimension {ad}, should have {should}".format(
-                                 p = str(p), q = str(q),
-                                 d = p.dimension, ad = addr.dimension,
-                                 should = p.dimension - 1))
+            raise DerivationError(
+                "Preopetope grafting",
+                "Cannot graft preopetope {q} on {p} at address {addr} as "
+                "dimensions of address do not match that of the preopetopes "
+                "(preopetopes have dimension {d}, address has dimension {ad}, "
+                "should have {should}",
+                p = str(p), q = str(q), d = p.dimension, ad = addr.dimension,
+                should = p.dimension - 1)
         else:
             r = p
             for t in list(q.nodes.items()):
@@ -609,9 +624,10 @@ class Preopetope:
 
     def source(self, addr: Address) -> 'Preopetope':
         if addr not in self.nodes.keys():
-            raise ValueError("[Preopetope source] Address {addr} not in "
-                             "preopetope {self}".format(addr = str(addr),
-                                                        self = str(self)))
+            raise DerivationError(
+                "Preopetope source",
+                "Address {addr} not in preopetope {this}",
+                addr = str(addr), this = str(self))
         return self.nodes[addr]
 
     @staticmethod
@@ -625,21 +641,23 @@ class Preopetope:
         """
         for leaf in q.leafAddresses():
             if not ctx.definedOnLeaf(leaf):
-                raise ValueError("[Preopetope substitution] Cannot substitute "
-                                 "with {q} in {p} as ambient context "
-                                 "{ctx} is not defined on leaf {leaf}".format(
-                                     p = str(p), q = str(q), ctx = str(ctx),
-                                     leaf = str(leaf)))
+                raise DerivationError(
+                    "Preopetope substitution",
+                    "Cannot substitute with {q} in {p} as ambient context "
+                    "{ctx} is not defined on leaf {leaf}",
+                    p = str(p), q = str(q), ctx = str(ctx), leaf = str(leaf))
         if addr not in p.nodeAddresses():
-            raise ValueError("[Preopetope substitution] Cannot substitute in "
-                             "{p} at address {addr} as it is not in the "
-                             "preopetope".format(p = str(p), addr = str(addr)))
+            raise DerivationError(
+                "Preopetope substitution",
+                "Cannot substitute in {p} at address {addr} as it is not in "
+                "the preopetope",
+                p = str(p), addr = str(addr))
         elif addr.dimension + 1 != q.dimension:
-            raise ValueError("[Preopetope substitution] Cannot substitute "
-                             "with {q} in {p} as dimensions mismatch (the "
-                             "former has dimension {qd}, should have {pd}"
-                             .format(p = str(p), q = str(q),
-                                     pd = p.dimension, qd = q.dimension))
+            raise DerivationError(
+                "Preopetope substitution",
+                "Cannot substitute with {q} in {p} as dimensions mismatch "
+                "(the former has dimension {qd}, should have {pd}",
+                p = str(p), q = str(q), pd = p.dimension, qd = q.dimension)
 
         if q.isDegenerate:
 
@@ -686,10 +704,10 @@ class Preopetope:
             return "\\optOne"
         elif self.isDegenerate:
             if self.degeneracy is None:
-                raise ValueError("[Preopetope, toTex] Preopetope marked "
-                                 "degenerate but the underlying preopetope is "
-                                 "undefined. In valid proof trees, this "
-                                 "should not happen")
+                raise RuntimeError("[Preopetope, toTex] Preopetope marked "
+                                   "degenerate but the underlying preopetope "
+                                   "is undefined. In valid proof trees, this "
+                                   "should not happen")
             return "\\degenopetope{" + self.degeneracy.toTex() + "}"
         else:
             res = [x.toTex() + " \\sep " + self.nodes[x].toTex()
@@ -714,14 +732,13 @@ class Sequent:
         """
         if not (ctx.dimension == s.dimension and
                 s.dimension == t.dimension + 1):
-            raise ValueError("[Sequent] Dimension mismatch between the "
-                             "context, source, and target (are respectively "
-                             "{cd}, {sd}, and {td}): the context and source "
-                             "should have the same dimension, while the "
-                             "target should have 1 less".format(
-                                 cd = ctx.dimension,
-                                 sd = s.dimension,
-                                 td = t.dimension))
+            raise DerivationError(
+                "Sequent creation",
+                "Dimension mismatch between the context, source, and target "
+                "(are respectively {cd}, {sd}, and {td}): the context and "
+                "should have the same dimension, while the target should have "
+                "1 less",
+                cd = ctx.dimension, sd = s.dimension, td = t.dimension)
         self.context = ctx
         self.source = s
         self.target = t
@@ -999,7 +1016,9 @@ def OpetopicInteger(n: int) -> RuleInstance:
     Returns the sequent nth opetopic integer.
     """
     if n < 0:
-        raise ValueError("[Opetopic integer] n is expected to be >= 0")
+        raise DerivationError(
+            "Opetopic integer",
+            "Argument is expected to be >= 0")
     elif n == 0:
         return Degen(Point())
     elif n == 1:

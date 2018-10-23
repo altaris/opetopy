@@ -12,7 +12,7 @@ from copy import deepcopy
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import UnnamedOpetope
-from common import AbstractRuleInstance
+from common import *
 
 
 class Variable:
@@ -106,12 +106,14 @@ class PastingDiagram:
         diagram.
         """
         if self.nodes is None:
-            raise ValueError("[Pasting diagram, source] Cannot compute a "
-                             "source of a degenerate pasting diagram")
+            raise DerivationError(
+                "Pasting diagram, source",
+                "Cannot compute a source of a degenerate pasting diagram")
         elif addr not in self.nodes.keys():
-            raise ValueError("[Pasting diagram, source] Address {addr} is "
-                             "not an address of the pasting diagram {pd}"
-                             .format(addr = repr(addr), pd = repr(self)))
+            raise DerivationError(
+                "Pasting diagram, source",
+                "Address {addr} is not an address of the pasting diagram {pd}",
+                addr = repr(addr), pd = repr(self))
         else:
             return self.nodes[addr]
 
@@ -127,13 +129,14 @@ class PastingDiagram:
         res.shapeProof = shapeProof
         res.shapeSequent = shapeProof.eval()
         if not res.shape.isDegenerate:
-            raise ValueError("[Degenerate pasting diagram, creation] Provided "
-                             "shape is not degenerate")
+            raise DerivationError(
+                "Degenerate pasting diagram, creation",
+                "Provided shape is not degenerate")
         elif res.shape.degeneracy is None:
-            raise ValueError("[Degenerate pasting diagram, creation] Provided "
-                             "shape is degenerate but does not have any "
-                             "degeneracy. In valid proof trees, this should "
-                             "not happen")
+            raise RuntimeError("[Degenerate pasting diagram, creation] "
+                               "Provided shape is degenerate but does not "
+                               "have any degeneracy. In valid proof trees, "
+                               "this should not happen")
         res.degeneracy = degeneracy
         return res
 
@@ -157,12 +160,14 @@ class PastingDiagram:
         res.shapeProof = shapeProof
         res.shapeSequent = shapeProof.eval()
         if res.shape.isDegenerate:
-            raise ValueError("[Non degenerate pasting diagram, creation] "
-                             "Provided shape is degenerate")
+            raise DerivationError(
+                "Non degenerate pasting diagram, creation",
+                "Provided shape is degenerate")
         elif set(res.shape.nodes.keys()) != set(nodes.keys()):
-            raise ValueError("[Non degenerate pasting diagram, creation] "
-                             "Node mapping domain doesn't match with the "
-                             "set of addresses of the shape")
+            raise DerivationError(
+                "Non degenerate pasting diagram, creation",
+                "Node mapping domain doesn't match with the set of addresses "
+                "of the shape")
         res.nodes = nodes
         return res
 
@@ -252,14 +257,17 @@ class Type:
                  target: Optional[Variable]) -> None:
         if target is None:
             if source.shape != UnnamedOpetope.Point().eval().source:
-                raise ValueError("[Type, creation] Source pasting diagram is "
-                                 "not a point, but target is unspecified")
+                raise DerivationError(
+                    "Type, creation",
+                    "Source pasting diagram is not a point, but target is "
+                    "unspecified")
         elif source.shapeTarget() != target.shape:
-            raise ValueError("[Type, creation] Target variable {var} has "
-                             "shape {shape}, should have {should}".format(
-                                 var = str(target),
-                                 shape = target.shape,
-                                 should = source.shapeTarget()))
+            raise DerivationError(
+                "Type, creation",
+                "Target variable {var} has shape {shape}, should have "
+                "{should}",
+                var = str(target), shape = target.shape,
+                should = source.shapeTarget())
         self.source = source
         self.target = target
 
@@ -301,10 +309,11 @@ class Typing:
 
     def __init__(self, variable: Variable, type: Type) -> None:
         if variable.shape != type.source.shape:
-            raise ValueError("[Typing, creation] Variable {var} cannot have "
-                             "type {type} as shapes do not match".format(
-                                 var = str(variable),
-                                 type = type))
+            raise DerivationError(
+                "Typing, creation",
+                "Variable {var} cannot have type {type} as shapes do not "
+                "match",
+                var = str(variable), type = type)
         self.type = type
         self.variable = variable
 
@@ -330,9 +339,10 @@ class Context(Set[Typing]):
         typed variable isn't already typed in the context.
         """
         if typing.variable in self:
-            raise ValueError("[Context, new typing] Variable {var} is already "
-                             "typed in this context".format(
-                                 var = str(typing.variable)))
+            raise DerivationError(
+                "Context, new typing",
+                "Variable {var} is already typed in this context",
+                var = str(typing.variable))
         else:
             res = deepcopy(self)
             res.add(typing)
@@ -356,8 +366,10 @@ class Context(Set[Typing]):
         for t in self:
             if t.variable.name == name:
                 return t
-        raise ValueError("[Context, get typing] Variable {name} not typed in "
-                         "context".format(name = name))
+        raise DerivationError(
+            "Context, get typing",
+            "Variable {name} not typed in context",
+            name = name)
 
     def __repr__(self) -> str:
         return str(self)
@@ -379,9 +391,10 @@ class Context(Set[Typing]):
         res = self[name].type.target
         if self[name].type.source.shape == \
                 UnnamedOpetope.Point().eval().source:
-            raise ValueError("[Context, target of variable] Variable {var} is "
-                             "a point, and do not have a target".format(
-                                 var = name))
+            raise DerivationError(
+                "Context, target of variable",
+                "Variable {var} is a point, and do not have a target",
+                var = name)
         elif res is None:
             raise RuntimeError("[Context, target of variable] Variable {var} "
                                "is not a point, but has no target. In valid "
@@ -446,12 +459,15 @@ def point(seq: Sequent, name: str) -> Sequent:
     The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{point}` rule.
     """
     if seq.pastingDiagram is not None:
-        raise ValueError("[point rule] Sequent cannot have a pasting diagram")
+        raise DerivationError(
+            "point rule",
+            "Sequent cannot have a pasting diagram")
     var = Variable(name, UnnamedOpetope.Point())
     if var in seq.context:
-        raise ValueError("[point rule] Point shaped variable {name} is "
-                         "already typed in context {ctx}".format(
-                             name = name, ctx = str(seq.context)))
+        raise DerivationError(
+            "point rule",
+            "Point shaped variable {name} is already typed in context {ctx}",
+            name = name, ctx = str(seq.context))
     res = deepcopy(seq)
     res.context = res.context + Typing(
         var, Type(PastingDiagram.point(), None))
@@ -463,7 +479,9 @@ def degen(seq: Sequent, name: str) -> Sequent:
     The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{degen}` rule.
     """
     if seq.pastingDiagram is not None:
-        raise ValueError("[degen rule] Sequent cannot have a pasting diagram")
+        raise DerivationError(
+            "degen rule",
+            "Sequent cannot have a pasting diagram")
     res = deepcopy(seq)
     res.pastingDiagram = PastingDiagram.degeneratePastingDiagram(
         UnnamedOpetope.Degen(seq.context[name].variable.shapeProof), name)
@@ -475,18 +493,20 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
     The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{graft}` rule.
     """
     if pd.nodes is None:
-        raise ValueError("[graft rule] Parameter pasting diagram cannot be "
-                         "degenerate")
+        raise DerivationError(
+            "graft rule",
+            "Parameter pasting diagram cannot be degenerate")
     # Shape checking
     omega = pd.shape
     for addr in pd.nodes.keys():
         psi = seq[pd.nodes[addr]].shape
         if psi != omega.source(addr):
-            raise ValueError("[graft rule] Variable {var} has incompatible "
-                             "shape {psi}, should have {should}".format(
-                                 var = seq[pd.nodes[addr]].name,
-                                 psi = repr(psi),
-                                 should = repr(omega.source(addr))))
+            raise DerivationError(
+                "graft rule",
+                "Variable {var} has incompatible shape {psi}, should have "
+                "{should}",
+                var = seq[pd.nodes[addr]].name, psi = repr(psi),
+                should = repr(omega.source(addr)))
     # [Inner] axiom
     for pj in pd.nodes.keys():
         if not pj.isEpsilon():
@@ -494,13 +514,12 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
             xi = pd.nodes[pi]
             xj = pd.nodes[pj]
             if seq.context.target(xj) != seq.context.source(xi, q):
-                raise ValueError("[graft rule] Parameter pasting diagram "
-                                 "doesn't satisfy axiom [Inner]: variables "
-                                 "{xi} and {xj} don't agree on the "
-                                 "decoration of edge {edge}".format(
-                                     xi = repr(xi),
-                                     xj = repr(xj),
-                                     edge = repr(pj)))
+                raise DerivationError(
+                    "graft rule",
+                    "Parameter pasting diagram doesn't satisfy axiom [Inner]: "
+                    "variables {xi} and {xj} don't agree on the decoration of "
+                    "edge {edge}",
+                    xi = repr(xi), xj = repr(xj), edge = repr(pj))
     res = deepcopy(seq)
     res.pastingDiagram = deepcopy(pd)
     return res
@@ -511,7 +530,9 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
     The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{fill}` rule.
     """
     if seq.pastingDiagram is None:
-        raise ValueError("[fill rule] Sequent must have a pasting diagram")
+        raise DerivationError(
+            "fill rule",
+            "Sequent must have a pasting diagram")
     P = seq.pastingDiagram
     omega = P.shape
     readdress = P.shapeProof.eval().context
@@ -520,10 +541,11 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
     a = seq.context[targetName].type.target
     Q = seq.context[targetName].type.source
     if x.shape != P.shapeTarget():
-        raise ValueError("[fill rule] Target variable {var} has shape {shape} "
-                         "should have {should}".format(
-                             var = repr(x), shape = repr(x.shape),
-                             should = repr(P.shapeTarget())))
+        raise DerivationError(
+            "fill rule",
+            "Target variable {var} has shape {shape} should have {should}",
+            var = repr(x), shape = repr(x.shape),
+            should = repr(P.shapeTarget()))
     if omega.isDegenerate:
         if a is None:  # x is a point
             raise RuntimeError("[fill rule] Variable {x} has a degenerate "
@@ -531,38 +553,41 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
                                "this should not happen")
         # [Degen] axiom
         if Q.nodes != {UnnamedOpetope.Address.epsilon(n - 2): a.name}:
-            raise ValueError("[fill rule] Target variable {var}'s source "
-                             "is expected to be globular at {var}'s target"
-                             .format(var = repr(x)))
+            raise DerivationError(
+                "fill rule",
+                "Target variable {var}'s source is expected to be globular at "
+                "{var}'s target",
+                var = repr(x))
     else:
         # [Glob1] axiom
         r = P[UnnamedOpetope.Address.epsilon(n - 1)]
         if a is None:  # x is a point
             if seq.context[r].type.target is not None:  # r must be a point
-                raise ValueError("[fill rule] Axiom [Glob1] is not satisfied: "
-                                 "variable {x} is a point, should have target "
-                                 "{should}".format(
-                                     x = repr(x),
-                                     should = repr(
-                                         seq.context[r].type.target)))
+                raise DerivationError(
+                    "fill rule",
+                    "Axiom [Glob1] is not satisfied: variable {x} is a point, "
+                    "should have target {should}",
+                    x = repr(x), should = repr(seq.context[r].type.target))
         else:
             b = seq.context.target(r)
             if b != a.name:
-                raise ValueError("[fill rule] Axiom [Glob1] is not satisfied: "
-                                 "variable {x} has target {a}, should have "
-                                 "{should}".format(x = repr(x), a = a.name,
-                                                   should = repr(b)))
+                raise DerivationError(
+                    "fill rule",
+                    "Axiom [Glob1] is not satisfied: variable {x} has target "
+                    "{a}, should have {should}",
+                    x = repr(x), a = a.name, should = repr(b))
         # [Glob2] axiom
         for l in omega.leafAddresses():
             p, q = l.edgeDecomposition()
             sP = seq.context.source(P[p], q)
             sx = seq.context.source(x.name, readdress(l))
             if sP != sx:
-                raise ValueError("[fill rule] Axiom [Glob2] is not satisfied: "
-                                 "variable {x} has {addr} source {sx}, should "
-                                 "have {should}".format(
-                                     x = repr(x), addr = repr(readdress(l)),
-                                     sx = repr(sx), should = repr(sP)))
+                raise DerivationError(
+                    "fill rule",
+                    "Axiom [Glob2] is not satisfied: variable {x} has {addr} "
+                    "source {sx}, should have {should}",
+                    x = repr(x), addr = repr(readdress(l)),
+                    sx = repr(sx), should = repr(sP))
     res = Sequent()
     res.context = seq.context + Typing(
         Variable(name, seq.pastingDiagram.shapeProof),

@@ -10,6 +10,8 @@
 
 import unittest
 
+from common import *
+
 import UnnamedOpetope
 import UnnamedOpetopicSet
 import NamedOpetope
@@ -25,9 +27,9 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         self.e = UnnamedOpetope.Address.fromList([['*'], ['*', '*'], ['ε']], 2)
 
     def test___add__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.b + self.b
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.a + self.b
         self.assertEqual(
             UnnamedOpetope.Address.fromListOfAddresses([self.a, self.a]),
@@ -46,12 +48,12 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         self.assertFalse(self.b == self.c)
 
     def test___init__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Address(-1)
         UnnamedOpetope.Address(0)
 
     def test___lt__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.a < self.b
         self.assertFalse(self.c < self.c)
         self.assertTrue(self.c < self.d)
@@ -60,7 +62,7 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         self.assertTrue(self.e + self.c < self.e + self.d)
 
     def test___mul__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.a * self.c
         self.assertEqual(self.a * self.a, self.a)
         self.assertEqual(self.b * self.b, self.b)
@@ -86,9 +88,9 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         self.assertFalse(self.e.isEpsilon())
 
     def test_edgeDecomposition(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.a.edgeDecomposition()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.b.edgeDecomposition()
         p, q = self.c.edgeDecomposition()
         self.assertEqual(p, self.b)
@@ -102,7 +104,7 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         self.assertEqual(q, self.b)
 
     def test_fromListOfAddresses(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Address.fromListOfAddresses([self.a, self.b])
         self.assertEqual(
             self.e,
@@ -111,7 +113,7 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         )
 
     def test_fromList(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Address.fromList([], -1)
         self.assertEqual(UnnamedOpetope.Address.fromList([], 1), self.b)
         self.assertEqual(UnnamedOpetope.Address.fromList([['ε']], 1), self.c)
@@ -120,7 +122,7 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
                          self.d)
 
     def test_shift(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.a.shift(-1)
         self.assertEqual(self.a.shift(0), self.a)
         self.assertEqual(self.b.shift(0), self.b)
@@ -136,11 +138,11 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         )
 
     def test_substitution(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Address.substitution(self.d, self.a, self.c)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Address.substitution(self.d, self.c, self.a)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Address.substitution(self.e, self.b, self.b)
         self.assertEqual(UnnamedOpetope.Address.substitution(
             self.e,
@@ -182,19 +184,19 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
 
     def test___add__(self):
         # Dimension mismatch in tuple
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.b + (UnnamedOpetope.Address.epsilon(1),
                       UnnamedOpetope.Address.epsilon(1))
         # Dimension mismatch with UnnamedOpetope.context
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.b + (UnnamedOpetope.Address.epsilon(2),
                       UnnamedOpetope.Address.epsilon(1))
         # Leaf already present
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.e + (UnnamedOpetope.Address.epsilon(2),
                       UnnamedOpetope.Address.epsilon(1))
         # Node already present
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.e + (UnnamedOpetope.Address.epsilon(1).shift(),
                       UnnamedOpetope.Address.fromList(['*'], 1))
         self.assertEqual(
@@ -215,7 +217,7 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
         )
 
     def test___call__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.f(UnnamedOpetope.Address.epsilon(2))
         self.assertEqual(self.c(UnnamedOpetope.Address.epsilon(1)),
                          UnnamedOpetope.Address.epsilon(0))
@@ -238,15 +240,15 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
         self.assertFalse(self.e == self.f)
 
     def test___init__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Context(-1)
         self.assertEqual(len(self.b.keys()), 0)
         self.assertEqual(self.b.dimension, 2)
 
     def test___sub__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.b - UnnamedOpetope.Address.epsilon(1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.f - UnnamedOpetope.Address.epsilon(2)
         self.assertEqual(self.c - UnnamedOpetope.Address.epsilon(1), self.b)
         self.assertEqual(self.d - UnnamedOpetope.Address.fromList(['*'], 1),
@@ -277,16 +279,16 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
 
     def test___add__(self):
         # Adding to a degenerate
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.d + (UnnamedOpetope.Address.epsilon(1), self.c)
         # Dimension mismatch in the tuple
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.e + (UnnamedOpetope.Address.fromList(['*'], 1), self.a)
         # Dimension mismatch with the popt
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.e + (UnnamedOpetope.Address.epsilon(2), self.f)
         # UnnamedOpetope.Address already present
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.e + (UnnamedOpetope.Address.epsilon(1), self.c)
         self.assertEqual(self.e + (UnnamedOpetope.Address.fromList(['*'], 1),
                                    self.c),
@@ -306,7 +308,7 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
         self.assertFalse(self.e == self.f)
 
     def test___init__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope(-2)
         UnnamedOpetope.Preopetope(-1)
         x = UnnamedOpetope.Preopetope(8)
@@ -315,13 +317,13 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
         self.assertEqual(x.nodes, {})
 
     def test___sub__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.e - UnnamedOpetope.Address.fromList(['*'], 1)
         self.assertEqual(self.f - UnnamedOpetope.Address.fromList(['*'], 1),
                          self.e)
 
     def test_degenerate(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.degenerate(self.a)
         self.assertEqual(self.d.degeneracy, self.b)
         self.assertEqual(self.d.dimension, self.b.dimension + 2)
@@ -334,15 +336,15 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
 
     def test_fromDictOfPreopetopes(self):
         # Empty dict
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.fromDictOfPreopetopes({})
         # Dimension mismatch in tuple
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.fromDictOfPreopetopes({
                 UnnamedOpetope.Address.epsilon(1): self.a
             })
         # Dimension mismatch among tuples
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.fromDictOfPreopetopes({
                 UnnamedOpetope.Address.epsilon(0): self.a,
                 UnnamedOpetope.Address.epsilon(1): self.c
@@ -356,12 +358,12 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
 
     def test_grafting(self):
         # Dimension mismatch btw preopetopes
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.grafting(
                 self.e,
                 UnnamedOpetope.Address.epsilon(0), self.b)
         # Dim mismatch btw addr and UnnamedOpetope.preopetope
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.grafting(
                 self.e,
                 UnnamedOpetope.Address.epsilon(0), self.c)
@@ -375,28 +377,28 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
 
     def test_improperGrafting(self):
         # Adding to a degenerate
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.improperGrafting(
                 self.d,
                 UnnamedOpetope.Address.epsilon(1),
                 self.c
             )
         # Dimension mismatch in the tuple
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.improperGrafting(
                 self.e,
                 UnnamedOpetope.Address.fromList(['*'], 1),
                 self.a
             )
         # Dimension mismatch with the popt
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.improperGrafting(
                 self.e,
                 UnnamedOpetope.Address.epsilon(2),
                 self.f
             )
         # UnnamedOpetope.Address already present
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetope.Preopetope.improperGrafting(
                 self.e,
                 UnnamedOpetope.Address.epsilon(1),
@@ -441,7 +443,7 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
         self.assertEqual(p.nodes, {})
 
     def test_source(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.f.source(UnnamedOpetope.Address.fromList(['*', '*'], 1))
         self.assertEqual(self.c.source(UnnamedOpetope.Address.epsilon(0)),
                          self.b)
@@ -545,7 +547,7 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
                 UnnamedOpetope.Address.epsilon(1): "a",
                 UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             d[UnnamedOpetope.Address.epsilon(0)]
         self.assertEqual(p[UnnamedOpetope.Address.epsilon(1)], "a")
         self.assertEqual(p[UnnamedOpetope.Address.epsilon(0).shift()], "b")
@@ -553,7 +555,7 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
     def test_degeneratePastingDiagram(self):
         UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(0), "d")
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(1), "d")
 
@@ -567,10 +569,10 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
                 UnnamedOpetope.Address.epsilon(1): "a",
                 UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(0), {})
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(2),
                 {
@@ -591,13 +593,13 @@ class Test_UnnamedOpetopicSet_Type(unittest.TestCase):
     def test___init__(self):
         UnnamedOpetopicSet.Type(
             self.s, UnnamedOpetopicSet.Variable("t", UnnamedOpetope.Arrow()))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.Type(
                 self.s, UnnamedOpetopicSet.Variable(
                     "t", UnnamedOpetope.Point()))
         UnnamedOpetopicSet.Type(
             UnnamedOpetopicSet.PastingDiagram.point(), None)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.Type(self.s, None)
 
 
@@ -617,7 +619,7 @@ class Test_UnnamedOpetopicSet_Typing(unittest.TestCase):
         UnnamedOpetopicSet.Typing(
             UnnamedOpetopicSet.Variable(
                 "x", UnnamedOpetope.OpetopicInteger(2)), self.t)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.Typing(
                 UnnamedOpetopicSet.Variable(
                     "x", UnnamedOpetope.OpetopicInteger(3)),
@@ -659,10 +661,10 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
         self.ctx = UnnamedOpetopicSet.Context() + self.p + self.a + self.c
 
     def test___add__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx + self.a
         self.ctx + self.b
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx + self.c
 
     def test___contains__(self):
@@ -672,7 +674,7 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
 
     def test___getitem__(self):
         self.assertEqual(self.ctx["a"].variable, self.a.variable)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx["b"]
         self.assertEqual(self.ctx["c"].variable, self.c.variable)
 
@@ -686,7 +688,7 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
 
     def test_target(self):
         self.assertEqual(self.ctx.target("c"), "z")
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx.target("p")
 
 
@@ -732,13 +734,13 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
 
     def test_degen(self):
         s = UnnamedOpetopicSet.point(UnnamedOpetopicSet.Sequent(), "x")
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.degen(s, "y")
         s = UnnamedOpetopicSet.degen(s, "x")
         self.assertIsNotNone(s.pastingDiagram.degeneracy)
         self.assertEqual(s.pastingDiagram.degeneracy, "x")
         self.assertIsNone(s.pastingDiagram.nodes)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.degen(s, "x")
 
     def test_fill(self):
@@ -749,19 +751,19 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                 {
                     UnnamedOpetope.Address.epsilon(1): "ac"
                 }))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.fill(s, "ab", "A")
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.fill(s, "bc", "A")
         UnnamedOpetopicSet.fill(s, "ac", "A")
 
     def test_graft(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.graft(
                 UnnamedOpetopicSet.Sequent(),
                 UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
                     UnnamedOpetope.OpetopicInteger(0), "x"))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.graft(
                 UnnamedOpetopicSet.Sequent(),
                 UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
@@ -770,7 +772,7 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                         UnnamedOpetope.Address.epsilon(0): "x"
                     }))
         # Incorrect grafting: ab on top of cd
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.graft(
                 self.seq,
                 UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
@@ -793,10 +795,10 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
         s = UnnamedOpetopicSet.point(UnnamedOpetopicSet.Sequent(), "x")
         s = UnnamedOpetopicSet.point(s, "y")
         self.assertEqual(len(s.context), 2)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.point(s, "x")
         s.pastingDiagram = UnnamedOpetopicSet.PastingDiagram.point()
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.point(s, "z")
 
 
@@ -818,7 +820,7 @@ class Test_NamedOpetope_Variable(unittest.TestCase):
         self.assertNotEqual(self.a0, self.a1)
 
     def test___init__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.Variable("x", -1)
         NamedOpetope.Variable("x", 0)
 
@@ -953,19 +955,19 @@ class Test_NamedOpetope_Type(unittest.TestCase):
         self.assertFalse(NamedOpetope.Variable("a", 2) in self.t3)
 
     def test___init__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.Type(
                 [NamedOpetope.Term(NamedOpetope.Variable("α", 3)),
                  NamedOpetope.Term(self.f),
                  NamedOpetope.Term(self.a),
                  NamedOpetope.Term()])
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.Type(
                 [NamedOpetope.Term(self.alpha),
                  NamedOpetope.Term(self.f),
                  NamedOpetope.Term(NamedOpetope.Variable("a", 1)),
                  NamedOpetope.Term()])
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.Type([])
 
     def test_variables(self):
@@ -986,17 +988,17 @@ class Test_NamedOpetope_Typing(unittest.TestCase):
             NamedOpetope.Type(
                 [NamedOpetope.Term(NamedOpetope.Variable("a", 0)),
                  NamedOpetope.Term()]))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.Typing(
                 NamedOpetope.Term(NamedOpetope.Variable("a", 1)),
                 NamedOpetope.Type([NamedOpetope.Term()]))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.Typing(
                 NamedOpetope.Term(NamedOpetope.Variable("f", 2)),
                 NamedOpetope.Type(
                     [NamedOpetope.Term(NamedOpetope.Variable("a", 0)),
                      NamedOpetope.Term()]))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.Typing(
                 NamedOpetope.Term(NamedOpetope.Variable("f", 0)),
                 NamedOpetope.Type(
@@ -1024,19 +1026,19 @@ class Test_NamedOpetope_Context(unittest.TestCase):
         self.ctx5 = self.ctx4 + NamedOpetope.Typing(self.term4, self.typing4)
 
     def test___add__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx5 + NamedOpetope.Typing(self.term1, self.typing1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx5 + NamedOpetope.Typing(self.term2, self.typing2)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx5 + NamedOpetope.Typing(self.term3, self.typing3)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx5 + NamedOpetope.Typing(self.term4, self.typing4)
         term = NamedOpetope.Term(NamedOpetope.Variable("x", 2))
         term[NamedOpetope.Variable("a", 1)] = NamedOpetope.Term(
             NamedOpetope.Variable("y", 2))
         typing = NamedOpetope.Typing(term, self.typing3)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx5 + typing
 
     def test___contains__(self):
@@ -1062,9 +1064,9 @@ class Test_NamedOpetope_Context(unittest.TestCase):
         self.assertIn(self.term4.variable, self.ctx5)
 
     def test_source(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx5.source(NamedOpetope.Variable("A", 3), -1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx5.source(NamedOpetope.Variable("A", 3), 5)
         self.assertEqual(self.ctx5.source(NamedOpetope.Variable("A", 3), 0),
                          NamedOpetope.Term(NamedOpetope.Variable("A", 3)))
@@ -1078,9 +1080,9 @@ class Test_NamedOpetope_Context(unittest.TestCase):
                          NamedOpetope.Term())
 
     def test_typeOf(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx1.typeOf(NamedOpetope.Variable("a", 0))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.ctx2.typeOf(NamedOpetope.Variable("b", 0))
         self.assertTrue(self.ctx5.typeOf(NamedOpetope.Variable("a", 0)).terms,
                         self.typing1.terms)
@@ -1109,7 +1111,7 @@ class Test_NamedOpetope_EquationalTheory(unittest.TestCase):
         self.th6 = self.th5 + (self.a0, self.e0)
 
     def test___add__(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             NamedOpetope.EquationalTheory() + (self.a0, self.a1)
         self.assertEqual(len(self.th2.classes), 1)
         self.assertEqual(self.th2.classes[0], {self.a0, self.b0})
@@ -1337,7 +1339,7 @@ class Test_NamedOpetope_Sequent(unittest.TestCase):
             list(t.keys())[0], self.b1))
         self.assertTrue(self.sequent.theory.equal(
             list(t.values())[0].variable, self.f))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(DerivationError):
             self.sequent.graft(self.fg, self.b1, NamedOpetope.Term(self.f))
 
     def test_substitute(self):

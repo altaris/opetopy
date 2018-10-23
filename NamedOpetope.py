@@ -12,7 +12,7 @@
 from copy import deepcopy
 from typing import ClassVar, Dict, List, Optional, Set, Tuple
 
-from common import AbstractRuleInstance
+from common import *
 
 
 class Variable:
@@ -41,9 +41,10 @@ class Variable:
 
     def __init__(self, name: str, dim: int) -> None:
         if dim < 0 and name is not None:
-            raise ValueError("[Variable decrlaration] Dimension of new "
-                             "variable {name} must be >= 0 (is {dim})".format(
-                                 name = name, dim = dim))
+            raise DerivationError(
+                "Variable decrlaration",
+                "Dimension of new variable {name} must be >= 0 (is {dim})",
+                name = name, dim = dim)
         self.dimension = dim
         self.name = name
 
@@ -199,11 +200,11 @@ class Term(Dict[Variable, 'Term']):
             if not self[k].degenerate:
                 a = self[k].variable
                 if a is None:
-                    raise ValueError("[Term, graftTuples] An invalid / null "
-                                     "term has beed grafted at variable {var} "
-                                     "in term {term}. In valid proof trees, "
-                                     "this should not happen".format(
-                                         var = str(k), term = str(self)))
+                    raise RuntimeError(
+                        "[Term, graftTuples] An invalid / null term has been "
+                        "grafted at variable {var} in term {term}. In valid "
+                        "proof trees, this should not happen"
+                        .format(var = str(k), term = str(self)))
                 res |= set({(k, a)}) | self[k].graftTuples()
         return res
 
@@ -283,18 +284,20 @@ class Type:
         whence the :math:`-1` correction factor).
         """
         if len(terms) < 1:
-            raise ValueError("[Type declaration] A type requires at least one "
-                             "term")
+            raise DerivationError(
+                "Type declaration",
+                "A type requires at least one term")
         self.dimension = len(terms) - 1
         self.terms = terms
         for i in range(len(self.terms)):
             if self.terms[i].dimension != self.dimension - i - 1:
-                raise ValueError("[Type declaration] Invalid dimensions in "
-                                 "term list: {i}th term {term} has "
-                                 "dimension {dim}, sould have {should}".format(
-                                     i = i, term = str(self.terms[i]),
-                                     dim = self.terms[i].dimension,
-                                     should = self.dimension - i - 1))
+                raise DerivationError(
+                    "Type declaration",
+                    "Invalid dimensions in term list: {i}th term {term} has "
+                    "dimension {dim}, sould have {should}",
+                    i = i, term = str(self.terms[i]),
+                    dim = self.terms[i].dimension,
+                    should = self.dimension - i - 1)
 
     def __repr__(self) -> str:
         return str(self)
@@ -337,11 +340,11 @@ class Typing:
 
     def __init__(self, term, type) -> None:
         if term.dimension != type.dimension:
-            raise ValueError("[Typing declaration] Dimension mismatch in "
-                             "typing: term has dimension {dterm}, type has "
-                             "dimension {dtype}".format(
-                                 dterm = term.dimension,
-                                 dtype = type.dimension))
+            raise DerivationError(
+                "Typing declaration",
+                "Dimension mismatch in typing: term has dimension {dterm}, "
+                "type has dimension {dtype}",
+                dterm = term.dimension, dtype = type.dimension)
         self.term = term
         self.type = type
 
@@ -366,13 +369,15 @@ class Context(Set[Typing]):
         typed  variable isn't already typed in the context.
         """
         if not typing.term.isVariable():
-            raise ValueError("[Context, new typing] Context typings only "
-                             " type variables, and {term} is not one".format(
-                                 term = str(typing.term)))
+            raise DerivationError(
+                "Context, new typing",
+                "Context typings only type variables, and {term} is not one",
+                term = str(typing.term))
         elif typing.term.variable in self:
-            raise ValueError("[Context, new typing] Variable {var} is already "
-                             "typed in this context".format(
-                                 var = str(typing.term.variable)))
+            raise DerivationError(
+                "Context, new typing",
+                "Variable {var} is already yped in this context",
+                var = str(typing.term.variable))
         else:
             res = deepcopy(self)
             res.add(typing)
@@ -435,17 +440,19 @@ class Context(Set[Typing]):
         Returns the :mathm``k``-source of a variable.
         """
         if k < 0 or k > var.dimension + 1:
-            raise ValueError("[Context, source computation] Index out of "
-                             "bounds: dimension of variable {var} is {dim}, "
-                             "so index should be between 0 and {max} included "
-                             "(is {k})".format(var = str(var),
-                                               dim = var.dimension,
-                                               max = var.dimension + 1, k = k))
+            raise DerivationError(
+                "Context, source computation",
+                "Index out of bounds: dimension of variable {var} is {dim}, "
+                "so index should be between 0 and {max} included "
+                "(is {k})",
+                var = str(var), dim = var.dimension,
+                max = var.dimension + 1, k = k)
         elif var not in self:
-            raise ValueError("[Context, source computation] Variable {var} "
-                             "with dimension {dim} is not typed in context, "
-                             "so computing its source is not possible".format(
-                                 var = str(var), dim = var.dimension))
+            raise DerivationError(
+                "Context, source computation",
+                "Variable {var} with dimension {dim} is not typed in context, "
+                "so computing its source is not possible",
+                var = str(var), dim = var.dimension)
         elif k == 0:
             return Term(var)
         else:
@@ -464,10 +471,11 @@ class Context(Set[Typing]):
         for typing in self:
             if typing.term == Term(var):
                 return typing.type
-        raise ValueError("[Context, type computation] Variable {var} with "
-                         "dimension {dim} is not typed in context, so "
-                         "computing its type is not possible".format(
-                             var = str(var), dim = var.dimension))
+        raise DerivationError(
+            "Context, type computation",
+            "Variable {var} with dimension {dim} is not typed in context, so "
+            "computing its type is not possible",
+            var = str(var), dim = var.dimension)
 
     def variables(self) -> Set[Variable]:
         """
@@ -493,11 +501,11 @@ class EquationalTheory:
         """
         a, b = eq
         if a.dimension != b.dimension:
-            raise ValueError("[Eq. th. extension] Dimension mismatch in new "
-                             "equality {a} = {b}: respective dimensions are "
-                             "{da} and {db}".format(a = str(a), b = str(b),
-                                                    da = a.dimension,
-                                                    db = b.dimension))
+            raise DerivationError(
+                "Eq. th. extension",
+                "Dimension mismatch in new equality {a} = {b}: respective "
+                "dimensions are {da} and {db}",
+                a = str(a), b = str(b), da = a.dimension, db = b.dimension)
         else:
             ia = self._index(a)
             ib = self._index(b)
@@ -661,9 +669,10 @@ class OCMT:
         Returns the :math:`k` target of a variable.
         """
         if var.dimension == 0:
-            raise ValueError("[OCMT, target computation] Cannot compute "
-                             "target of 0-dimensional variable {var}".format(
-                                 var = str(var)))
+            raise DerivationError(
+                "OCMT, target computation",
+                "Cannot compute target of 0-dimensional variable {var}",
+                var = str(var))
         else:
             return Variable((OCMT.targetSymbol * k) + var.name,
                             var.dimension - k)
@@ -718,21 +727,24 @@ class Sequent(OCMT):
         """
         for k in t.keys():
             if self.theory.equal(k, x):
-                raise ValueError("[Sequent, grafting] Variable {var} in term "
-                                 "{term} has already been used for a grafting"
-                                 .format(var = str(x), term = str(t)))
+                raise DerivationError(
+                    "Sequent, grafting",
+                    "Variable {var} in term {term} has already been used for "
+                    "a grafting",
+                    var = str(x), term = str(t))
         if t.variable is None:
-            raise ValueError("[Sequent, grafting] Term to be grafted onto "
-                             "is empty")
+            raise DerivationError(
+                "Sequent, grafting",
+                "Term to be grafted onto is empty")
         elif t.degenerate:
             if t.variable == x:
                 return deepcopy(u)
             else:
-                raise ValueError("[Sequent, grafting] Incompatible graft: "
-                                 "term {term} is degenerate, so the grafting "
-                                 "variable must be {var} (is {x})".format(
-                                     term = str(t), var = str(t.variable),
-                                     x = str(x)))
+                raise DerivationError(
+                    "Sequent, grafting",
+                    "Incompatible graft: term {term} is degenerate, so the "
+                    "grafting variable must be {var} (is {x})",
+                    term = str(t), var = str(t.variable), x = str(x))
         else:
             r = deepcopy(t)
             if self.isIn(x, self.source(t.variable, 1)):
@@ -755,11 +767,13 @@ class Sequent(OCMT):
         2. an new equality to add to the equational theory, or ``None``
         """
         if s.variable is None:
-            raise ValueError("[Sequent, substitute] Cannot substitute in the "
-                             "null term")
+            raise DerivationError(
+                "Sequent, substitute",
+                "Cannot substitute in the null term")
         elif u.variable is None:
-            raise ValueError("[Sequent, substitute] Cannot substitute with "
-                             "the null term")
+            raise DerivationError(
+                "Sequent, substitute",
+                "Cannot substitute with the null term")
         elif s.degenerate:
             if a in [v.variable for v in u.values()]:
                 # a appears grafted on the root of u
@@ -781,7 +795,8 @@ class Sequent(OCMT):
                                             "globular... In valid proof "
                                             "trees, this error shouldn't "
                                             "happen, so congratulations, "
-                                            "you broke everything.")
+                                            "you broke everything"
+                                            .format(term = repr(ta)))
                     r = deepcopy(u)
                     r[ka] = list(ta.values())[0]
                     return (r, (s.variable, ka))
@@ -822,8 +837,10 @@ def point(x: Variable) -> Sequent:
     Introduces a :math:`0`-variable with name ``x``.
     """
     if x.dimension != 0:
-        raise ValueError("[point rule] New variable must have dimension 0 "
-                         "(has dimension {dim})".format(dim = x.dimension))
+        raise DerivationError(
+            "point rule",
+            "New variable must have dimension 0 (has dimension {dim})",
+            dim = x.dimension)
     t = Typing(Term(x), Type([Term()]))
     return Sequent(EquationalTheory(), Context() + t, t)
 
@@ -848,9 +865,11 @@ def degen(seq: Sequent) -> Sequent:
     sequent typing the degeneracy at that variable.
     """
     if not seq.typing.term.isVariable():
-        raise ValueError("[degen rule] Term {term} typed in premiss sequent "
-                         "is expected to be a variable".format(
-                             term = str(seq.typing.term)))
+        raise DerivationError(
+            "degen rule",
+            "Term {term} typed in premiss sequent is expected to be a "
+            "variable",
+            term = str(seq.typing.term))
     res = deepcopy(seq)
     var = res.typing.term.variable
     res.typing = Typing(Term(var, True), Type([Term(var)] +
@@ -884,54 +903,65 @@ def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
     in the type of ``a`` or of course ``a`` itself.
     """
     if seqx.typing.term.variable is None:
-        raise ValueError("[graft rule] First premiss sequent types an "
-                         "invalid / null term")
+        raise DerivationError(
+            "graft rule",
+            "First premiss sequent types an invalid / null term")
     elif seqx.typing.term.variable is None:
-        raise ValueError("[graft rule] Second premiss sequent types an "
-                         "invalid / null term")
+        raise DerivationError(
+            "graft rule",
+            "Second premiss sequent types an invalid / null term")
     # checking intersection
     inter = seqt.context & seqx.context
     typea = seqt.typeOf(a)
     if a not in seqt.context:  # a in the first sequent
-        raise ValueError("[graft rule] Graft variable {} not typed "
-                         "in first sequent".format(str(a)))
+        raise DerivationError(
+            "graft rule",
+            "Graft variable {var} not typed in first sequent",
+            var = str(a))
     for i in range(0, a.dimension):   # all variables in the type of a are in
         for v in typea.variables(i):  # the context intersection
             if v not in inter:
-                raise ValueError("[graft rule] Intersection of the two "
-                                 "premiss contexts does not type variable "
-                                 "{v} necessary to define variable  {a}"
-                                 .format(v = str(v), a = str(a)))
+                raise DerivationError(
+                    "graft rule",
+                    "Intersection of the two premiss contexts does not "
+                    "type variable {v} necessary to define variable {a}",
+                    v = str(v), a = str(a))
     for typing in inter:  # all variables in the intersection are in that of a
         w = typing.term.variable
         if w not in typea:
-            raise ValueError("[graft rule] Intersection of the two premiss "
-                             "contexts, variable {v} is typed, but is not "
-                             "required to type variable {a}".format(
-                                 v = str(w), a = a.toTex()))
+            raise DerivationError(
+                "graft rule",
+                "Intersection of the two premiss contexts, variable {v} "
+                "is typed, but is not required to type variable {a}",
+                v = str(w), a = a.toTex())
     # checking rule hypothesis
     if not seqx.typing.term.isVariable():
-        raise ValueError("[graft rule] Second premiss sequent expected to "
-                         "type a variable (types {term})".format(
-                             term = str(seqx.typing.term)))
+        raise DerivationError(
+            "graft rule",
+            "Second premiss sequent expected to type a variable (types "
+            "{term})",
+            term = str(seqx.typing.term))
     elif a not in seqt.typing.type.terms[0]:
-        raise ValueError("[graft rule] Graft variable {a} does not occur in "
-                         "the source of the term {term} grafted upon".format(
-                             a = str(a), term = str(seqt.typing.term)))
+        raise DerivationError(
+            "graft rule",
+            "Graft variable {a} does not occur in the source of the term"
+            "{term} grafted upon",
+            a = str(a), term = str(seqt.typing.term))
     elif a in seqt.typing.term:
-        raise ValueError("[graft rule] Graft variable {a} occurs first "
-                         "premiss term {term}, meaning it has already "
-                         "been used for grafting".format(
-                             a = str(a), term = str(seqt.typing.term)))
+        raise DerivationError(
+            "graft rule",
+            "Graft variable {a} occurs first premiss term {term}, meaning it "
+            " has already been used for grafting",
+            a = str(a), term = str(seqt.typing.term))
     elif not seqt.equal(seqt.source(a, 1),
                         seqx.source(seqx.typing.term.variable, 2)):
-        raise ValueError("[graft rule] Variables {a} and {x} have "
-                         "incompatible shapes: s{a} = {sa}, while ss{x} = "
-                         "{ssx}".format(a = str(a),
-                                        x = str(seqx.typing.term.variable),
-                                        sa = str(seqt.source(a, 1)),
-                                        ssx = str(seqx.source(
-                                            seqx.typing.term.variable, 2))))
+        raise DerivationError(
+            "graft rule",
+            "Variables {a} and {x} have incompatible shapes: s{a} = {sa}, "
+            "while ss{x} = {ssx}",
+            a = str(a), x = str(seqx.typing.term.variable),
+            sa = str(seqt.source(a, 1)),
+            ssx = str(seqx.source(seqx.typing.term.variable, 2)))
     # forming conclusion sequent
     theory = seqt.theory | seqx.theory     # union of both theories
     context = seqt.context | seqx.context  # union of both contexts

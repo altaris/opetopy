@@ -31,3 +31,18 @@ class AbstractRuleInstance:
         Converts the proof tree in TeX code.
         """
         return "\\begin{prooftree}\n\t" + self._toTex() + "\n\\end{prooftree}"
+
+
+class DerivationError(Exception):
+    """
+    This exception is raised whenever an illegal operation on syntactical
+    constructs relevant to opetopes is performed.
+    """
+
+    def __init__(self, scope: str, message: str, **kwargs) -> None:
+        self.message = message.format(**kwargs)
+        self.scope = scope
+        super().__init__(self, message)
+
+    def __str__(self):
+        return "[{scope}] {msg}".format(scope = self.scope, msg = self.message)

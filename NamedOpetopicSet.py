@@ -11,8 +11,8 @@
 
 from copy import deepcopy
 
+from common import *
 import NamedOpetope
-from common import AbstractRuleInstance
 
 
 def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
@@ -24,9 +24,9 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
     for typing in seq.context:
         v = typing.term.variable
         if v is None:
-            raise ValueError("[repres rule] The premiss context types an "
-                             "invalid / null term. In valid proof trees, this "
-                             "should not happen")
+            raise RuntimeError("[repres rule] The premiss context types an "
+                               "invalid / null term. In valid proof trees, "
+                               "this should not happen")
         for i in range(1, v.dimension + 1):
             res.context += NamedOpetope.Typing(
                 NamedOpetope.Term(res.target(v, i)),
@@ -39,24 +39,24 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
         if a.dimension >= 2 and not res.source(a).degenerate:
             s = res.source(a).variable
             if s is None:
-                raise ValueError("[repres rule] The premiss context types "
-                                 "the variable {a} of dimension {dim}, whose "
-                                 "first source is invalid / null. In valid "
-                                 "proof trees, this should not happen".format(
-                                     a = str(a), dim = a.dimension))
+                raise RuntimeError("[repres rule] The premiss context types "
+                                   "the variable {a} of dimension {dim}, "
+                                   "whose first source is invalid / null. In "
+                                   "valid proof trees, this should not happen"
+                                   .format(a = str(a), dim = a.dimension))
             res.theory += (res.target(a, 2), res.target(s))
     for a in seq.context.variables():
         for k in range(0, a.dimension - 1):
             if res.source(res.target(a, k)).degenerate:
                 c = res.source(res.target(a, k)).variable
                 if c is None:
-                    raise ValueError("[repres rule] The premiss context types "
-                                     "the variable {var} of dimension {dim}, "
-                                     "whose first source is invalid / null. "
-                                     "In valid proof trees, this should not "
-                                     "happen".format(
-                                         var = str(res.target(a, k)),
-                                         dim = res.target(a, k).dimension))
+                    raise RuntimeError("[repres rule] The premiss context "
+                                       "types the variable {var} of dimension "
+                                       "{dim}, whose first source is invalid "
+                                       "/ null. In valid proof trees, this "
+                                       "should not happen".format(
+                                           var = str(res.target(a, k)),
+                                           dim = res.target(a, k).dimension))
                 res.theory += (res.target(a, k + 2), c)
     # identification of targets
     tmp = deepcopy(res.theory)
@@ -76,11 +76,11 @@ def sum(ocmt1: NamedOpetope.OCMT,
     The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{sum}` rule.
     """
     if len(ocmt1.context.variables() & ocmt2.context.variables()) != 0:
-        raise ValueError("[sum rule] The two premiss OCTM are expected to "
-                         "have disjoint contexts, but intersection types "
-                         "the following variables {inter}"
-                         .format(inter = ocmt1.context.variables() &
-                                 ocmt2.context.variables()))
+        raise DerivationError(
+            "sum rule",
+            "The two premiss OCTM are expected to have disjoint contexts, "
+            "but intersection types the following variables {inter}",
+            inter = ocmt1.context.variables() & ocmt2.context.variables())
     return NamedOpetope.OCMT(
         ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
 
@@ -91,24 +91,21 @@ def fold(ocmt: NamedOpetope.OCMT, a: NamedOpetope.Variable,
     The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{fold}` rule.
     """
     if a.dimension != b.dimension:
-        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} "
-                         "cannot be identified as they do not have the same "
-                         "dimension (have respectively {da} and {db})".format(
-                             a = str(a),
-                             b = str(b),
-                             da = a.dimension,
-                             db = b.dimension))
+        raise DerivationError(
+            "fold rule",
+            "NamedOpetope.Variables {a} and {b} cannot be identified as they "
+            "do not have the same dimension (have respectively {da} and {db})",
+            a = str(a), b = str(b), da = a.dimension, db = b.dimension)
     elif a.dimension != 0 and not \
         (ocmt.equal(ocmt.source(a), ocmt.source(b)) and
          ocmt.theory.equal(ocmt.target(a), ocmt.target(b))):
-        raise ValueError("[fold rule] NamedOpetope.Variables {a} and {b} "
-                         "cannot be identified as they are not parallel: "
-                         "sa = {sa}, sb = {sb}, ta = {ta}, tb = {tb}".format(
-                             a = str(a), b = str(b),
-                             sa = str(ocmt.source(a)),
-                             sb = str(ocmt.source(b)),
-                             ta = str(ocmt.target(a)),
-                             tb = str(ocmt.target(b))))
+        raise DerivationError(
+            "fold rule",
+            "NamedOpetope.Variables {a} and {b} cannot be identified as they "
+            "are not parallel: sa = {sa}, sb = {sb}, ta = {ta}, tb = {tb}",
+            a = str(a), b = str(b), sa = str(ocmt.source(a)),
+            sb = str(ocmt.source(b)), ta = str(ocmt.target(a)),
+            tb = str(ocmt.target(b)))
     res = deepcopy(ocmt)
     res.theory += (a, b)
     return res
