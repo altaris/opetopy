@@ -15,7 +15,7 @@ import UnnamedOpetopicSet
 import NamedOpetope
 
 
-class UnnamedOpetopeAddressTest(unittest.TestCase):
+class Test_UnnamedOpetope_Address(unittest.TestCase):
 
     def setUp(self):
         self.a = UnnamedOpetope.Address.epsilon(0)
@@ -139,7 +139,7 @@ class UnnamedOpetopeAddressTest(unittest.TestCase):
         )
 
 
-class UnnamedOpetopeContextTest(unittest.TestCase):
+class Test_UnnamedOpetope_Context(unittest.TestCase):
 
     def setUp(self):
         self.a = UnnamedOpetope.Context(0)
@@ -235,7 +235,7 @@ class UnnamedOpetopeContextTest(unittest.TestCase):
             UnnamedOpetope.Context(3))
 
 
-class UnnamedOpetopePreopetopeTest(unittest.TestCase):
+class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
 
     def setUp(self):
         self.a = UnnamedOpetope.Preopetope(-1)
@@ -454,7 +454,7 @@ class UnnamedOpetopePreopetopeTest(unittest.TestCase):
             i5)
 
 
-class VariableTest(unittest.TestCase):
+class Test_UnnamedOpetopicSet_Variable(unittest.TestCase):
 
     def setUp(self):
         self.a = UnnamedOpetopicSet.Variable("a", UnnamedOpetope.Arrow())
@@ -508,7 +508,7 @@ class VariableTest(unittest.TestCase):
                          UnnamedOpetope.OpetopicInteger(3).eval().source)
 
 
-class UnnamedOpetopicSetPastingDiagramTest(unittest.TestCase):
+class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
 
     def setUp(self):
         pass
@@ -586,7 +586,7 @@ class UnnamedOpetopicSetPastingDiagramTest(unittest.TestCase):
                 })
 
 
-class UnnamedOpetopicSetTypeTest(unittest.TestCase):
+class Test_UnnamedOpetopicSet_Type(unittest.TestCase):
 
     def setUp(self):
         self.s = UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
@@ -611,7 +611,7 @@ class UnnamedOpetopicSetTypeTest(unittest.TestCase):
             UnnamedOpetopicSet.Type(self.s, None)
 
 
-class UnnamedOpetopicSetTypingTest(unittest.TestCase):
+class Test_UnnamedOpetopicSet_Typing(unittest.TestCase):
 
     def setUp(self):
         self.t = UnnamedOpetopicSet.Type(
@@ -638,7 +638,7 @@ class UnnamedOpetopicSetTypingTest(unittest.TestCase):
                 self.t)
 
 
-class UnnamedOpetopicSetContextTest(unittest.TestCase):
+class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
 
     def setUp(self):
         self.p = UnnamedOpetopicSet.Typing(
@@ -712,7 +712,7 @@ class UnnamedOpetopicSetContextTest(unittest.TestCase):
             self.ctx.target("p")
 
 
-class NamedOpetopeVariableTest(unittest.TestCase):
+class Test_NamedOpetope_Variable(unittest.TestCase):
 
     def setUp(self):
         self.a0 = NamedOpetope.Variable("a", 0)
@@ -735,7 +735,7 @@ class NamedOpetopeVariableTest(unittest.TestCase):
         NamedOpetope.Variable("x", 0)
 
 
-class NamedOpetopeTermTest(unittest.TestCase):
+class Test_NamedOpetope_Term(unittest.TestCase):
 
     def setUp(self):
         self.w = NamedOpetope.Variable("w", 2)
@@ -832,7 +832,7 @@ class NamedOpetopeTermTest(unittest.TestCase):
                          {self.w, self.x, self.y, self.z})
 
 
-class NamedOpetopeTypeTest(unittest.TestCase):
+class Test_NamedOpetope_Type(unittest.TestCase):
 
     def setUp(self):
         self.a = NamedOpetope.Variable("a", 0)
@@ -887,7 +887,7 @@ class NamedOpetopeTypeTest(unittest.TestCase):
         self.assertEqual(self.t3.variables(3), set())
 
 
-class NamedOpetopeTypingTest(unittest.TestCase):
+class Test_NamedOpetope_Typing(unittest.TestCase):
 
     def test___init__(self):
         NamedOpetope.Typing(
@@ -916,7 +916,7 @@ class NamedOpetopeTypingTest(unittest.TestCase):
                      NamedOpetope.Term()]))
 
 
-class NamedOpetopeContextTest(unittest.TestCase):
+class Test_NamedOpetope_Context(unittest.TestCase):
 
     def setUp(self):
         self.term1 = NamedOpetope.Term(NamedOpetope.Variable("a", 0))
@@ -1004,7 +1004,7 @@ class NamedOpetopeContextTest(unittest.TestCase):
                         self.typing4.terms)
 
 
-class NamedOpetopeEquationalTheoryTest(unittest.TestCase):
+class Test_NamedOpetope_EquationalTheory(unittest.TestCase):
 
     def setUp(self):
         self.a0 = NamedOpetope.Variable("a", 0)
@@ -1165,7 +1165,7 @@ class NamedOpetopeEquationalTheoryTest(unittest.TestCase):
         self.assertFalse(self.th6.isIn(self.a1, NamedOpetope.Term(self.a0)))
 
 
-class TestNamedOpetopeSequent(unittest.TestCase):
+class Test_NamedOpetope_Sequent(unittest.TestCase):
 
     def setUp(self):
         self.a1 = NamedOpetope.Variable("a1", 0)
