@@ -538,40 +538,24 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
 
     def test___getitem__(self):
         d = UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
-            UnnamedOpetope.OpetopicInteger(0),
-            UnnamedOpetopicSet.Variable("d", UnnamedOpetope.Point()))
+            UnnamedOpetope.OpetopicInteger(0), "d")
         p = UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(2),
             {
-                UnnamedOpetope.Address.epsilon(1):
-                    UnnamedOpetopicSet.Variable(
-                        "a", UnnamedOpetope.Arrow()),
-                UnnamedOpetope.Address.epsilon(0).shift():
-                    UnnamedOpetopicSet.Variable(
-                        "b", UnnamedOpetope.Arrow())
+                UnnamedOpetope.Address.epsilon(1): "a",
+                UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
         with self.assertRaises(ValueError):
             d[UnnamedOpetope.Address.epsilon(0)]
-        self.assertEqual(p[UnnamedOpetope.Address.epsilon(1)],
-                         UnnamedOpetopicSet.Variable(
-                             "a", UnnamedOpetope.Arrow()))
-        self.assertEqual(p[UnnamedOpetope.Address.epsilon(0).shift()],
-                         UnnamedOpetopicSet.Variable(
-                             "b", UnnamedOpetope.Arrow()))
+        self.assertEqual(p[UnnamedOpetope.Address.epsilon(1)], "a")
+        self.assertEqual(p[UnnamedOpetope.Address.epsilon(0).shift()], "b")
 
     def test_degeneratePastingDiagram(self):
         UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
-            UnnamedOpetope.OpetopicInteger(0),
-            UnnamedOpetopicSet.Variable("d", UnnamedOpetope.Point()))
+            UnnamedOpetope.OpetopicInteger(0), "d")
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
-                UnnamedOpetope.Degen(UnnamedOpetope.OpetopicInteger(1)),
-                UnnamedOpetopicSet.Variable(
-                    "d", UnnamedOpetope.OpetopicInteger(2)))
-        with self.assertRaises(ValueError):
-            UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
-                UnnamedOpetope.OpetopicInteger(1),
-                UnnamedOpetopicSet.Variable("d", UnnamedOpetope.Point()))
+                UnnamedOpetope.OpetopicInteger(1), "d")
 
     def test_point(self):
         UnnamedOpetopicSet.PastingDiagram.point()
@@ -580,10 +564,8 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
         UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(2),
             {
-                UnnamedOpetope.Address.epsilon(1):
-                    UnnamedOpetopicSet.Variable("a", UnnamedOpetope.Arrow()),
-                UnnamedOpetope.Address.epsilon(0).shift():
-                    UnnamedOpetopicSet.Variable("b", UnnamedOpetope.Arrow())
+                UnnamedOpetope.Address.epsilon(1): "a",
+                UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
@@ -592,20 +574,7 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(2),
                 {
-                    UnnamedOpetope.Address.epsilon(1):
-                        UnnamedOpetopicSet.Variable(
-                            "a", UnnamedOpetope.Arrow())
-                })
-        with self.assertRaises(ValueError):
-            UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
-                UnnamedOpetope.OpetopicInteger(2),
-                {
-                    UnnamedOpetope.Address.epsilon(1):
-                        UnnamedOpetopicSet.Variable(
-                            "a", UnnamedOpetope.Arrow()),
-                    UnnamedOpetope.Address.epsilon(0).shift():
-                        UnnamedOpetopicSet.Variable(
-                            "b", UnnamedOpetope.Point())
+                    UnnamedOpetope.Address.epsilon(1): "a"
                 })
 
 
@@ -615,10 +584,8 @@ class Test_UnnamedOpetopicSet_Type(unittest.TestCase):
         self.s = UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(2),
             {
-                UnnamedOpetope.Address.epsilon(1):
-                    UnnamedOpetopicSet.Variable("a", UnnamedOpetope.Arrow()),
-                UnnamedOpetope.Address.epsilon(0).shift():
-                    UnnamedOpetopicSet.Variable("b", UnnamedOpetope.Arrow())
+                UnnamedOpetope.Address.epsilon(1): "a",
+                UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
 
     def test___init__(self):
@@ -641,12 +608,8 @@ class Test_UnnamedOpetopicSet_Typing(unittest.TestCase):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(2),
                 {
-                    UnnamedOpetope.Address.epsilon(1):
-                        UnnamedOpetopicSet.Variable(
-                            "a", UnnamedOpetope.Arrow()),
-                    UnnamedOpetope.Address.epsilon(0).shift():
-                        UnnamedOpetopicSet.Variable(
-                            "b", UnnamedOpetope.Arrow())
+                    UnnamedOpetope.Address.epsilon(1): "a",
+                    UnnamedOpetope.Address.epsilon(0).shift(): "b"
                 }),
             UnnamedOpetopicSet.Variable("t", UnnamedOpetope.Arrow()))
 
@@ -673,16 +636,14 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
                 "a", UnnamedOpetope.OpetopicInteger(0)),
             UnnamedOpetopicSet.Type(
                 UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
-                    UnnamedOpetope.OpetopicInteger(0),
-                    UnnamedOpetopicSet.Variable("p", UnnamedOpetope.Point())),
+                    UnnamedOpetope.OpetopicInteger(0), "p"),
                 UnnamedOpetopicSet.Variable("p", UnnamedOpetope.Arrow())))
         self.b = UnnamedOpetopicSet.Typing(
             UnnamedOpetopicSet.Variable(
                 "b", UnnamedOpetope.OpetopicInteger(0)),
             UnnamedOpetopicSet.Type(
                 UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
-                    UnnamedOpetope.OpetopicInteger(0),
-                    UnnamedOpetopicSet.Variable("p", UnnamedOpetope.Point())),
+                    UnnamedOpetope.OpetopicInteger(0), "p"),
                 UnnamedOpetopicSet.Variable("p", UnnamedOpetope.Arrow())))
         self.c = UnnamedOpetopicSet.Typing(
             UnnamedOpetopicSet.Variable(
@@ -691,12 +652,8 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
                 UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                     UnnamedOpetope.OpetopicInteger(2),
                     {
-                        UnnamedOpetope.Address.epsilon(1):
-                            UnnamedOpetopicSet.Variable(
-                                "x", UnnamedOpetope.Arrow()),
-                        UnnamedOpetope.Address.epsilon(0).shift():
-                            UnnamedOpetopicSet.Variable(
-                                "y", UnnamedOpetope.Arrow())
+                        UnnamedOpetope.Address.epsilon(1): "x",
+                        UnnamedOpetope.Address.epsilon(0).shift(): "y"
                     }),
                 UnnamedOpetopicSet.Variable("z", UnnamedOpetope.Arrow())))
         self.ctx = UnnamedOpetopicSet.Context() + self.p + self.a + self.c
@@ -722,15 +679,13 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
     def test_source(self):
         self.assertEqual(
             self.ctx.source("c", UnnamedOpetope.Address.epsilon(1)),
-            UnnamedOpetopicSet.Variable("x", UnnamedOpetope.Arrow()))
+            "x")
         self.assertEqual(
             self.ctx.source("c", UnnamedOpetope.Address.epsilon(0).shift()),
-            UnnamedOpetopicSet.Variable("y", UnnamedOpetope.Arrow()))
+            "y")
 
     def test_target(self):
-        self.assertEqual(
-            self.ctx.target("c"),
-            UnnamedOpetopicSet.Variable("z", UnnamedOpetope.Arrow()))
+        self.assertEqual(self.ctx.target("c"), "z")
         with self.assertRaises(ValueError):
             self.ctx.target("p")
 
@@ -755,17 +710,16 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
             UnnamedOpetopicSet.Typing(self.c, self.type_point) + \
             UnnamedOpetopicSet.Typing(self.d, self.type_point) + \
             UnnamedOpetopicSet.Typing(
-                self.ab, self.type_arrow(self.a, self.b)) + \
+                self.ab, self.type_arrow("a", self.b)) + \
             UnnamedOpetopicSet.Typing(
-                self.ac, self.type_arrow(self.a, self.c)) + \
+                self.ac, self.type_arrow("a", self.c)) + \
             UnnamedOpetopicSet.Typing(
-                self.bc, self.type_arrow(self.b, self.c)) + \
+                self.bc, self.type_arrow("b", self.c)) + \
             UnnamedOpetopicSet.Typing(
-                self.cd, self.type_arrow(self.c, self.d))
+                self.cd, self.type_arrow("c", self.d))
 
     def type_arrow(
-            self,
-            src: UnnamedOpetopicSet.Variable,
+            self, src: str,
             tgt: UnnamedOpetopicSet.Variable) -> UnnamedOpetopicSet.Type:
         """
         Convenient function to define the type of an arrow shaped cell
@@ -782,9 +736,7 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
             UnnamedOpetopicSet.degen(s, "y")
         s = UnnamedOpetopicSet.degen(s, "x")
         self.assertIsNotNone(s.pastingDiagram.degeneracy)
-        self.assertEqual(s.pastingDiagram.degeneracy.name, "x")
-        self.assertEqual(
-            s.pastingDiagram.degeneracy.shape, UnnamedOpetope.point().source)
+        self.assertEqual(s.pastingDiagram.degeneracy, "x")
         self.assertIsNone(s.pastingDiagram.nodes)
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.degen(s, "x")
@@ -795,7 +747,7 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(1),
                 {
-                    UnnamedOpetope.Address.epsilon(1): self.ac
+                    UnnamedOpetope.Address.epsilon(1): "ac"
                 }))
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.fill(s, "ab", "A")
@@ -808,17 +760,14 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
             UnnamedOpetopicSet.graft(
                 UnnamedOpetopicSet.Sequent(),
                 UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
-                    UnnamedOpetope.OpetopicInteger(0),
-                    UnnamedOpetopicSet.Variable("x", UnnamedOpetope.Point())))
+                    UnnamedOpetope.OpetopicInteger(0), "x"))
         with self.assertRaises(ValueError):
             UnnamedOpetopicSet.graft(
                 UnnamedOpetopicSet.Sequent(),
                 UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                     UnnamedOpetope.Arrow(),
                     {
-                        UnnamedOpetope.Address.epsilon(0):
-                            UnnamedOpetopicSet.Variable(
-                                "x", UnnamedOpetope.Point())
+                        UnnamedOpetope.Address.epsilon(0): "x"
                     }))
         # Incorrect grafting: ab on top of cd
         with self.assertRaises(ValueError):
@@ -827,8 +776,8 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                 UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                     UnnamedOpetope.OpetopicInteger(2),
                     {
-                        UnnamedOpetope.Address.epsilon(1): self.cd,
-                        UnnamedOpetope.Address.epsilon(0).shift(): self.ab
+                        UnnamedOpetope.Address.epsilon(1): "cd",
+                        UnnamedOpetope.Address.epsilon(0).shift(): "ab"
                     }))
         # Correct grafting: ab on top of bc
         UnnamedOpetopicSet.graft(
@@ -836,8 +785,8 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
                 UnnamedOpetope.OpetopicInteger(2),
                 {
-                    UnnamedOpetope.Address.epsilon(1): self.bc,
-                    UnnamedOpetope.Address.epsilon(0).shift(): self.ab
+                    UnnamedOpetope.Address.epsilon(1): "bc",
+                    UnnamedOpetope.Address.epsilon(0).shift(): "ab"
                 }))
 
     def test_point(self):

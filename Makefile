@@ -17,3 +17,4 @@ typecheck:
 	$(TYPECHECK) NamedOpetopicSet.py
 	$(TYPECHECK) UnnamedOpetope.py
 	$(TYPECHECK) UnnamedOpetopicSet.py
+	$(TYPECHECK) UnitTests.py
