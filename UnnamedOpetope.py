@@ -49,8 +49,8 @@ class Address:
 
     def __add__(self, other) -> 'Address':
         """
-        Adds the :math:`(n-1)`-address `other` at the end of the sequence of
-        :math:`(n-1)`-addresses that make up the :math:`n`-address `self`.
+        Adds the :math:`(n-1)`-address ``other`` at the end of the sequence of
+        :math:`(n-1)`-addresses that make up the :math:`n`-address ``self``.
 
         :warning: This is **not** concatenation (see
           :meth:`UnnamedOpetope.Address.__mul__`).
@@ -88,7 +88,7 @@ class Address:
 
     def __init__(self, dim: int) -> None:
         """
-        Creates an :math:`\\epsilon` address of dimension `dim`
+        Creates an :math:`\\epsilon` address of dimension ``dim``
         :math:`\\geq 0`.
         """
         if (dim < 0):
@@ -154,7 +154,7 @@ class Address:
     @staticmethod
     def epsilon(dim: int) -> 'Address':
         """
-        Creates an :math:`\\epsilon` address of dimension `dim`
+        Creates an :math:`\\epsilon` address of dimension ``dim``
         :math:`\\geq 0`. Internally just calls
         :meth:`UnnamedOpetope.Address.__init__`.
         """
@@ -183,12 +183,10 @@ class Address:
     @staticmethod
     def fromList(l: List[Any], dim: int) -> 'Address':
         """
-        Recursibely create an address of dimension `dim` from a list of lists
+        Recursibely create an address of dimension ``dim`` from a list of lists
         that themselves represent addresses. The :math:`\\epsilon` address is
-        represented by ['ε'], and ```'*'``` represents the
+        represented by ['ε'], and ``'*'`` represents the
         :math:`0`-dimensional :math:`\\epsilon` address.
-
-        :raises: ValueError
         """
         if (dim < 0):
             raise ValueError("[Address creation] New address must have "
@@ -209,8 +207,6 @@ class Address:
     def fromListOfAddresses(l: List['Address']) -> 'Address':
         """
         Creates an address from a non empty list of addresses.
-
-        :raises: ValueError
         """
         if len(l) == 0:
             raise ValueError("[Address creation] Cannot create address from "
@@ -240,8 +236,8 @@ class Address:
     @staticmethod
     def substitution(a: 'Address', b: 'Address', c: 'Address') -> 'Address':
         """
-        If the underlying sequence of `b` is a prefix of that of `a`, then
-        replaces this prefix by the underlying sequence of `c`.
+        If the underlying sequence of ``b`` is a prefix of that of ``a``, then
+        replaces this prefix by the underlying sequence of ``c``.
 
         Example:
           ``substitution(`` :math:`[[*][**]]` ``,`` :math:`[[*]]` ``,``
@@ -286,7 +282,7 @@ class Context(Dict[Address, Address]):
     def __add__(self, other: Tuple[Address, Address]) -> 'Context':
         """
         Adds a tuple of the form (math:`n`-address, :math:`(n-1)`-address) to
-        the :math:`(n+1)`-context `self`.
+        the :math:`(n+1)`-context ``self``.
         """
         if other[0].dimension != other[1].dimension + 1:
             raise ValueError("[Context extension] New mapping {a} -> {b} is "
@@ -323,9 +319,9 @@ class Context(Dict[Address, Address]):
 
     def __call__(self, addr: Address) -> Address:
         """
-        If `self` is an `(n+1)`-context, returns the node :math:`(n-1)`-address
-        associated to the given leaf :math:`n`-address `addr`. Raises an
-        exception if not defined.
+        If ``self`` is an `(n+1)`-context, returns the node
+        :math:`(n-1)`-address associated to the given leaf
+        :math:`n`-address ``addr``. Raises an exception if not defined.
         """
         if not self.definedOnLeaf(addr):
             raise ValueError("[Context call] Context {self} is not defined "
@@ -346,7 +342,7 @@ class Context(Dict[Address, Address]):
 
     def __init__(self, dim: int) -> None:
         """
-        Creates an empty context of dimension `dim` :math:`\\geq 0`.
+        Creates an empty context of dimension :math:`\\geq 0`.
         """
         if (dim < 0):
             raise ValueError("[Context creation] Context must have dimension "
@@ -366,7 +362,8 @@ class Context(Dict[Address, Address]):
 
     def __sub__(self, addr: Address) -> 'Context':
         """
-        Removes a address `addr` from the domain of definition of the context.
+        Removes a address ``addr`` from the domain of definition of the
+        context.
         """
         if not self.definedOnLeaf(addr):
             raise ValueError("[Context restriction] Context {self} does not "
@@ -378,7 +375,7 @@ class Context(Dict[Address, Address]):
 
     def definedOnLeaf(self, addr: Address) -> bool:
         """
-        Returns wether the context is defined on address `addr`.
+        Returns wether the context is defined on address ``addr``.
         """
         return addr in self.keys()
 
@@ -406,9 +403,9 @@ class Preopetope:
 
     def __add__(self, t: Tuple[Address, 'Preopetope']) -> 'Preopetope':
         """
-        Adds a (:math:`(n-1)`-address, :math:`(n-1)`-preopetope) tuple `t` to
-        the non degenerate `self` :math:`n`-preopetope. The
-        :math:`(n-1)`-address must not be present in `self`.
+        Adds a (:math:`(n-1)`-address, :math:`(n-1)`-preopetope) tuple ``t`` to
+        the non degenerate ``self`` :math:`n`-preopetope. The
+        :math:`(n-1)`-address must not be present.
         """
         if self.isDegenerate:
             raise ValueError("[Preopetope extension] Cannot add an address to "
@@ -464,8 +461,8 @@ class Preopetope:
 
     def __init__(self, dim: int) -> None:
         """
-        Inits an **invalid** preopetope of dimension `dim`. This method should
-        not be called directly.
+        Inits an **invalid** preopetope of dimension ``dim``. This method
+        should not be called directly.
         """
         if (dim < -1):
             raise ValueError("[Preopetope creation] Preopetope must have "
@@ -480,9 +477,9 @@ class Preopetope:
     def __str__(self) -> str:
         """
         Converts a preopetope to a human readable string. The
-        :math:`(-1)`-preopetope is represented by ``∅``, the
-        :math:`0`-preopetope by ``⧫``, and the unique
-        :math:`1`-preopetope by ``■``.
+        :math:`(-1)`-preopetope is represented by ``"∅"``, the
+        :math:`0`-preopetope by ``"⧫"``, and the unique
+        :math:`1`-preopetope by ``"■"``.
         """
         if self.dimension == -1:
             return "∅"
@@ -500,7 +497,7 @@ class Preopetope:
 
     def __sub__(self, addr: Address) -> 'Preopetope':
         """
-        Removes source at address `addr`.
+        Removes source at address ``addr``.
         """
         if addr not in self.nodeAddresses():
             raise ValueError("[Preopetope restriction] Cannot remove address "
@@ -514,7 +511,7 @@ class Preopetope:
     @staticmethod
     def degenerate(q: 'Preopetope') -> 'Preopetope':
         """
-        Constructs the degenerate preopetope at `q`.
+        Constructs the degenerate preopetope at ``q``.
         """
         if q.dimension < 0:
             raise ValueError("[Preopetope degeneration] Cannot degenerate the "
@@ -550,8 +547,8 @@ class Preopetope:
     def grafting(p: 'Preopetope', addr: Address,
                  q: 'Preopetope') -> 'Preopetope':
         """
-        Grafts the :math:`n`-preopetope `q` on the :math:`n`-preopetope `p` at
-        address `addr`.
+        Grafts the :math:`n`-preopetope ``q`` on the :math:`n`-preopetope
+        ``p`` at address ``addr``.
         For improper grafting, see
         :meth:`UnnamedOpetope.Preopetope.improperGrafting`
         """
@@ -579,8 +576,8 @@ class Preopetope:
     @staticmethod
     def improperGrafting(p: 'Preopetope', addr: Address, q: 'Preopetope'):
         """
-        Performs the improper grafting of the :math:`(n-1)`-preopetope `q` on
-        the :math:`n`-preopetope `p` at address `addr`.
+        Performs the improper grafting of the :math:`(n-1)`-preopetope ``q`` on
+        the :math:`n`-preopetope ``p`` at address ``addr``.
         For proper grafting, see
         :meth:`UnnamedOpetope.Preopetope.grafting`
         """
@@ -621,9 +618,9 @@ class Preopetope:
     def substitution(p: 'Preopetope', addr: Address, ctx: Context,
                      q: 'Preopetope'):
         """
-        In the :math:`n`-preopetope `p`, substitute the source at address
-        `addr` by the :math:`(n-1)`-preopetope `q`. The context `ctx` must be
-        defined on all leaves of `q` (see
+        In the :math:`n`-preopetope ``p``, substitute the source at address
+        ``addr`` by the :math:`(n-1)`-preopetope ``q``. The context ``ctx``
+        must be defined on all leaves of ``q`` (see
         :meth:`UnnamedOpetope.Context.__call__`).
         """
         for leaf in q.leafAddresses():
@@ -712,8 +709,8 @@ class Sequent:
 
     def __init__(self, ctx: Context, s: Preopetope, t: Preopetope) -> None:
         """
-        Creates a sequent from an :math:`n`-context `ctx`, an
-        :math:`n`-preopetope `s`, and an :math:`(n-1)`-preopetope `t`.
+        Creates a sequent from an :math:`n`-context ``ctx``, an
+        :math:`n`-preopetope ``s``, and an :math:`(n-1)`-preopetope ``t``.
         """
         if not (ctx.dimension == s.dimension and
                 s.dimension == t.dimension + 1):
@@ -796,8 +793,8 @@ def graft(seq1: Sequent, seq2: Sequent, addr: Address) -> Sequent:
     """
     The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{graft}` rule.
     From an :math:`n`-opetope :math:`\\omega` (in sequent
-    `seq1`), an :math:`(n-1)`-opetope :math:`\\psi` (in sequent `seq2`), and a
-    leaf of :math:`\\omega`, creates the opetope
+    ``seq1``), an :math:`(n-1)`-opetope :math:`\\psi` (in sequent ``seq2``),
+    and a leaf of :math:`\\omega`, creates the opetope
     :math:`\\omega \\circ_{\\mathrm{addr}} \\mathsf{Y}_{\\psi}`.
     """
     r = seq1.context(addr)
@@ -875,7 +872,7 @@ class Degen(RuleInstance):
 
     def __init__(self, p: RuleInstance) -> None:
         """
-        Creates an instance of the ``degen`` rule and plugs proof tree `p`
+        Creates an instance of the ``degen`` rule and plugs proof tree ``p``
         on the unique premise.
         """
         self.p = p
@@ -912,7 +909,7 @@ class Shift(RuleInstance):
 
     def __init__(self, p: RuleInstance) -> None:
         """
-        Creates an instance of the ``shift`` rule and plugs proof tree `p`
+        Creates an instance of the ``shift`` rule and plugs proof tree ``p``
         on the unique premise.
         """
         self.p = p
@@ -951,10 +948,11 @@ class Graft(RuleInstance):
                  p2: RuleInstance,
                  addr: Address) -> None:
         """
-        Creates an instance of the ``graft`` rule at address `addr`, and plugs
-        proof tree `p1` on the first premise, and `p2` on the second. Recall
-        that the opetope described in the second premise will be impropely
-        grafted on that of the first. See :func:`UnnamedOpetope.graft`.
+        Creates an instance of the ``graft`` rule at address ``addr``, and
+        plugs proof tree ``p1`` on the first premise, and ``p2`` on the second.
+        Recall that the opetope described in the second premise will be
+        impropely grafted on that of the first. See
+        :func:`UnnamedOpetope.graft`.
         """
         self.p1 = p1
         self.p2 = p2

@@ -171,8 +171,8 @@ class Sum(RuleInstance):
     def __init__(self, p1: RuleInstance,
                  p2: RuleInstance) -> None:
         """
-        Creates an instance of the ``graft`` rule at variable `a`, and plugs
-        proof tree `p1` on the first premise, and `p2` on the second.
+        Creates an instance of the ``graft`` rule at variable ``a``, and plugs
+        proof tree ``p1`` on the first premise, and ``p2`` on the second.
 
         :see: :func:`NamedOpetope.graft`.
         """

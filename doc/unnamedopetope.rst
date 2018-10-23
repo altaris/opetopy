@@ -73,22 +73,22 @@ A classic
 .. code-block:: TeX
 
     \begin{prooftree}
-    \AxiomC{}
-    \RightLabel{\texttt{point}}
-    \UnaryInfC{$ \vdash \zeroOpt \longrightarrow \emptyset$}
-    \RightLabel{\texttt{shift}}
-    \UnaryInfC{$ \vdash \oneOpt \longrightarrow \zeroOpt$}
-    \RightLabel{\texttt{shift}}
-    \UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[\epsilon] \sep \oneOpt} \longrightarrow \oneOpt$}
-    \RightLabel{\texttt{shift}}
-    \UnaryInfC{$\frac{[[\epsilon]]}{[\epsilon]} \vdash \opetope{[\epsilon] \sep \opetope{[\epsilon] \sep \oneOpt}} \longrightarrow \opetope{[\epsilon] \sep \oneOpt}$}
-    \AxiomC{}
-    \RightLabel{\texttt{point}}
-    \UnaryInfC{$ \vdash \zeroOpt \longrightarrow \emptyset$}
-    \RightLabel{\texttt{degen}}
-    \UnaryInfC{$\frac{[\epsilon]}{*} \vdash \degenopetope{\zeroOpt} \longrightarrow \oneOpt$}
-    \RightLabel{\texttt{graft-}$[[\epsilon]]$}
-    \BinaryInfC{$ \vdash \opetope{[\epsilon] \sep \opetope{[\epsilon] \sep \oneOpt} \\ [[\epsilon]] \sep \degenopetope{\zeroOpt}} \longrightarrow \degenopetope{\zeroOpt}$}
+        \AxiomC{}
+        \RightLabel{\texttt{point}}
+        \UnaryInfC{$ \vdash \zeroOpt \longrightarrow \emptyset$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$ \vdash \oneOpt \longrightarrow \zeroOpt$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[\epsilon] \sep \oneOpt} \longrightarrow \oneOpt$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$\frac{[[\epsilon]]}{[\epsilon]} \vdash \opetope{[\epsilon] \sep \opetope{[\epsilon] \sep \oneOpt}} \longrightarrow \opetope{[\epsilon] \sep \oneOpt}$}
+        \AxiomC{}
+        \RightLabel{\texttt{point}}
+        \UnaryInfC{$ \vdash \zeroOpt \longrightarrow \emptyset$}
+        \RightLabel{\texttt{degen}}
+        \UnaryInfC{$\frac{[\epsilon]}{*} \vdash \degenopetope{\zeroOpt} \longrightarrow \oneOpt$}
+        \RightLabel{\texttt{graft-}$[[\epsilon]]$}
+        \BinaryInfC{$ \vdash \opetope{[\epsilon] \sep \opetope{[\epsilon] \sep \oneOpt} \\ [[\epsilon]] \sep \degenopetope{\zeroOpt}} \longrightarrow \degenopetope{\zeroOpt}$}
     \end{prooftree}
 
 

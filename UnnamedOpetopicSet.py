@@ -102,7 +102,7 @@ class PastingDiagram:
 
     def __getitem__(self, addr: UnnamedOpetope.Address) -> str:
         """
-        Returns the source variable at `addr` of a non degenerate pasting
+        Returns the source variable at ``addr`` of a non degenerate pasting
         diagram.
         """
         if self.nodes is None:
@@ -340,7 +340,7 @@ class Context(Set[Typing]):
 
     def __contains__(self, var) -> bool:
         """
-        Tests wether the variable `var` is typed in this context.
+        Tests wether the variable ``var`` is typed in this context.
         """
         if not isinstance(var, Variable):
             raise NotImplementedError
@@ -351,7 +351,7 @@ class Context(Set[Typing]):
 
     def __getitem__(self, name: str) -> Typing:
         """
-        Returns typing whose variable name is `name`.
+        Returns typing whose variable name is ``name``.
         """
         for t in self:
             if t.variable.name == name:
@@ -367,14 +367,14 @@ class Context(Set[Typing]):
 
     def source(self, name: str, addr: UnnamedOpetope.Address) -> str:
         """
-        Returns the source at address `addr` of the variable whose name is
-        `name`.
+        Returns the source at address ``addr`` of the variable whose name is
+        ``name``.
         """
         return self[name].type.source[addr]
 
     def target(self, name: str) -> str:
         """
-        Returns the target of the variable whose name is `name`.
+        Returns the target of the variable whose name is ``name``.
         """
         res = self[name].type.target
         if self[name].type.source.shape == \
@@ -407,7 +407,7 @@ class Sequent:
 
     def __getitem__(self, name: str) -> Variable:
         """
-        Returns the variable in the sequent's context whose name is `name`.
+        Returns the variable in the sequent's context whose name is ``name``.
         Note that unlike :func:`UnnamedOpetopicSet.Context.__getitem__`, this
         function returns a :class:`UnnamedOpetopicSet.Variable` (and not a
         :class:`UnnamedOpetopicSet.Typing`)
@@ -585,7 +585,7 @@ class RuleInstance(AbstractRuleInstance):
 
 class Point(RuleInstance):
     """
-    A class representing an instance of the :math:`\\textt{point}` rule in a
+    A class representing an instance of the :math:`\\texttt{point}` rule in a
     proof tree.
     """
 
@@ -635,7 +635,7 @@ class Point(RuleInstance):
 
 class Degen(RuleInstance):
     """
-    A class representing an instance of the :math:`\\textt{degen}` rule in a
+    A class representing an instance of the :math:`\\texttt{degen}` rule in a
     proof tree.
     """
 
@@ -671,7 +671,7 @@ class Degen(RuleInstance):
 
 class Graft(RuleInstance):
     """
-    A class representing an instance of the :math:`\\textt{graft}` rule in a
+    A class representing an instance of the :math:`\\texttt{graft}` rule in a
     proof tree.
     """
 
@@ -707,7 +707,7 @@ class Graft(RuleInstance):
 
 class Fill(RuleInstance):
     """
-    A class representing an instance of the :math:`\\textt{fill}` rule in a
+    A class representing an instance of the :math:`\\texttt{fill}` rule in a
     proof tree.
     """
 

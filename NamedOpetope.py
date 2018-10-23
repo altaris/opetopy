@@ -71,13 +71,13 @@ class Term(Dict[Variable, 'Term']):
     An :math:`n`-term is represented as follows:
 
     * If it is degenerate, then the boolean attribute
-      :py:attr:`NamedOpetope.Term.degenerate` is set to `True`, and
+      :py:attr:`NamedOpetope.Term.degenerate` is set to ``True``, and
       :py:attr:`NamedOpetope.Term.variable` is set to the variable name of
       which the current term is the degeneracy.
     * If it is non degenerate, then the boolean attribute
-      :py:attr:`NamedOpetope.Term.degenerate` is set to `False`,
+      :py:attr:`NamedOpetope.Term.degenerate` is set to ``False``,
       :py:attr:`NamedOpetope.Term.variable` is set to the variable name of
-      the root node, and this class is otherwise used as a `dict` mapping
+      the root node, and this class is otherwise used as a ``dict`` mapping
       :math:`(n-1)`-variables in the source to other :math:`n`-terms.
     """
 
@@ -88,17 +88,17 @@ class Term(Dict[Variable, 'Term']):
         """
         Checks if a variable is in the term.
 
-        If the term is degenerate, always return `False`. Otherwise, assume
+        If the term is degenerate, always return ``False``. Otherwise, assume
         the term has dimension :math:`n`.
 
         * If the variable has dimension :math:`(n-1)`, then it checks against
-          all keys in the underlying `dict` and if not found, calls the method
-          recursively on all values of the underlying `dict` (which by
+          all keys in the underlying ``dict`` and if not found, calls the
+          method recursively on all values of the underlying ``dict`` (which by
           construction are also :math:`n`-terms).
         * If the variable has :math:`n`, then it compares it to the root node
           (:py:attr:`NamedOpetope.Term.variable`), and if not equal, calls
-          the method recursively on all values of the underlying `dict` (which
-          by construction are also :math:`n`-terms).
+          the method recursively on all values of the underlying ``dict``
+          (which by construction are also :math:`n`-terms).
         """
         if not isinstance(var, Variable):
             raise NotImplementedError
@@ -145,8 +145,8 @@ class Term(Dict[Variable, 'Term']):
     def __init__(self, var: Optional[Variable] = None,
                  degen: bool = False) -> None:
         """
-        Creates a term from a :class:`NamedOpetope.Variable` `var`.
-        If it is `None` (default), then this term represents the unique
+        Creates a term from a :class:`NamedOpetope.Variable` ``var``.
+        If it is ``None`` (default), then this term represents the unique
         :math:`(-1)`-term.
         """
         self.degenerate = degen
@@ -176,7 +176,7 @@ class Term(Dict[Variable, 'Term']):
     def dimension(self) -> int:
         """
         Returns the dimension of the term. If its
-        :py:attr:`NamedOpetope.Term.variable` is `None`, then it is
+        :py:attr:`NamedOpetope.Term.variable` is ``None``, then it is
         :math:`-1` by convention. If it is degenerate, then it is the dimension
         of :py:attr:`NamedOpetope.Term.variable` :math:`+1`, otherwise just
         the dimension of :py:attr:`NamedOpetope.Term.variable`.
@@ -391,7 +391,7 @@ class Context(Set[Typing]):
 
     def __contains__(self, var) -> bool:
         """
-        Tests wether the variable `var` is typed in this context.
+        Tests wether the variable ``var`` is typed in this context.
         """
         if not isinstance(var, Variable):
             raise NotImplementedError
@@ -432,7 +432,7 @@ class Context(Set[Typing]):
 
     def source(self, var: Variable, k: int = 1) -> Term:
         """
-        Returns the :mathm`k`-source of a variable.
+        Returns the :mathm``k``-source of a variable.
         """
         if k < 0 or k > var.dimension + 1:
             raise ValueError("[Context, source computation] Index out of "
@@ -481,7 +481,7 @@ class EquationalTheory:
     """
     An equational theory (among variables), is here represented as a partition
     of a subset of the set of all variables. Is is thus a list of sets of
-    variables. (set of sets isn't possible as python `set` isn't hashable)
+    variables. (set of sets isn't possible as python ``set`` isn't hashable)
     """
 
     classes: List[Set[Variable]]
@@ -539,7 +539,7 @@ class EquationalTheory:
         """
         Returns the index (in
         :py:attr:`NamedOpetope.EquationalTheory.classes`)
-        of the class of the variable `a`, or `-1` of the class doesn't exist.
+        of the class of the variable ``a``, or `-1` of the class doesn't exist.
         """
         for i in range(len(self.classes)):
             if a in self.classes[i]:
@@ -559,7 +559,7 @@ class EquationalTheory:
     def equal(self, a: Variable, b: Variable) -> bool:
         """
         Tells wether variables (:class:`NamedOpetope.Variable`)
-        `a` and `b` are equal modulo the equational theory.
+        ``a`` and ``b`` are equal modulo the equational theory.
         """
         ia = self._index(a)
         if ia == -1:
@@ -609,7 +609,7 @@ class OCMT:
 
     def equal(self, t: Term, u: Term) -> bool:
         """
-        Tells wether two terms `t` and `u` are equal modulo the equational
+        Tells wether two terms ``t`` and ``u`` are equal modulo the equational
         theory.
 
         :see: Similar method for variables only:
@@ -650,7 +650,7 @@ class OCMT:
 
     def source(self, var: Variable, k: int = 1) -> Term:
         """
-        Returns the :mathm`k`-source of a variable.
+        Returns the :mathm``k``-source of a variable.
 
         :see: :meth:`NamedOpetope.Context.source`
         """
@@ -745,14 +745,14 @@ class Sequent(OCMT):
     def substitute(self, u: Term, s: Term, a: Variable) -> \
             Tuple[Term, Optional[Tuple[Variable, Variable]]]:
         """
-        Substitute term (:class:`NamedOpetope.Term`) `s` for variable
-        (:class:`NamedOpetope.Variable`) `a` in term `u`. In other
+        Substitute term (:class:`NamedOpetope.Term`) ``s`` for variable
+        (:class:`NamedOpetope.Variable`) ``a`` in term ``u``. In other
         words, computes :math:`u[s/a]`.
 
         Returns a tuple containing
 
         1. the resulting substitution
-        2. an new equality to add to the equational theory, or `None`
+        2. an new equality to add to the equational theory, or ``None``
         """
         if s.variable is None:
             raise ValueError("[Sequent, substitute] Cannot substitute in the "
@@ -819,7 +819,7 @@ class Sequent(OCMT):
 def point(x: Variable) -> Sequent:
     """
     The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{point}` rule.
-    Introduces a :math:`0`-variable with name `x`.
+    Introduces a :math:`0`-variable with name ``x``.
     """
     if x.dimension != 0:
         raise ValueError("[point rule] New variable must have dimension 0 "
@@ -831,8 +831,8 @@ def point(x: Variable) -> Sequent:
 def fill(seq: Sequent, x: Variable) -> Sequent:
     """
     The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{fill}` rule.
-    Takes a sequent `seq` typing a term `t` and introduces
-    a new variable `x` having `t` as :math:`1`-source.
+    Takes a sequent ``seq`` typing a term ``t`` and introduces
+    a new variable ``x`` having ``t`` as :math:`1`-source.
     """
     res = deepcopy(seq)
     typing = Typing(Term(x), Type([seq.typing.term] + seq.typing.type.terms))
@@ -871,17 +871,17 @@ def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
     The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{graft}` rule.
     Takes the following arguments:
 
-    1. `seqt` typing an :math:`n` term  :math:`t`
-    2. `seqx` second typing an :math:`n` variable :math:`x`
-    3. `a` an :math:`(n-1)` variable onto which to operate the grafting
+    1. ``seqt`` typing an :math:`n` term  :math:`t`
+    2. ``seqx`` second typing an :math:`n` variable :math:`x`
+    3. ``a`` an :math:`(n-1)` variable onto which to operate the grafting
 
     such that the two sequents are compatible, and the intersection of their
-    context is essentially the context typing `a` and its variables. It then
+    context is essentially the context typing ``a`` and its variables. It then
     produces the :math:`n` term :math:`t(a \\leftarrow x)`.
 
     The way the intersection condition is checked is by verifying that the only
     variables typed in both contexts (modulo both theories) are those appearing
-    in the type of `a` or of course `a` itself.
+    in the type of ``a`` or of course ``a`` itself.
     """
     if seqx.typing.term.variable is None:
         raise ValueError("[graft rule] First premiss sequent types an "
@@ -997,7 +997,7 @@ class Degen(RuleInstance):
 
     def __init__(self, p: RuleInstance) -> None:
         """
-        Creates an instance of the ``degen`` rule and plugs proof tree `p`
+        Creates an instance of the ``degen`` rule and plugs proof tree ``p``
         on the unique premise.
         """
         self.p = p
@@ -1094,8 +1094,8 @@ class Graft(RuleInstance):
     def __init__(self, p1: RuleInstance,
                  p2: RuleInstance, a: Variable) -> None:
         """
-        Creates an instance of the ``graft`` rule at variable `a`, and plugs
-        proof tree `p1` on the first premise, and `p2` on the second.
+        Creates an instance of the ``graft`` rule at variable ``a``, and plugs
+        proof tree ``p1`` on the first premise, and ``p2`` on the second.
 
         :see: :func:`NamedOpetope.graft`.
         """
