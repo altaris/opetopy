@@ -1445,5 +1445,55 @@ class Test_NamedOpetope_Sequent(unittest.TestCase):
         self.assertTrue(self.sequent.equal(res[0], self.gh))
 
 
+class Test_NamedOpetope_InferenceRules(unittest.TestCase):
+
+    def setUp(self):
+        self.x = NamedOpetope.Variable("x", 0)
+
+    def test_point(self):
+        s = NamedOpetope.point(self.x)
+        self.assertEqual(
+            s.typing.term, NamedOpetope.Term(self.x))
+        self.assertEqual(len(s.context), 1)
+        with self.assertRaises(DerivationError):
+            NamedOpetope.point(NamedOpetope.Variable("x", 1))
+
+    def test_fill(self):
+        pass
+
+    def test_degen(self):
+        s = NamedOpetope.point(self.x)
+        s = NamedOpetope.degen(s)
+        self.assertEqual(
+            s.typing.term, NamedOpetope.Term(self.x, True))
+        self.assertEqual(len(s.context), 1)
+        with self.assertRaises(DerivationError):
+            NamedOpetope.degen(s)
+
+    def test_degenfill(self):
+        pass
+
+    def test_graft(self):
+        pass
+
+
+class Test_NamedOpetopicSet_InferenceRules(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_repres(self):
+        pass
+
+    def test_sum(self):
+        pass
+
+    def test_fold(self):
+        pass
+
+    def test_zero(self):
+        pass
+
+
 if __name__ == "__main__":
     unittest.main(verbosity = 2)

@@ -900,7 +900,7 @@ def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
     variables typed in both contexts (modulo both theories) are those appearing
     in the type of ``a`` or of course ``a`` itself.
     """
-    if seqx.typing.term.variable is None:
+    if seqt.typing.term.variable is None:
         raise DerivationError(
             "graft rule",
             "First premiss sequent types an invalid / null term")
