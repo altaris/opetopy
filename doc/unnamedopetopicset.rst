@@ -12,15 +12,17 @@ The arrow
 
 .. code-block:: python
 
-    from UnnamedOpetopicSet import *
-    import UnnamedOpetope
+    from opetopy.UnnamedOpetopicSet import *
+    from opetopy.UnnamedOpetope import address, Arrow
 
     ar = Point("a")
     ar = Point("b", ar)
     ar = Graft(
-        PastingDiagram.nonDegeneratePastingDiagram(
-            UnnamedOpetope.Arrow(),
-            {UnnamedOpetope.address([], 0): "a"}),
+        pastingDiagram(
+            Arrow(),
+            {
+                address([], 0): "a"
+            }),
         ar)
     ar = Fill("b", "f", ar)
     print(ar.eval())
@@ -55,58 +57,60 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
 
 .. code-block:: python
 
-    from UnnamedOpetopicSet import *
-    import UnnamedOpetope
-    
+    from opetopy.UnnamedOpetopicSet import *
+    from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger
+    from opetopy.UnnamedOpetope import Graft as OptGraft
+    from opetopy.UnnamedOpetope import Shift as OptShift
+
     # Derivation of ω
-    omega = UnnamedOpetope.Graft(
-        UnnamedOpetope.Shift(UnnamedOpetope.OpetopicInteger(2)),
-        UnnamedOpetope.OpetopicInteger(2),
-        UnnamedOpetope.address([['*']]))
+    omega = OptGraft(
+        OptShift(OpetopicInteger(2)),
+        OpetopicInteger(2),
+        address([['*']]))
 
     # Derivation of a
     classic = Point("a")
 
     # Derivation of f
     classic = Graft(
-        PastingDiagram.nonDegeneratePastingDiagram(
-            UnnamedOpetope.Arrow(),
+        pastingDiagram(
+            Arrow(),
             {
-                UnnamedOpetope.address([], 0): "a"
+                address([], 0): "a"
             }),
         classic)
     classic = Fill("a", "f", classic)
 
     # Derivation of α
     classic = Graft(
-        PastingDiagram.nonDegeneratePastingDiagram(
-            UnnamedOpetope.OpetopicInteger(2),
+        pastingDiagram(
+            OpetopicInteger(2),
             {
-                UnnamedOpetope.address([], 1): "f",
-                UnnamedOpetope.address(['*']): "f"
+                address([], 1): "f",
+                address(['*']): "f"
             }),
         classic)
     classic = Fill("f", "α", classic)
 
     # Derivation of β
     classic = Graft(
-        PastingDiagram.nonDegeneratePastingDiagram(
-            UnnamedOpetope.OpetopicInteger(3),
+        pastingDiagram(
+            OpetopicInteger(3),
             {
-                UnnamedOpetope.address([], 1): "f",
-                UnnamedOpetope.address(['*']): "f",
-                UnnamedOpetope.address(['*', '*']): "f"
+                address([], 1): "f",
+                address(['*']): "f",
+                address(['*', '*']): "f"
             }),
         classic)
     classic = Fill("f", "β", classic)
 
     # Derivation of A
     classic = Graft(
-        PastingDiagram.nonDegeneratePastingDiagram(
+        pastingDiagram(
             omega,
             {
-                UnnamedOpetope.address([], 2): "α",
-                UnnamedOpetope.address([['*']]): "α"
+                address([], 2): "α",
+                address([['*']]): "α"
             }),
         classic)
     classic = Fill("β", "A", classic)

@@ -9,7 +9,7 @@
 """
 
 from copy import deepcopy
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import UnnamedOpetope
 from common import *
@@ -766,3 +766,33 @@ class Fill(RuleInstance):
         Evaluates the proof tree.
         """
         return fill(self.proofTree.eval(), self.targetName, self.name)
+
+
+def pastingDiagram(shapeProof: UnnamedOpetope.RuleInstance,
+                   args: Union[Dict[UnnamedOpetope.Address, str], str]) \
+        -> PastingDiagram:
+    """
+    Convenient function that regroups
+    :meth:`UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram` and
+    :meth:`UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram`.
+    It calls either depending on the shape opetope.
+    """
+    shape = shapeProof.eval().source
+    if shape.isDegenerate:
+        if isinstance(args, str):
+            return PastingDiagram.degeneratePastingDiagram(
+                shapeProof, args)
+        else:
+            raise DerivationError(
+                "Pasting diagram creation",
+                "Second argument is expected to be a variable name, since "
+                "shape is degenerate")
+    else:
+        if isinstance(args, dict):
+            return PastingDiagram.nonDegeneratePastingDiagram(
+                shapeProof, args)
+        else:
+            raise DerivationError(
+                "Pasting diagram creation",
+                "Second argument is expected to be a address-to-variable-name "
+                "mapping, since shape is non degenerate")
