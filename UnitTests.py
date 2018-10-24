@@ -479,6 +479,76 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
             i5)
 
 
+class Test_UnnamedOpetope_InferenceRules(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_point(self):
+        s = UnnamedOpetope.point()
+        self.assertEqual(s.context, UnnamedOpetope.Context(0))
+        self.assertEqual(s.source, UnnamedOpetope.Preopetope.point())
+        self.assertEqual(s.target, UnnamedOpetope.Preopetope.empty())
+
+    def test_degen(self):
+        s = UnnamedOpetope.degen(UnnamedOpetope.point())
+        self.assertEqual(
+            s.context, UnnamedOpetope.Context(2) +
+            (UnnamedOpetope.Address.epsilon(1),
+             UnnamedOpetope.Address.epsilon(0)))
+        self.assertEqual(
+            s.source,
+            UnnamedOpetope.Preopetope.degenerate(
+                UnnamedOpetope.Preopetope.point()))
+        self.assertEqual(
+            s.target,
+            UnnamedOpetope.shift(UnnamedOpetope.point()).source)
+
+    def test_shift(self):
+        s1 = UnnamedOpetope.shift(UnnamedOpetope.point())
+        s2 = UnnamedOpetope.shift(s1)
+        self.assertEqual(
+            s2.context,
+            UnnamedOpetope.Context(2) +
+            (UnnamedOpetope.Address.epsilon(0).shift(),
+             UnnamedOpetope.Address.epsilon(0)))
+        p = UnnamedOpetope.Preopetope.point()
+        a = UnnamedOpetope.Preopetope(1)
+        a.nodes[UnnamedOpetope.Address.epsilon(0)] = p
+        g = UnnamedOpetope.Preopetope(2)
+        g.nodes[UnnamedOpetope.Address.epsilon(1)] = a
+        self.assertEqual(s1.source, a)
+        self.assertEqual(s1.target, p)
+        self.assertEqual(s2.source, g)
+        self.assertEqual(s2.target, a)
+
+    def test_graft(self):
+        i2 = UnnamedOpetope.OpetopicInteger(2).eval()
+        i3 = UnnamedOpetope.OpetopicInteger(3).eval()
+        s = UnnamedOpetope.shift(i3)
+        s = UnnamedOpetope.graft(
+            s, i2, UnnamedOpetope.Address.fromList([['*']], 2))
+        s = UnnamedOpetope.graft(
+            s, i2,
+            UnnamedOpetope.Address.fromList([['*', '*']], 2))
+        r = s.context
+        self.assertEqual(
+            r(UnnamedOpetope.Address.fromList([[]], 2)),
+            UnnamedOpetope.Address.fromList([], 1))
+        self.assertEqual(
+            r(UnnamedOpetope.Address.fromList([['*'], []], 2)),
+            UnnamedOpetope.Address.fromList(['*'], 1))
+        self.assertEqual(
+            r(UnnamedOpetope.Address.fromList([['*'], ['*']], 2)),
+            UnnamedOpetope.Address.fromList(['*', '*'], 1))
+        self.assertEqual(
+            r(UnnamedOpetope.Address.fromList([['*', '*'], []], 2)),
+            UnnamedOpetope.Address.fromList(['*', '*', '*'], 1))
+        self.assertEqual(
+            r(UnnamedOpetope.Address.fromList([['*', '*'], ['*']], 2)),
+            UnnamedOpetope.Address.fromList(['*', '*', '*', '*'], 1))
+
+
 class Test_UnnamedOpetopicSet_Variable(unittest.TestCase):
 
     def setUp(self):
