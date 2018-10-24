@@ -1448,24 +1448,23 @@ class Test_NamedOpetope_Sequent(unittest.TestCase):
 class Test_NamedOpetope_InferenceRules(unittest.TestCase):
 
     def setUp(self):
-        self.x = NamedOpetope.Variable("x", 0)
+        pass
 
     def test_point(self):
-        s = NamedOpetope.point(self.x)
+        s = NamedOpetope.point("x")
         self.assertEqual(
-            s.typing.term, NamedOpetope.Term(self.x))
+            s.typing.term, NamedOpetope.Term(NamedOpetope.Variable("x", 0)))
         self.assertEqual(len(s.context), 1)
-        with self.assertRaises(DerivationError):
-            NamedOpetope.point(NamedOpetope.Variable("x", 1))
 
     def test_fill(self):
         pass
 
     def test_degen(self):
-        s = NamedOpetope.point(self.x)
+        s = NamedOpetope.point("x")
         s = NamedOpetope.degen(s)
         self.assertEqual(
-            s.typing.term, NamedOpetope.Term(self.x, True))
+            s.typing.term, NamedOpetope.Term(
+                NamedOpetope.Variable("x", 0), True))
         self.assertEqual(len(s.context), 1)
         with self.assertRaises(DerivationError):
             NamedOpetope.degen(s)

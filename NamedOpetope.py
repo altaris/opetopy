@@ -829,28 +829,26 @@ class Sequent(OCMT):
                 str(self.typing.term.dimension) + "} " + self.typing.toTex()
 
 
-def point(x: Variable) -> Sequent:
+def point(name: str) -> Sequent:
     """
     The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{point}` rule.
     Introduces a :math:`0`-variable with name ``x``.
     """
-    if x.dimension != 0:
-        raise DerivationError(
-            "point rule",
-            "New variable must have dimension 0 (has dimension {dim})",
-            dim = x.dimension)
-    t = Typing(Term(x), Type([Term()]))
+    t = Typing(Term(Variable(name, 0)), Type([Term()]))
     return Sequent(EquationalTheory(), Context() + t, t)
 
 
-def fill(seq: Sequent, x: Variable) -> Sequent:
+def fill(seq: Sequent, name: str) -> Sequent:
     """
     The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{fill}` rule.
     Takes a sequent ``seq`` typing a term ``t`` and introduces
     a new variable ``x`` having ``t`` as :math:`1`-source.
     """
+    n = seq.typing.term.dimension
     res = deepcopy(seq)
-    typing = Typing(Term(x), Type([seq.typing.term] + seq.typing.type.terms))
+    typing = Typing(
+        Term(Variable(name, n + 1)),
+        Type([seq.typing.term] + seq.typing.type.terms))
     res.context += typing
     res.typing = typing
     return res
@@ -875,22 +873,23 @@ def degen(seq: Sequent) -> Sequent:
     return res
 
 
-def degenfill(seq: Sequent, x: Variable) -> Sequent:
+def degenfill(seq: Sequent, name: str) -> Sequent:
     """
     The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{degen-fill}` rule.
     Applies the degen and the fill rule consecutively.
     """
-    return fill(degen(seq), x)
+    return fill(degen(seq), name)
 
 
-def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
+def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
     """
     The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{graft}` rule.
     Takes the following arguments:
 
     1. ``seqt`` typing an :math:`n` term  :math:`t`
     2. ``seqx`` second typing an :math:`n` variable :math:`x`
-    3. ``a`` an :math:`(n-1)` variable onto which to operate the grafting
+    3. an :math:`(n-1)` variable ``a`` onto which to operate the grafting,
+       specified by its name ``name``
 
     such that the two sequents are compatible, and the intersection of their
     context is essentially the context typing ``a`` and its variables. It then
@@ -908,6 +907,7 @@ def graft(seqt: Sequent, seqx: Sequent, a: Variable) -> Sequent:
         raise DerivationError(
             "graft rule",
             "Second premiss sequent types an invalid / null term")
+    a = Variable(name, seqt.typing.term.dimension - 1)
     # checking intersection
     inter = seqt.context & seqx.context
     typea = seqt.typeOf(a)
@@ -991,15 +991,16 @@ class Point(RuleInstance):
     A class representing an instance of the ``point`` rule in a proof tree.
     """
 
-    def __init__(self, var: Variable) -> None:
-        self.variable = var
-        self.eval()
+    variableName: str
+
+    def __init__(self, name: str) -> None:
+        self.variableName = name
 
     def __repr__(self) -> str:
-        return "Point({})".format(repr(self.variable))
+        return "Point({})".format(self.variableName)
 
     def __str__(self) -> str:
-        return "Point({})".format(str(self.variable))
+        return "Point({})".format(self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -1015,7 +1016,7 @@ class Point(RuleInstance):
         Evaluates the proof tree, in this cases returns the point sequent by
         calling :func:`NamedOpetope.point`.
         """
-        return point(self.variable)
+        return point(self.variableName)
 
 
 class Degen(RuleInstance):
@@ -1023,19 +1024,20 @@ class Degen(RuleInstance):
     A class representing an instance of the ``degen`` rule in a proof tree.
     """
 
+    proofTree: RuleInstance
+
     def __init__(self, p: RuleInstance) -> None:
         """
         Creates an instance of the ``degen`` rule and plugs proof tree ``p``
         on the unique premise.
         """
-        self.p = p
-        self.eval()
+        self.proofTree = p
 
     def __repr__(self) -> str:
-        return "Degen({})".format(repr(self.p))
+        return "Degen({})".format(repr(self.proofTree))
 
     def __str__(self) -> str:
-        return "Degen({})".format(str(self.p))
+        return "Degen({})".format(str(self.proofTree))
 
     def _toTex(self) -> str:
         """
@@ -1043,7 +1045,7 @@ class Degen(RuleInstance):
         directly, use :meth:`NamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p._toTex() + \
+        return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{degen}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
@@ -1053,7 +1055,7 @@ class Degen(RuleInstance):
         and then applying :func:`NamedOpetope.degenerate` on the
         resulting sequent.
         """
-        return degen(self.p.eval())
+        return degen(self.proofTree.eval())
 
 
 class Fill(RuleInstance):
@@ -1061,16 +1063,18 @@ class Fill(RuleInstance):
     A class representing an instance of the ``fill`` rule in a proof tree.
     """
 
-    def __init__(self, p: RuleInstance, var: Variable) -> None:
-        self.p = p
-        self.variable = var
-        self.eval()
+    proofTree: RuleInstance
+    variableName: str
+
+    def __init__(self, p: RuleInstance, name: str) -> None:
+        self.proofTree = p
+        self.variableName = name
 
     def __repr__(self) -> str:
-        return "Fill({}, {})".format(repr(self.p), repr(self.variable))
+        return "Fill({}, {})".format(repr(self.proofTree), self.variableName)
 
     def __str__(self) -> str:
-        return "Fill({}, {})".format(str(self.p), str(self.variable))
+        return "Fill({}, {})".format(str(self.proofTree), self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -1078,12 +1082,12 @@ class Fill(RuleInstance):
         directly, use :meth:`NamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p._toTex() + \
+        return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
-        return fill(self.p.eval(), self.variable)
+        return fill(self.proofTree.eval(), self.variableName)
 
 
 class DegenFill(RuleInstance):
@@ -1092,15 +1096,17 @@ class DegenFill(RuleInstance):
     tree.
     """
 
-    def __init__(self, p: RuleInstance, var: Variable) -> None:
-        self.p = Fill(Degen(p), var)
+    proofTree: RuleInstance
+
+    def __init__(self, p: RuleInstance, name: str) -> None:
+        self.proofTree = Fill(Degen(p), name)
         self.eval()
 
     def __repr__(self) -> str:
-        return repr(self.p)
+        return repr(self.proofTree)
 
     def __str__(self) -> str:
-        return str(self.p)
+        return str(self.proofTree)
 
     def _toTex(self) -> str:
         """
@@ -1108,10 +1114,10 @@ class DegenFill(RuleInstance):
         directly, use :meth:`NamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p._toTex()
+        return self.proofTree._toTex()
 
     def eval(self) -> Sequent:
-        return self.p.eval()
+        return self.proofTree.eval()
 
 
 class Graft(RuleInstance):
@@ -1119,28 +1125,32 @@ class Graft(RuleInstance):
     A class representing an instance of the ``graft`` rule in a proof tree.
     """
 
+    proofTree1: RuleInstance
+    proofTree2: RuleInstance
+    variableName: str
+
     def __init__(self, p1: RuleInstance,
-                 p2: RuleInstance, a: Variable) -> None:
+                 p2: RuleInstance, a: str) -> None:
         """
         Creates an instance of the ``graft`` rule at variable ``a``, and plugs
         proof tree ``p1`` on the first premise, and ``p2`` on the second.
 
         :see: :func:`NamedOpetope.graft`.
         """
-        self.p1 = p1
-        self.p2 = p2
-        self.a = a
+        self.proofTree1 = p1
+        self.proofTree2 = p2
+        self.variableName = a
         self.eval()
 
     def __repr__(self) -> str:
-        return "Graft({p1}, {p2}, {a})".format(p1 = repr(self.p1),
-                                               p2 = repr(self.p2),
-                                               a = repr(self.a))
+        return "Graft({p1}, {p2}, {a})".format(p1 = repr(self.proofTree1),
+                                               p2 = repr(self.proofTree2),
+                                               a = self.variableName)
 
     def __str__(self) -> str:
-        return "Graft({p1}, {p2}, {a})".format(p1 = str(self.p1),
-                                               p2 = str(self.p2),
-                                               a = str(self.a))
+        return "Graft({p1}, {p2}, {a})".format(p1 = str(self.proofTree1),
+                                               p2 = str(self.proofTree2),
+                                               a = self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -1148,14 +1158,16 @@ class Graft(RuleInstance):
         directly, use :meth:`NamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p1._toTex() + "\n\t" + self.p2._toTex() + \
-            "\n\t\\RightLabel{\\texttt{graft-}$" + self.a.toTex() + \
-            "$}\n\t\\BinaryInfC{$" + self.eval().toTex() + "$}"
+        return self.proofTree1._toTex() + "\n\t" + self.proofTree2._toTex() + \
+            "\n\t\\RightLabel{\\texttt{graft-}$" + \
+            self.variableName + "$}\n\t\\BinaryInfC{$" + \
+            self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
         """
         Evaluates this instance of ``graft`` by first evaluating its premises,
         and then applying :func:`NamedOpetope.graft` at variable
-        `self.a` on the resulting sequents.
+        ``self.variableName`` on the resulting sequents.
         """
-        return graft(self.p1.eval(), self.p2.eval(), self.a)
+        return graft(
+            self.proofTree1.eval(), self.proofTree2.eval(), self.variableName)

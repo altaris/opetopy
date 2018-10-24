@@ -12,7 +12,7 @@ The point
 
 .. code-block:: python
 
-    pt = Point(Variable("x", 0))
+    pt = Point("x")
     print(pt.eval())
 
 ::
@@ -27,17 +27,16 @@ A classic
 .. code-block:: python
 
     beta = Fill(Graft(
-        Fill(Point(Variable("c", 0)), Variable("h", 1)),
-        Fill(Point(Variable("a", 0)), Variable("i", 1)),
-        Variable("c", 0)),
-        Variable("β", 2))
+        Fill(Point("c"), "h"),
+        Fill(Point("a"), "i"),
+        "c"),
+        "β")
     alpha = Fill(Graft(
-        Fill(Point(Variable("b", 0)), Variable("g", 1)),
-        Fill(Point(Variable("a", 0)), Variable("f", 1)),
-        Variable("b", 0)),
-        Variable("α", 2))
-    classic = Fill(Graft(beta, alpha, Variable("i", 1)),
-        Variable("A", 3))
+        Fill(Point("b"), "g"),
+        Fill(Point("a"), "f"),
+        "b"),
+        "α")
+    classic = Fill(Graft(beta, alpha, "i"), "A")
     print(classic.eval())
 
 ::
