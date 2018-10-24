@@ -19,6 +19,11 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
     """
     The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{repr}` rule.
     """
+    if not seq.typing.term.isVariable():
+        raise DerivationError(
+            "repr rule",
+            "Opt! sequent expected to type a variable, typing {term}",
+            term = repr(seq.typing.term))
     res = NamedOpetope.OCMT(deepcopy(seq.theory), deepcopy(seq.context))
     # new context
     for typing in seq.context:
