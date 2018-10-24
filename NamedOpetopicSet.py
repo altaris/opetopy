@@ -85,11 +85,12 @@ def sum(ocmt1: NamedOpetope.OCMT,
         ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
 
 
-def fold(ocmt: NamedOpetope.OCMT, a: NamedOpetope.Variable,
-         b: NamedOpetope.Variable) -> NamedOpetope.OCMT:
+def fold(ocmt: NamedOpetope.OCMT, aName: str, bName: str) -> NamedOpetope.OCMT:
     """
     The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{fold}` rule.
     """
+    a = ocmt.context[aName]
+    b = ocmt.context[bName]
     if a.dimension != b.dimension:
         raise DerivationError(
             "fold rule",
@@ -137,14 +138,16 @@ class Repr(RuleInstance):
     A class representing an instance of the ``repr`` rule in a proof tree.
     """
 
+    proofTree: NamedOpetope.RuleInstance
+
     def __init__(self, p: NamedOpetope.RuleInstance) -> None:
-        self.p = p
+        self.proofTree = p
 
     def __repr__(self) -> str:
-        return "Repr({})".format(repr(self.p))
+        return "Repr({})".format(repr(self.proofTree))
 
     def __str__(self) -> str:
-        return "Repr({})".format(str(self.p))
+        return "Repr({})".format(str(self.proofTree))
 
     def _toTex(self) -> str:
         """
@@ -152,12 +155,12 @@ class Repr(RuleInstance):
         directly, use :meth:`NamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p._toTex() + \
+        return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{repr}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> NamedOpetope.OCMT:
-        return repres(self.p.eval())
+        return repres(self.proofTree.eval())
 
 
 class Sum(RuleInstance):
@@ -165,22 +168,26 @@ class Sum(RuleInstance):
     A class representing an instance of the ``sum`` rule in a proof tree.
     """
 
-    def __init__(self, p1: RuleInstance,
-                 p2: RuleInstance) -> None:
+    proofTree1: RuleInstance
+    proofTree2: RuleInstance
+
+    def __init__(self, p1: RuleInstance, p2: RuleInstance) -> None:
         """
         Creates an instance of the ``graft`` rule at variable ``a``, and plugs
         proof tree ``p1`` on the first premise, and ``p2`` on the second.
 
         :see: :func:`NamedOpetope.graft`.
         """
-        self.p1 = p1
-        self.p2 = p2
+        self.proofTree1 = p1
+        self.proofTree2 = p2
 
     def __repr__(self) -> str:
-        return "Sum({p1}, {p2})".format(p1 = repr(self.p1), p2 = repr(self.p2))
+        return "Sum({p1}, {p2})".format(
+            p1 = repr(self.proofTree1), p2 = repr(self.proofTree2))
 
     def __str__(self) -> str:
-        return "Sum({p1}, {p2})".format(p1 = str(self.p1), p2 = str(self.p2))
+        return "Sum({p1}, {p2})".format(
+            p1 = str(self.proofTree1), p2 = str(self.proofTree2))
 
     def _toTex(self) -> str:
         """
@@ -188,12 +195,12 @@ class Sum(RuleInstance):
         directly, use :meth:`NamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p1._toTex() + "\n\t" + self.p2._toTex() + \
+        return self.proofTree1._toTex() + "\n\t" + self.proofTree2._toTex() + \
             "\n\t\\RightLabel{\\texttt{sum}" + \
             "}\n\t\\BinaryInfC{$" + self.eval().toTex() + "$}"
 
     def eval(self) -> NamedOpetope.OCMT:
-        return sum(self.p1.eval(), self.p2.eval())
+        return sum(self.proofTree1.eval(), self.proofTree2.eval())
 
 
 class Fold(RuleInstance):
@@ -201,21 +208,24 @@ class Fold(RuleInstance):
     A class representing an instance of the ``fold`` rule in a proof tree.
     """
 
-    def __init__(self, p: RuleInstance, a: NamedOpetope.Variable,
-                 b: NamedOpetope.Variable) -> None:
-        self.p = p
-        self.a = a
-        self.b = b
+    proofTree: RuleInstance
+    aName: str
+    bName: str
+
+    def __init__(self, p: RuleInstance, a: str, b: str) -> None:
+        self.proofTree = p
+        self.aName = a
+        self.bName = b
 
     def __repr__(self) -> str:
-        return "Fold({p}, {a}, {b})".format(p = repr(self.p),
-                                            a = repr(self.a),
-                                            b = repr(self.b))
+        return "Fold({p}, {a}, {b})".format(p = repr(self.proofTree),
+                                            a = repr(self.aName),
+                                            b = repr(self.bName))
 
     def __str__(self) -> str:
-        return "Fold({p}, {a}, {b})".format(p = str(self.p),
-                                            a = str(self.a),
-                                            b = str(self.b))
+        return "Fold({p}, {a}, {b})".format(p = str(self.proofTree),
+                                            a = str(self.aName),
+                                            b = str(self.bName))
 
     def _toTex(self) -> str:
         """
@@ -223,10 +233,10 @@ class Fold(RuleInstance):
         directly, use :meth:`NamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p._toTex() + \
-            "\n\t\\RightLabel{\\texttt{fold-}$(" + self.a.toTex() + " = " + \
-            self.b.toTex() + ")$}\n\t\\UnaryInfC{$" + self.eval().toTex() + \
-            "$}"
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{fold-}$(" + self.aName + \
+            " = " + self.bName + ")$}\n\t\\UnaryInfC{$" + \
+            self.eval().toTex() + "$}"
 
     def eval(self) -> NamedOpetope.OCMT:
         """
@@ -234,7 +244,7 @@ class Fold(RuleInstance):
         and then applying :func:`NamedOpetope.graft` at variable
         `self.a` on the resulting sequents.
         """
-        return fold(self.p.eval(), self.a, self.b)
+        return fold(self.proofTree.eval(), self.aName, self.bName)
 
 
 class Zero(RuleInstance):

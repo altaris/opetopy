@@ -403,6 +403,20 @@ class Context(Set[Typing]):
                 return True
         return False
 
+    def __getitem__(self, name: str) -> Variable:
+        """
+        Returns the varible term in current context whose name is ``name``.
+        """
+        for typing in self:
+            if typing.term.isVariable and \
+                    typing.term.variable is not None and \
+                    typing.term.variable.name == name:
+                return typing.term.variable
+        raise DerivationError(
+            "Context, get variable",
+            "Context types no variable named {name}",
+            name = name)
+
     def __or__(self, other):
         """
         Returns the union of two compatible contexts.
