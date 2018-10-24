@@ -10,7 +10,7 @@
 """
 
 from copy import deepcopy
-from typing import ClassVar, Dict, List, Optional, Set, Tuple
+from typing import ClassVar, Dict, List, Optional, Set, Tuple, Union
 
 from common import *
 
@@ -1171,3 +1171,48 @@ class Graft(RuleInstance):
         """
         return graft(
             self.proofTree1.eval(), self.proofTree2.eval(), self.variableName)
+
+
+def Arrow(pointName: str = "a", arrowName: str = "f") -> RuleInstance:
+    """
+    Returns the proof tree of the arrow, with cell names as specified in the
+    arguments.
+    """
+    return Fill(Point(pointName), arrowName)
+
+
+def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
+                    cellName: str = "A") -> RuleInstance:
+    """
+    Returns the proof tree of the :math:`n`-th opetopic integer.
+
+    * if ``n`` is 0, then the unique point is named ``pointName`` (default
+      ``a``), and the unique :math:`2`-cell is named ``cellName`` (default
+      ``A``).
+    * otherwise, the points are named ``a_1``, ``a_2``, ... ``a_n-1`` (with
+      added braces if the index exceeds 10, so that it is :math:`\\TeX`
+      friendly), arrows ``f_1``, ... ``f_n``. Those names can be changed
+      by specifying the ``pointName`` and ``arrowName`` arguments. The
+      unique :math:`2`-cell is named ``cellName`` (default ``A``).
+    """
+    if n < 0:
+        raise DerivationError(
+            "Opetopic integer",
+            "Parameter n must be >=0 (is {n})",
+            n = n)
+    elif n == 0:
+        return DegenFill(Point(pointName), cellName)
+    else:
+        def toTex(i: int) -> str:
+            if 0 <= i and i < 10:
+                return str(i)
+            else:
+                return "{" + str(i) + "}"
+        pointNames = [pointName + "_" + toTex(i) for i in range(1, n + 1)]
+        arrowNames = [arrowName + "_" + toTex(i) for i in range(1, n + 1)]
+        arrows = [Fill(Point(pointNames[i - 1]), arrowNames[i - 1])
+                  for i in range(1, n + 1)]
+        res = arrows[0]  # type: Union[Fill, Graft]
+        for i in range(1, n):
+            res = Graft(res, arrows[i], pointNames[i - 1])
+        return Fill(res, cellName)
