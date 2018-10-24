@@ -550,6 +550,27 @@ class Test_UnnamedOpetope_InferenceRules(unittest.TestCase):
             UnnamedOpetope.Address.fromList(['*', '*', '*', '*'], 1))
 
 
+class Test_UnnamedOpetope_Utils(unittest.TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_address(self):
+        self.assertEqual(
+            UnnamedOpetope.address([['*'], [], ['*', '*']]),
+            UnnamedOpetope.Address.fromList([['*'], [], ['*', '*']], 2))
+        self.assertEqual(
+            UnnamedOpetope.address([[], [], ['*', '*']]),
+            UnnamedOpetope.Address.fromList([[], [], ['*', '*']], 2))
+        with self.assertRaises(DerivationError):
+            UnnamedOpetope.address([[[]]])
+        with self.assertRaises(DerivationError):
+            UnnamedOpetope.address([[[]]], 1)
+        UnnamedOpetope.address([[[]]], 3)
+        with self.assertRaises(DerivationError):
+            UnnamedOpetope.address([[['*'], [['*']]]])
+
+
 class Test_UnnamedOpetopicSet_Variable(unittest.TestCase):
 
     def setUp(self):

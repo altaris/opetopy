@@ -28,14 +28,14 @@ class Address:
 
     Recall that an :math:`n`-address is by definition a sequence of
     :math:`(n-1)`-addresses. To append an :math:`(n-1)`-address to a
-    :math:`n`-address, use the :meth:`UnnamedOpetope.Address.__add__`
+    :math:`n`-address, use the :meth:`Address.__add__`
     method. For instance, the following yields the :math:`1`-address
     :math:`[**]`::
 
       Address.epsilon(1) + Address.epsilon(0) + Address.epsilon(0)
 
     Given two :math:`n`-addresses, it is possible to concatenate them using
-    the :meth:`UnnamedOpetope.Address.__mul__` method. Following up
+    the :meth:`Address.__mul__` method. Following up
     on the previous examples, the following expression yields the address
     :math:`[****]`::
 
@@ -53,7 +53,7 @@ class Address:
         :math:`(n-1)`-addresses that make up the :math:`n`-address ``self``.
 
         :warning: This is **not** concatenation (see
-          :meth:`UnnamedOpetope.Address.__mul__`).
+          :meth:`Address.__mul__`).
         """
         if (self.dimension != other.dimension + 1):
             raise DerivationError(
@@ -156,7 +156,7 @@ class Address:
         """
         Creates an :math:`\\epsilon` address of dimension ``dim``
         :math:`\\geq 0`. Internally just calls
-        :meth:`UnnamedOpetope.Address.__init__`.
+        :meth:`Address.__init__`.
         """
         return Address(dim)
 
@@ -890,18 +890,20 @@ class Degen(RuleInstance):
     A class representing an instance of the ``degen`` rule in a proof tree.
     """
 
+    proofTree: RuleInstance
+
     def __init__(self, p: RuleInstance) -> None:
         """
         Creates an instance of the ``degen`` rule and plugs proof tree ``p``
         on the unique premise.
         """
-        self.p = p
+        self.proofTree = p
 
     def __repr__(self):
-        return "Degen({})".format(repr(self.p))
+        return "Degen({})".format(repr(self.proofTree))
 
     def __str__(self):
-        return "Degen({})".format(str(self.p))
+        return "Degen({})".format(str(self.proofTree))
 
     def _toTex(self) -> str:
         """
@@ -909,7 +911,7 @@ class Degen(RuleInstance):
         directly, use :meth:`UnnamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p._toTex() + \
+        return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{degen}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
@@ -919,7 +921,7 @@ class Degen(RuleInstance):
         and then applying :func:`UnnamedOpetope.degen` on the resulting
         sequent.
         """
-        return degen(self.p.eval())
+        return degen(self.proofTree.eval())
 
 
 class Shift(RuleInstance):
@@ -927,18 +929,20 @@ class Shift(RuleInstance):
     A class representing an instance of the ``shift`` rule in a proof tree.
     """
 
+    proofTree: RuleInstance
+
     def __init__(self, p: RuleInstance) -> None:
         """
         Creates an instance of the ``shift`` rule and plugs proof tree ``p``
         on the unique premise.
         """
-        self.p = p
+        self.proofTree = p
 
     def __repr__(self):
-        return "Shift({})".format(repr(self.p))
+        return "Shift({})".format(repr(self.proofTree))
 
     def __str__(self):
-        return "Shift({})".format(str(self.p))
+        return "Shift({})".format(str(self.proofTree))
 
     def _toTex(self) -> str:
         """
@@ -946,7 +950,7 @@ class Shift(RuleInstance):
         directly, use :meth:`UnnamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p._toTex() + \
+        return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
@@ -956,7 +960,7 @@ class Shift(RuleInstance):
         and then applying :func:`UnnamedOpetope.shift` on the resulting
         sequent.
         """
-        return shift(self.p.eval())
+        return shift(self.proofTree.eval())
 
 
 class Graft(RuleInstance):
@@ -964,8 +968,10 @@ class Graft(RuleInstance):
     A class representing an instance of the ``graft`` rule in a proof tree.
     """
 
-    def __init__(self, p1: RuleInstance,
-                 p2: RuleInstance,
+    proofTree1: RuleInstance
+    proofTree2: RuleInstance
+
+    def __init__(self, p1: RuleInstance, p2: RuleInstance,
                  addr: Address) -> None:
         """
         Creates an instance of the ``graft`` rule at address ``addr``, and
@@ -974,18 +980,18 @@ class Graft(RuleInstance):
         impropely grafted on that of the first. See
         :func:`UnnamedOpetope.graft`.
         """
-        self.p1 = p1
-        self.p2 = p2
+        self.proofTree1 = p1
+        self.proofTree2 = p2
         self.addr = addr
 
     def __repr__(self):
-        return "Graft({p1}, {p2}, {addr})".format(p1 = repr(self.p1),
-                                                  p2 = repr(self.p2),
+        return "Graft({p1}, {p2}, {addr})".format(p1 = repr(self.proofTree1),
+                                                  p2 = repr(self.proofTree2),
                                                   addr = repr(self.addr))
 
     def __str__(self):
-        return "Graft({p1}, {p2}, {addr})".format(p1 = str(self.p1),
-                                                  p2 = str(self.p2),
+        return "Graft({p1}, {p2}, {addr})".format(p1 = str(self.proofTree1),
+                                                  p2 = str(self.proofTree2),
                                                   addr = str(self.addr))
 
     def _toTex(self) -> str:
@@ -994,7 +1000,7 @@ class Graft(RuleInstance):
         directly, use :meth:`UnnamedOpetope.RuleInstance.toTex`
         instead.
         """
-        return self.p1._toTex() + "\n\t" + self.p2._toTex() + \
+        return self.proofTree1._toTex() + "\n\t" + self.proofTree2._toTex() + \
             "\n\t\\RightLabel{\\texttt{graft-}$" + self.addr.toTex() + \
             "$}\n\t\\BinaryInfC{$" + self.eval().toTex() + "$}"
 
@@ -1004,7 +1010,51 @@ class Graft(RuleInstance):
         and then applying :func:`UnnamedOpetope.graft` at address
         `self.addr` on the resulting sequents.
         """
-        return graft(self.p1.eval(), self.p2.eval(), self.addr)
+        return graft(self.proofTree1.eval(), self.proofTree2.eval(),
+                     self.addr)
+
+
+def address(l: List[Any], dim: Optional[int] = None) -> Address:
+    """
+    Similar to :meth:`Address.fromList`, except the name is shorter, and
+    the dimension is inferred if possible. Otherwise, an exception is thrown.
+    """
+    if dim is not None:
+        return Address.fromList(l, dim)
+
+    def dimension(k: Any) -> Optional[int]:
+        """
+        Tries to infer the dimension.
+        """
+        if k == []:
+            return None
+        elif k == '*':
+            return 0
+        elif isinstance(k, list):
+            i = None  # type: Optional[int]
+            for a in k:
+                j = dimension(a)
+                if i is None:
+                    i = j
+                elif j is not None and i != j:  # Contradictory dim inferrences
+                    return None
+            if i is None:
+                return None
+            else:
+                return i + 1
+        else:
+            raise NotImplementedError("[Address from list] Incompatible type: "
+                                      "a list representation of an address "
+                                      "(LA) for short, is either the string "
+                                      "'*', or a list of LA")
+    d = dimension(l)
+    if d is None:
+        raise DerivationError(
+            "Address from list",
+            "Cannot infer dimension of list {lst}",
+            lst = l)
+    else:
+        return Address.fromList(l, d)
 
 
 def Arrow() -> RuleInstance:
@@ -1027,6 +1077,4 @@ def OpetopicInteger(n: int) -> RuleInstance:
     elif n == 1:
         return Shift(Arrow())
     else:
-        return Graft(OpetopicInteger(n - 1),
-                     Arrow(),
-                     Address.fromList(['*'] * (n - 1), 1))
+        return Graft(OpetopicInteger(n - 1), Arrow(), address(['*'] * (n - 1)))

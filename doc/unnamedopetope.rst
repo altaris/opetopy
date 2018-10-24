@@ -18,6 +18,8 @@ The arrow
 
 .. code-block:: python
 
+    from UnnamedOpetope import *
+
     ar = Shift(Point())
     print(ar.eval())
 
@@ -36,10 +38,12 @@ A classic
 
 .. code-block:: python
 
+    from UnnamedOpetope import *
+
     classic = Graft(
         Shift(OpetopicInteger(2)),
         OpetopicInteger(2),
-        Address.epsilon(0).shift(2)
+        address([['*']])
     )
     print(classic.eval())
 

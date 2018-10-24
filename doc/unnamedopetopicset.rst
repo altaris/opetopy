@@ -20,7 +20,7 @@ The arrow
     ar = Graft(
         PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.Arrow(),
-            {UnnamedOpetope.Address.epsilon(0): "a"}),
+            {UnnamedOpetope.address([], 0): "a"}),
         ar)
     ar = Fill("b", "f", ar)
     print(ar.eval())
@@ -54,12 +54,15 @@ A classic, maximally folded
 We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) the opetope :math:`\omega = \mathsf{Y}_{\underline{2}} \circ_{[[*]]} \mathsf{Y}_{\underline{2}}` describing the shape of the maximal cell :math:`A`. We then proceed to derive the opetopic set in :math:`\textbf{OptSet${}^?$}`.
 
 .. code-block:: python
+
+    from UnnamedOpetopicSet import *
+    import UnnamedOpetope
     
     # Derivation of ω
     omega = UnnamedOpetope.Graft(
         UnnamedOpetope.Shift(UnnamedOpetope.OpetopicInteger(2)),
         UnnamedOpetope.OpetopicInteger(2),
-        UnnamedOpetope.Address.epsilon(0).shift(2))
+        UnnamedOpetope.address([['*']]))
 
     # Derivation of a
     classic = Point("a")
@@ -69,7 +72,7 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
         PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.Arrow(),
             {
-                UnnamedOpetope.Address.epsilon(0): "a"
+                UnnamedOpetope.address([], 0): "a"
             }),
         classic)
     classic = Fill("a", "f", classic)
@@ -79,8 +82,8 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
         PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(2),
             {
-                UnnamedOpetope.Address.fromList([], 1): "f",
-                UnnamedOpetope.Address.fromList(['*'], 1): "f"
+                UnnamedOpetope.address([], 1): "f",
+                UnnamedOpetope.address(['*']): "f"
             }),
         classic)
     classic = Fill("f", "α", classic)
@@ -90,9 +93,9 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
         PastingDiagram.nonDegeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(3),
             {
-                UnnamedOpetope.Address.fromList([], 1): "f",
-                UnnamedOpetope.Address.fromList(['*'], 1): "f",
-                UnnamedOpetope.Address.fromList(['*', '*'], 1): "f"
+                UnnamedOpetope.address([], 1): "f",
+                UnnamedOpetope.address(['*']): "f",
+                UnnamedOpetope.address(['*', '*']): "f"
             }),
         classic)
     classic = Fill("f", "β", classic)
@@ -102,8 +105,8 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
         PastingDiagram.nonDegeneratePastingDiagram(
             omega,
             {
-                UnnamedOpetope.Address.epsilon(2): "α",
-                UnnamedOpetope.Address.epsilon(0).shift(2): "α"
+                UnnamedOpetope.address([], 2): "α",
+                UnnamedOpetope.address([['*']]): "α"
             }),
         classic)
     classic = Fill("β", "A", classic)
