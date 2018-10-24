@@ -18,7 +18,7 @@ The arrow
 
 .. code-block:: python
 
-    from UnnamedOpetope import *
+    from opetopy.UnnamedOpetope import *
 
     ar = Shift(Point())
     print(ar.eval())
@@ -38,7 +38,7 @@ A classic
 
 .. code-block:: python
 
-    from UnnamedOpetope import *
+    from opetopy.UnnamedOpetope import *
 
     classic = Graft(
         Shift(OpetopicInteger(2)),

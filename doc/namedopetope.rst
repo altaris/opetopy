@@ -12,6 +12,8 @@ The point
 
 .. code-block:: python
 
+    from opetopy.NamedOpetope import *
+
     pt = Point("x")
     print(pt.eval())
 
@@ -25,6 +27,8 @@ A classic
 
 
 .. code-block:: python
+
+    from opetopy.NamedOpetope import *
 
     beta = Fill(Graft(
         Fill(Point("c"), "h"),

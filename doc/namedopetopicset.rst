@@ -8,23 +8,23 @@ Example
 
 .. code-block:: python
 
-    alpha = Fill(Fill(Point(Variable("a", 0)),
-                      Variable("f", 1)),
-                 Variable("α", 2))
-    g = Fill(Point(Variable("c", 0)), Variable("g", 1))
-    h = Fill(Point(Variable("b", 0)), Variable("h", 1))
+    from opetopy.NamedOpetopicSet import *
+
+    alpha = Fill(Fill(Point("a"), "f"), "α")
+    g = Fill(Point("c"), "g")
+    h = Fill(Point("b"), "h")
     unfolded = Sum(Sum(Repr(alpha), Repr(g)), Repr(h))
     example = Fold(Fold(Fold(Fold(Fold(unfolded,
-                                       Variable("a", 0),
-                                       Variable("c", 0)),
-                                  Variable("b", 0),
-                                  Variable("tf", 0)),
-                             Variable("b", 0),
-                             Variable("tg", 0)),
-                        Variable("a", 0),
-                        Variable("th", 0)),
-                   Variable("g", 1),
-                   Variable("tα", 1))
+                                       "a",
+                                       "c"),
+                                  "b",
+                                  "tf"),
+                             "b",
+                             "tg"),
+                        "a",
+                        "th"),
+                   "g",
+                   "tα")
     print(example.eval())
 
 ::
