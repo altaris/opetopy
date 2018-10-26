@@ -9,7 +9,7 @@
 """
 
 from copy import deepcopy
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from common import *
 
@@ -1014,14 +1014,19 @@ class Graft(RuleInstance):
                      self.addr)
 
 
-def address(l: List[Any], dim: Optional[int] = None) -> Address:
+def address(lst: Union[List[Any], str], dim: Optional[int] = None) -> Address:
     """
     Similar to :meth:`Address.fromList`, except the name is shorter, and
     the dimension is inferred if possible. Otherwise, an exception is thrown.
-    """
-    if dim is not None:
-        return Address.fromList(l, dim)
+    Here are some examples:
 
+    >>> address('*')
+    Address(*, 0)
+
+    >>> address([['*'], [], ['*', '*']])
+    Address([[*][ε][**]], 2)
+
+    """
     def dimension(k: Any) -> Optional[int]:
         """
         Tries to infer the dimension.
@@ -1047,14 +1052,25 @@ def address(l: List[Any], dim: Optional[int] = None) -> Address:
                                       "a list representation of an address "
                                       "(LA) for short, is either the string "
                                       "'*', or a list of LA")
-    d = dimension(l)
+    if isinstance(lst, str):
+        if lst == '*':
+            return Address.epsilon(0)
+        else:
+            raise DerivationError(
+                "Address from list",
+                "The following expression does not represent an address: "
+                "{lst}",
+                lst = lst)
+    elif dim is not None:
+        return Address.fromList(lst, dim)
+    d = dimension(lst)
     if d is None:
         raise DerivationError(
             "Address from list",
             "Cannot infer dimension of list {lst}",
-            lst = l)
+            lst = lst)
     else:
-        return Address.fromList(l, d)
+        return Address.fromList(lst, d)
 
 
 def Arrow() -> RuleInstance:

@@ -557,6 +557,9 @@ class Test_UnnamedOpetope_Utils(unittest.TestCase):
 
     def test_address(self):
         self.assertEqual(
+            UnnamedOpetope.address('*'),
+            UnnamedOpetope.Address.epsilon(0))
+        self.assertEqual(
             UnnamedOpetope.address([['*'], [], ['*', '*']]),
             UnnamedOpetope.Address.fromList([['*'], [], ['*', '*']], 2))
         self.assertEqual(
