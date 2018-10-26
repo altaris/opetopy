@@ -1,0 +1,17 @@
+[html]
+title = opetopy coverage report
+
+[report]
+exclude_lines =
+    pragma: no cover
+    raise RuntimeError
+    raise NotImplementedError
+    __repr__
+    __str__
+    toTex
+    _toTex
+omit =
+    UnitTests.py
+
+[run]
+branch = True

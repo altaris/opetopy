@@ -3,9 +3,16 @@ TYPECHECK	= mypy
 
 all: typecheck unittests
 
+.PHONY: coverage
+coverage:
+	coverage run UnitTests.py > /dev/null
+	coverage html
+	-xdg-open htmlcov/index.html
+
 .PHONY: doc
 doc:
 	cd doc && make html
+	-xdg-open doc/build/html/index.html
 
 .PHONY: unittests
 unittests:
