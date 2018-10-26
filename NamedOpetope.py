@@ -301,13 +301,13 @@ class Type:
         return str(self)
 
     def __str__(self) -> str:
-        return " → ".join([str(t) for t in self.terms])
+        return " ⊷ ".join([str(t) for t in self.terms])
 
     def toTex(self) -> str:
         """
         Converts the type to TeX code.
         """
-        return " \\rightarrow ".join([t.toTex() for t in self.terms])
+        return " \\blackwhitespoon ".join([t.toTex() for t in self.terms])
 
     def variables(self, k: int) -> Set[Variable]:
         """

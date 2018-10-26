@@ -45,7 +45,7 @@ A classic
 
 ::
 
-     ▷ A : β(i ← α) → h(c ← g(b ← f)) → a → ∅, f : a → ∅, α : g(b ← f) → a → ∅, a : ∅, h : c → ∅, c : ∅, β : h(c ← i) → a → ∅, g : b → ∅, i : a → ∅, b : ∅ ⊢ A : β(i ← α) → h(c ← g(b ← f)) → a → ∅
+     ▷ A : β(i ← α) ⊷ h(c ← g(b ← f)) ⊷ a ⊷ ∅, f : a ⊷ ∅, α : g(b ← f) ⊷ a ⊷ ∅, a : ∅, h : c ⊷ ∅, c : ∅, β : h(c ← i) ⊷ a ⊷ ∅, g : b ⊷ ∅, i : a ⊷ ∅, b : ∅ ⊢ A : β(i ← α) ⊷ h(c ← g(b ← f)) ⊷ a ⊷ ∅
 
 .. code-block:: python
 
@@ -58,34 +58,34 @@ A classic
         \RightLabel{\texttt{point}}
         \UnaryInfC{$ \vdash_{0} c : \emptyset$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} h : c \rightarrow \emptyset$}
+        \UnaryInfC{$ \vdash_{1} h : c \blackwhitespoon \emptyset$}
         \AxiomC{}
         \RightLabel{\texttt{point}}
         \UnaryInfC{$ \vdash_{0} a : \emptyset$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} i : a \rightarrow \emptyset$}
+        \UnaryInfC{$ \vdash_{1} i : a \blackwhitespoon \emptyset$}
         \RightLabel{\texttt{graft-}$c$}
-        \BinaryInfC{$ \vdash_{1} h(c \leftarrow i) : a \rightarrow \emptyset$}
+        \BinaryInfC{$ \vdash_{1} h(c \leftarrow i) : a \blackwhitespoon \emptyset$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{2} β : h(c \leftarrow i) \rightarrow a \rightarrow \emptyset$}
+        \UnaryInfC{$ \vdash_{2} β : h(c \leftarrow i) \blackwhitespoon a \blackwhitespoon \emptyset$}
         \AxiomC{}
         \RightLabel{\texttt{point}}
         \UnaryInfC{$ \vdash_{0} b : \emptyset$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} g : b \rightarrow \emptyset$}
+        \UnaryInfC{$ \vdash_{1} g : b \blackwhitespoon \emptyset$}
         \AxiomC{}
         \RightLabel{\texttt{point}}
         \UnaryInfC{$ \vdash_{0} a : \emptyset$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} f : a \rightarrow \emptyset$}
+        \UnaryInfC{$ \vdash_{1} f : a \blackwhitespoon \emptyset$}
         \RightLabel{\texttt{graft-}$b$}
-        \BinaryInfC{$ \vdash_{1} g(b \leftarrow f) : a \rightarrow \emptyset$}
+        \BinaryInfC{$ \vdash_{1} g(b \leftarrow f) : a \blackwhitespoon \emptyset$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{2} α : g(b \leftarrow f) \rightarrow a \rightarrow \emptyset$}
+        \UnaryInfC{$ \vdash_{2} α : g(b \leftarrow f) \blackwhitespoon a \blackwhitespoon \emptyset$}
         \RightLabel{\texttt{graft-}$i$}
-        \BinaryInfC{$ \vdash_{2} β(i \leftarrow α) : h(c \leftarrow g(b \leftarrow f)) \rightarrow a \rightarrow \emptyset$}
+        \BinaryInfC{$ \vdash_{2} β(i \leftarrow α) : h(c \leftarrow g(b \leftarrow f)) \blackwhitespoon a \blackwhitespoon \emptyset$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{3} A : β(i \leftarrow α) \rightarrow h(c \leftarrow g(b \leftarrow f)) \rightarrow a \rightarrow \emptyset$}
+        \UnaryInfC{$ \vdash_{3} A : β(i \leftarrow α) \blackwhitespoon h(c \leftarrow g(b \leftarrow f)) \blackwhitespoon a \blackwhitespoon \emptyset$}
     \end{prooftree}
 
 

@@ -28,9 +28,7 @@ The arrow
 
 ::
 
-    ctx = {
-        
-    }
+    ctx = {}
     src = ■
     tgt = ⧫
 
@@ -56,9 +54,9 @@ A classic
 ::
 
     ctx = {
-        [[]] → []
-        [[*][]] → [*]
-        [[*][*]] → [**]
+        [[]] ↦ []
+        [[*][]] ↦ [*]
+        [[*][*]] ↦ [**]
     }
     src = {
         [] : {
@@ -124,7 +122,7 @@ This is exactly the implementation of :func:`UnnamedOpetope.OpetopicInteger`.
 ::
 
     ctx = {
-        [*****] → *
+        [*****] ↦ *
     }
     src = {
         []: ■
@@ -221,7 +219,7 @@ Here, we construct the proof tree of :math:`\mathsf{Y}_{\mathbf{2}} \circ_{[[*]]
 ::
 
     ctx = {
-        [[]] → []
+        [[]] ↦ []
     }
     src = {
         []: {

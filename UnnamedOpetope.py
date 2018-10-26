@@ -366,9 +366,12 @@ class Context(Dict[Address, Address]):
         """
         Converts a context to a human readable string.
         """
-        res = [str(x) + " → " + str(self[x])
-               for x in sorted(list(self.keys()))]
-        return "{\n    " + "\n    ".join(res) + "\n}"
+        if len(self) == 0:
+            return "{}"
+        else:
+            res = [str(x) + " ↦ " + str(self[x])
+                   for x in sorted(list(self.keys()))]
+            return "{\n    " + "\n    ".join(res) + "\n}"
 
     def __sub__(self, addr: Address) -> 'Context':
         """
