@@ -53,7 +53,7 @@ The arrow
 A classic, maximally folded
 ---------------------------
 
-We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) the opetope :math:`\omega = \mathsf{Y}_{\underline{2}} \circ_{[[*]]} \mathsf{Y}_{\underline{2}}` describing the shape of the maximal cell :math:`A`. We then proceed to derive the opetopic set in :math:`\textbf{OptSet${}^?$}`.
+We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) the opetope :math:`\omega = \mathsf{Y}_{\mathbf{2}} \circ_{[[*]]} \mathsf{Y}_{\mathbf{2}}` describing the shape of the maximal cell :math:`A`. We then proceed to derive the opetopic set in :math:`\textbf{OptSet${}^?$}`.
 
 .. code-block:: python
 
@@ -119,7 +119,7 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
 
 ::
 
-    A : PastingDiagram([ε] ← α, [[*]] ← α) → β, β : PastingDiagram([ε] ← f, [*] ← f, [**] ← f) → f, f : PastingDiagram(* ← a) → a, α : PastingDiagram([ε] ← f, [*] ← f) → f, a : ⧫ ⊢ 
+    A : PastingDiagram([] ← α, [[*]] ← α) → β, β : PastingDiagram([] ← f, [*] ← f, [**] ← f) → f, f : PastingDiagram(* ← a) → a, α : PastingDiagram([] ← f, [*] ← f) → f, a : ⧫ ⊢ 
 
 .. code-block:: python
 
@@ -136,17 +136,17 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
         \RightLabel{\texttt{fill}}
         \UnaryInfC{$a : \optZero, f : \opetope{* \sep a} \longrightarrow a \vdash $}
         \RightLabel{\texttt{graft}}
-        \UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, a : \optZero \vdash \opetope{[\epsilon] \sep f \\ [*] \sep f}$}
+        \UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, a : \optZero \vdash \opetope{[] \sep f \\ [*] \sep f}$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, α : \opetope{[\epsilon] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero \vdash $}
+        \UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero \vdash $}
         \RightLabel{\texttt{graft}}
-        \UnaryInfC{$α : \opetope{[\epsilon] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero, f : \opetope{* \sep a} \longrightarrow a \vdash \opetope{[\epsilon] \sep f \\ [*] \sep f \\ [**] \sep f}$}
+        \UnaryInfC{$α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero, f : \opetope{* \sep a} \longrightarrow a \vdash \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f}$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, β : \opetope{[\epsilon] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, α : \opetope{[\epsilon] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero \vdash $}
+        \UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero \vdash $}
         \RightLabel{\texttt{graft}}
-        \UnaryInfC{$a : \optZero, β : \opetope{[\epsilon] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, α : \opetope{[\epsilon] \sep f \\ [*] \sep f} \longrightarrow f, f : \opetope{* \sep a} \longrightarrow a \vdash \opetope{[\epsilon] \sep α \\ [[*]] \sep α}$}
+        \UnaryInfC{$a : \optZero, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, f : \opetope{* \sep a} \longrightarrow a \vdash \opetope{[] \sep α \\ [[*]] \sep α}$}
         \RightLabel{\texttt{fill}}
-        \UnaryInfC{$a : \optZero, α : \opetope{[\epsilon] \sep f \\ [*] \sep f} \longrightarrow f, β : \opetope{[\epsilon] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, f : \opetope{* \sep a} \longrightarrow a, A : \opetope{[\epsilon] \sep α \\ [[*]] \sep α} \longrightarrow β \vdash $}
+        \UnaryInfC{$a : \optZero, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, f : \opetope{* \sep a} \longrightarrow a, A : \opetope{[] \sep α \\ [[*]] \sep α} \longrightarrow β \vdash $}
     \end{prooftree}
 
 

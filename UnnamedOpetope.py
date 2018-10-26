@@ -22,7 +22,7 @@ class Address:
 
       Address.epsilon(0)
 
-    More generally, the :math:`\\epsilon` is construced as::
+    More generally, the empty address is construced as::
 
       Address.epsilon(n)
 
@@ -88,7 +88,7 @@ class Address:
 
     def __init__(self, dim: int) -> None:
         """
-        Creates an :math:`\\epsilon` address of dimension ``dim``
+        Creates an empty address of dimension ``dim``
         :math:`\\geq 0`.
         """
         if (dim < 0):
@@ -141,20 +141,18 @@ class Address:
     def __str__(self) -> str:
         """
         Converts an address to a human readable string. The
-        :math:`0`-dimensional :math:`\\epsilon` address is represented by the
+        :math:`0`-dimensional empty address is represented by the
         symbol ``*``.
         """
         if self == Address.epsilon(0):
             return '*'
-        elif len(self.edges) == 0:
-            return '[ε]'
         else:
             return '[' + ''.join(map(str, self.edges)) + ']'
 
     @staticmethod
     def epsilon(dim: int) -> 'Address':
         """
-        Creates an :math:`\\epsilon` address of dimension ``dim``
+        Creates an empty address of dimension ``dim``
         :math:`\\geq 0`. Internally just calls
         :meth:`Address.__init__`.
         """
@@ -177,7 +175,7 @@ class Address:
     def isEpsilon(self) -> bool:
         """
         Simply tells wither the current address is of the form
-        :math:`[\\epsilon]`.
+        :math:`[]`.
         """
         return len(self.edges) == 0
 
@@ -185,9 +183,9 @@ class Address:
     def fromList(l: List[Any], dim: int) -> 'Address':
         """
         Recursibely create an address of dimension ``dim`` from a list of lists
-        that themselves represent addresses. The :math:`\\epsilon` address is
-        represented by ['ε'], and ``'*'`` represents the
-        :math:`0`-dimensional :math:`\\epsilon` address.
+        that themselves represent addresses. The empty address is
+        represented by [''], and ``'*'`` represents the
+        :math:`0`-dimensional empty address.
         """
         if (dim < 0):
             raise DerivationError(
@@ -198,7 +196,7 @@ class Address:
             return Address.epsilon(dim)
         la = []  # type: List[Address]
         for x in l:
-            if x == ['ε']:
+            if x == ['']:
                 la += [Address.epsilon(dim - 1)]
             elif x == '*':
                 la += [Address.epsilon(0)]
@@ -226,8 +224,8 @@ class Address:
         Returns the curent address shifted by :math:`n` dimensions.
 
         Example:
-          :math:`[[\\epsilon][*]]` ``.shift(2)`` is
-          :math:`[[[[\\epsilon][*]]]]`
+          :math:`[[][*]]` ``.shift(2)`` is
+          :math:`[[[[][*]]]]`
         """
         if n < 0:
             raise DerivationError(
@@ -247,8 +245,8 @@ class Address:
 
         Example:
           ``substitution(`` :math:`[[*][**]]` ``,`` :math:`[[*]]` ``,``
-          :math:`[[\\epsilon][\\epsilon]]` ``)`` is
-          :math:`[[\\epsilon][\\epsilon][**]]`
+          :math:`[[][]]` ``)`` is
+          :math:`[[][][**]]`
         """
         if not (a.dimension == b.dimension and b.dimension == c.dimension):
             raise DerivationError(
@@ -271,7 +269,7 @@ class Address:
         if self == Address.epsilon(0):
             return '*'
         elif len(self.edges) == 0:
-            return '[\\epsilon]'
+            return '[]'
         else:
             return '[' + ''.join(map(Address.toTex, self.edges)) + ']'
 
@@ -804,7 +802,7 @@ def shift(seq: Sequent) -> Sequent:
     The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{shift}` rule.
     From an :math:`n`-opetope :math:`\\omega`, creates the
     globular :math:`(n+1)`-opetope
-    :math:`\\lbrace [\\epsilon]: \\omega`.
+    :math:`\\lbrace []: \\omega`.
     """
     n = seq.source.dimension
     ctx = Context(n + 1)
@@ -1035,7 +1033,7 @@ def address(lst: Union[List[Any], str], dim: Optional[int] = None) -> Address:
     Address(*, 0)
 
     >>> address([['*'], [], ['*', '*']])
-    Address([[*][ε][**]], 2)
+    Address([[*][][**]], 2)
 
     """
     def dimension(k: Any) -> Optional[int]:
@@ -1129,7 +1127,7 @@ def ProofTree(p: Dict[Optional[Address], Dict]) -> RuleInstance:
             }
         }
 
-    corresponds to the opetopic integer :math:`\\underline{3}`, while
+    corresponds to the opetopic integer :math:`\\mathbf{3}`, while
 
     .. code-block:: python
 

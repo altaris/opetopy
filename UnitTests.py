@@ -25,7 +25,7 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         self.b = UnnamedOpetope.Address.epsilon(1)
         self.c = UnnamedOpetope.Address.fromListOfAddresses([self.a])
         self.d = UnnamedOpetope.Address.fromListOfAddresses([self.a, self.a])
-        self.e = UnnamedOpetope.Address.fromList([['*'], ['*', '*'], ['ε']], 2)
+        self.e = UnnamedOpetope.Address.fromList([['*'], ['*', '*'], ['']], 2)
 
     def test___add__(self):
         with self.assertRaises(DerivationError):
@@ -72,10 +72,10 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
 
     def test___str__(self):
         self.assertEqual(str(self.a), "*")
-        self.assertEqual(str(self.b), "[ε]")
+        self.assertEqual(str(self.b), "[]")
         self.assertEqual(str(self.c), "[*]")
         self.assertEqual(str(self.d), "[**]")
-        self.assertEqual(str(self.e), "[[*][**][ε]]")
+        self.assertEqual(str(self.e), "[[*][**][]]")
 
     def test_epsilon(self):
         self.assertEqual(UnnamedOpetope.Address.epsilon(1),
@@ -117,9 +117,9 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
         with self.assertRaises(DerivationError):
             UnnamedOpetope.Address.fromList([], -1)
         self.assertEqual(UnnamedOpetope.Address.fromList([], 1), self.b)
-        self.assertEqual(UnnamedOpetope.Address.fromList([['ε']], 1), self.c)
+        self.assertEqual(UnnamedOpetope.Address.fromList([['']], 1), self.c)
         self.assertEqual(UnnamedOpetope.Address.fromList(['*'], 1), self.c)
-        self.assertEqual(UnnamedOpetope.Address.fromList([['ε'], ['ε']], 1),
+        self.assertEqual(UnnamedOpetope.Address.fromList([[''], ['']], 1),
                          self.d)
 
     def test_shift(self):
@@ -161,7 +161,7 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
             self.e
         ),
             UnnamedOpetope.Address.fromList(
-                [['*'], ['*', '*'], ['ε'], ['*', '*'], ['ε']], 2)
+                [['*'], ['*', '*'], [''], ['*', '*'], ['']], 2)
         )
 
 

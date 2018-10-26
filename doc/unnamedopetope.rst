@@ -50,22 +50,22 @@ A classic
 ::
 
     ctx = {
-        [[ε]] → [ε]
-        [[*][ε]] → [*]
+        [[]] → []
+        [[*][]] → [*]
         [[*][*]] → [**]
     }
     src = {
-        [ε] : {
-            [ε] : ■
+        [] : {
+            [] : ■
             [*] : ■
         }
         [[*]] : {
-            [ε] : ■
+            [] : ■
             [*] : ■
         }
     }
     tgt = {
-        [ε] : ■
+        [] : ■
         [*] : ■
         [**] : ■
     }
@@ -83,16 +83,16 @@ A classic
         \RightLabel{\texttt{shift}}
         \UnaryInfC{$ \vdash \oneOpt \longrightarrow \zeroOpt$}
         \RightLabel{\texttt{shift}}
-        \UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[\epsilon] \sep \oneOpt} \longrightarrow \oneOpt$}
+        \UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[] \sep \oneOpt} \longrightarrow \oneOpt$}
         \RightLabel{\texttt{shift}}
-        \UnaryInfC{$\frac{[[\epsilon]]}{[\epsilon]} \vdash \opetope{[\epsilon] \sep \opetope{[\epsilon] \sep \oneOpt}} \longrightarrow \opetope{[\epsilon] \sep \oneOpt}$}
+        \UnaryInfC{$\frac{[[]]}{[]} \vdash \opetope{[] \sep \opetope{[] \sep \oneOpt}} \longrightarrow \opetope{[] \sep \oneOpt}$}
         \AxiomC{}
         \RightLabel{\texttt{point}}
         \UnaryInfC{$ \vdash \zeroOpt \longrightarrow \emptyset$}
         \RightLabel{\texttt{degen}}
-        \UnaryInfC{$\frac{[\epsilon]}{*} \vdash \degenopetope{\zeroOpt} \longrightarrow \oneOpt$}
-        \RightLabel{\texttt{graft-}$[[\epsilon]]$}
-        \BinaryInfC{$ \vdash \opetope{[\epsilon] \sep \opetope{[\epsilon] \sep \oneOpt} \\ [[\epsilon]] \sep \degenopetope{\zeroOpt}} \longrightarrow \degenopetope{\zeroOpt}$}
+        \UnaryInfC{$\frac{[]}{*} \vdash \degenopetope{\zeroOpt} \longrightarrow \oneOpt$}
+        \RightLabel{\texttt{graft-}$[[]]$}
+        \BinaryInfC{$ \vdash \opetope{[] \sep \opetope{[] \sep \oneOpt} \\ [[]] \sep \degenopetope{\zeroOpt}} \longrightarrow \degenopetope{\zeroOpt}$}
     \end{prooftree}
 
 
@@ -103,7 +103,7 @@ Deciding opetopes
 The :func:`UnnamedOpetope.ProofTree` effectively decides opetopes among preopetopes. It takes as argument a preopetopes in "convenient form" (see examples), and returns its proof tree if it is an opetope, or raises an exception otherwise.
 
 
-Here, we construct the proof tree of :math:`\mathsf{Y}_{\underline{2}} \circ_{[[*]]} \mathsf{Y}_{\underline{0}}`
+Here, we construct the proof tree of :math:`\mathsf{Y}_{\mathbf{2}} \circ_{[[*]]} \mathsf{Y}_{\mathbf{0}}`
 
 .. code-block:: TeX
 
@@ -134,22 +134,22 @@ Here, we construct the proof tree of :math:`\mathsf{Y}_{\underline{2}} \circ_{[[
 ::
 
     ctx = {
-        [[ε]] → [ε]
+        [[]] → []
     }
     src = {
-        [ε]: {
-            [ε]: ■
+        []: {
+            []: ■
             [*]: ■
         }
         [[*]]: degen(⧫)
     }
     tgt = {
-        [ε]: ■
+        []: ■
         [*]: ■
     }
 
 
-Here, we try to construct the proof tree of the invalid :math:`\mathsf{Y}_{\underline{1}} \circ_{[[***]]} \mathsf{Y}_{\underline{1}}`
+Here, we try to construct the proof tree of the invalid :math:`\mathsf{Y}_{\mathbf{1}} \circ_{[[***]]} \mathsf{Y}_{\mathbf{1}}`
 
 .. code-block:: TeX
 
