@@ -58,15 +58,18 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
 .. code-block:: python
 
     from opetopy.UnnamedOpetopicSet import *
-    from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger
-    from opetopy.UnnamedOpetope import Graft as OptGraft
-    from opetopy.UnnamedOpetope import Shift as OptShift
+    from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger, OpetopicTree
+    frop opetopy.UnnamedOpetope import Graft as OptGraft
+    frop opetopy.UnnamedOpetope import Shift as OptShift
 
     # Derivation of ω
     omega = OptGraft(
         OptShift(OpetopicInteger(2)),
         OpetopicInteger(2),
         address([['*']]))
+
+    # Faster way
+    omega = OpetopicTree([None, [None, None]])
 
     # Derivation of a
     classic = Point("a")

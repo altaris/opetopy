@@ -23,6 +23,9 @@ The arrow
     ar = Shift(Point())
     print(ar.eval())
 
+    # Faster way
+    ar = Arrow()
+
 ::
 
     ctx = {
@@ -46,6 +49,9 @@ A classic
         address([['*']])
     )
     print(classic.eval())
+
+    # Faster way
+    classic = OpetopicTree([None, [None, None]])
 
 ::
 
@@ -96,6 +102,86 @@ A classic
     \end{prooftree}
 
 
+Opetopic integers
+-----------------
+
+
+Recall that for :math:`n \in \mathbb{N}`:
+
+* if :math:`n = 0`, then :math:`\mathbf{n} = \{ \{ \blacklozenge`;
+* if :math:`n = 1`, then :math:`\mathbf{n} = \{ [] \leftarrow \blacksquare`;
+* otherwise, :math:`\mathbf{n} = \mathbf{(n-1)} \circ_{[* \cdots *]} \blacksquare`, where there is :math:`(n-1)` instances of :math:`*` in the grafting address.
+
+This is exactly the implementation of :func:`UnnamedOpetope.OpetopicInteger`.
+
+.. code-block:: python
+
+    from UnnamedOpetope import OpetopicInteger
+
+    oi5 = OpetopicInteger(5)
+    print(oi5.eval())
+
+::
+
+    ctx = {
+        [*****] → *
+    }
+    src = {
+        []: ■
+        [*]: ■
+        [**]: ■
+        [***]: ■
+        [****]: ■
+    }
+    tgt = ■
+
+
+.. code-block:: python
+
+    print(oi5.toTex())
+
+.. code-block:: TeX
+
+    \begin{prooftree}
+        \AxiomC{}
+        \RightLabel{\texttt{point}}
+        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[] \sep \optOne} \longrightarrow \optOne$}
+        \AxiomC{}
+        \RightLabel{\texttt{point}}
+        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+        \RightLabel{\texttt{graft-}$[*]$}
+        \BinaryInfC{$\frac{[**]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne} \longrightarrow \optOne$}
+        \AxiomC{}
+        \RightLabel{\texttt{point}}
+        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+        \RightLabel{\texttt{graft-}$[**]$}
+        \BinaryInfC{$\frac{[***]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne \\ [**] \sep \optOne} \longrightarrow \optOne$}
+        \AxiomC{}
+        \RightLabel{\texttt{point}}
+        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+        \RightLabel{\texttt{graft-}$[***]$}
+        \BinaryInfC{$\frac{[****]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne \\ [**] \sep \optOne \\ [***] \sep \optOne} \longrightarrow \optOne$}
+        \AxiomC{}
+        \RightLabel{\texttt{point}}
+        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+        \RightLabel{\texttt{shift}}
+        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+        \RightLabel{\texttt{graft-}$[****]$}
+        \BinaryInfC{$\frac{[*****]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne \\ [**] \sep \optOne \\ [***] \sep \optOne \\ [****] \sep \optOne} \longrightarrow \optOne$}
+    \end{prooftree}
+
+
+
 Deciding opetopes
 -----------------
 
@@ -105,9 +191,10 @@ The :func:`UnnamedOpetope.ProofTree` effectively decides opetopes among preopeto
 
 Here, we construct the proof tree of :math:`\mathsf{Y}_{\mathbf{2}} \circ_{[[*]]} \mathsf{Y}_{\mathbf{0}}`
 
-.. code-block:: TeX
+.. code-block:: python
 
     from UnnamedOpetope import address, ProofTree
+
     p = ProofTree({
         address([], 2): {
             address([], 1): {
@@ -127,7 +214,7 @@ Here, we construct the proof tree of :math:`\mathsf{Y}_{\mathbf{2}} \circ_{[[*]]
     Graft(Shift(Graft(Shift(Shift(Point())), Shift(Point()), [*])), Degen(Point()), [[*]])
 
 
-.. code-block:: TeX
+.. code-block:: python
 
     print(p.eval())
 

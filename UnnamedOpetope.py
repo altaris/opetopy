@@ -1105,6 +1105,43 @@ def OpetopicInteger(n: int) -> RuleInstance:
         return Graft(OpetopicInteger(n - 1), Arrow(), address(['*'] * (n - 1)))
 
 
+def OpetopicTree(tree: Optional[List[Any]]) -> RuleInstance:
+    """
+    Returns the proof tree of the :math:`3`-opetope corresponding to a tree.
+    The tree is expressed as a recursive list. For instance,
+    ``[None, [[None], None], None, None]`` corresponds to
+    :math:`\\mathsf{Y}_{\\mathbf{4}} \\circ_{[[*]]} \\left(
+    \\mathsf{Y}_{\\mathbf{2}} \\circ_{[]} \\mathsf{Y}_{\\mathbf{1}} \\right)`
+    while ``None`` corresponds to the degenerate opetope at the arrow.
+    """
+    def toDict(lst: Optional[List[Any]]) -> Dict[Address, RuleInstance]:
+        if lst is None:
+            return {}
+        else:
+            res = {
+                address([], 2): OpetopicInteger(len(lst))
+            }  # type: Dict[Address, RuleInstance]
+            for i in range(len(lst)):
+                if lst[i] is not None and not isinstance(lst[i], list):
+                    raise DerivationError(
+                        "Opetopic tree",
+                        "A tree is expected to be either none or a list of "
+                        "trees")
+                d = toDict(lst[i])
+                for a in d.keys():
+                    res[address([['*'] * i], 2) * a] = d[a]
+            return res
+    if tree is None:
+        return Degen(Arrow())
+    else:
+        d = toDict(tree)
+        sa = sorted(d.keys())
+        res = Shift(d[address([], 2)])  # type: RuleInstance
+        for i in range(1, len(sa)):
+            res = Graft(res, d[sa[i]], sa[i])
+        return res
+
+
 def ProofTree(p: Dict[Optional[Address], Dict]) -> RuleInstance:
     """
     Returns the proof tree of a preopetope described as a dict, or raises a

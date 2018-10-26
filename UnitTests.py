@@ -573,6 +573,23 @@ class Test_UnnamedOpetope_Utils(unittest.TestCase):
         with self.assertRaises(DerivationError):
             UnnamedOpetope.address([[['*'], [['*']]]])
 
+    def test_OpetopicTree(self):
+        self.assertEqual(
+            UnnamedOpetope.OpetopicTree(None).eval(),
+            UnnamedOpetope.Degen(UnnamedOpetope.Arrow()).eval())
+        for i in range(5):
+            self.assertEqual(
+                UnnamedOpetope.OpetopicTree([None] * i).eval(),
+                UnnamedOpetope.Shift(UnnamedOpetope.OpetopicInteger(i)).eval())
+        for i in range(5):
+            tree = [None] * i + [[None]] + [None] * (4 - i)
+            self.assertEqual(
+                UnnamedOpetope.OpetopicTree(tree).eval(),
+                UnnamedOpetope.Graft(
+                    UnnamedOpetope.Shift(UnnamedOpetope.OpetopicInteger(5)),
+                    UnnamedOpetope.OpetopicInteger(1),
+                    UnnamedOpetope.address([['*'] * i], 2)).eval())
+
     def test_ProofTree(self):
         self.assertEqual(
             UnnamedOpetope.ProofTree({}).eval(),

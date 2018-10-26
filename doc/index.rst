@@ -24,7 +24,6 @@ opetopy
     :alt: MIT License
 
 .. contents:: Contents
-    :depth: 2
 
 
 Introduction
@@ -163,7 +162,6 @@ Documentation
 
 
 .. toctree::
-    :maxdepth: 2
     
     common
     namedopetope
