@@ -746,6 +746,17 @@ class Sequent:
         self.source = s
         self.target = t
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Sequent):
+            raise NotImplementedError
+        else:
+            return self.context == other.context and \
+                self.source == other.source and \
+                self.target == other.target
+
+    def __ne__(self, other) -> bool:
+        return not (self == other)
+
     def __repr__(self) -> str:
         return str(self)
 
@@ -1094,3 +1105,64 @@ def OpetopicInteger(n: int) -> RuleInstance:
         return Shift(Arrow())
     else:
         return Graft(OpetopicInteger(n - 1), Arrow(), address(['*'] * (n - 1)))
+
+
+def ProofTree(p: Dict[Optional[Address], Dict]) -> RuleInstance:
+    """
+    Returns the proof tree of a preopetope described as a dict, or raises a
+    :class:`common.DerivationError` if the preopetope is not an opetope. For
+    ``T`` the type of the argument, ``T`` is a ``dict`` mapping
+    :class:`UnnamedOpetope.Address` or ``None`` to instances of ``T``.
+    For example,
+
+    .. code-block:: python
+
+        {
+            address([], 1): {
+                address('*'): {}
+            },
+            address(['*']): {
+                address('*'): {}
+            },
+            address(['*', '*']): {
+                address('*'): {}
+            }
+        }
+
+    corresponds to the opetopic integer :math:`\\underline{3}`, while
+
+    .. code-block:: python
+
+        {
+            None: {
+                address('*'): {}
+            }
+        }
+
+    is the :math:`3`-opetope degenerate at the arrow (the ``None`` indicates a
+    degeneracy).
+    """
+    if p == {}:
+        return Point()
+    a = list(p.keys())[0]
+    if a is None:
+        if len(p.keys()) != 1:
+            raise DerivationError(
+                "Proof tree of a preopetope",
+                "Argument is not an opetope: containes address None "
+                "indicating it is degenerate, but also other addresses. {p}",
+                p = p)
+        else:
+            return Degen(ProofTree(p[None]))
+    else:
+        sa = sorted([x for x in p.keys() if x is not None])  # for typechecker
+        if sa[0] != Address.epsilon(a.dimension):
+            raise DerivationError(
+                "Proof tree of a preopetope",
+                "Argument is not an opetope: doesn't contain address {e}. {p}",
+                e = Address.epsilon(a.dimension), p = p)
+        res = Shift(ProofTree(p[sa[0]]))  # type: RuleInstance
+        for i in range(1, len(sa)):
+            res = Graft(res, ProofTree(p[sa[i]]), sa[i])
+        res.eval()
+        return res

@@ -96,6 +96,78 @@ A classic
     \end{prooftree}
 
 
+Deciding opetopes
+-----------------
+
+
+The :func:`UnnamedOpetope.ProofTree` effectively decides opetopes among preopetopes. It takes as argument a preopetopes in "convenient form" (see examples), and returns its proof tree if it is an opetope, or raises an exception otherwise.
+
+
+Here, we construct the proof tree of :math:`\mathsf{Y}_{\underline{2}} \circ_{[[*]]} \mathsf{Y}_{\underline{0}}`
+
+.. code-block:: TeX
+
+    from UnnamedOpetope import address, ProofTree
+    p = ProofTree({
+        address([], 2): {
+            address([], 1): {
+                address('*'): {}  # {} represents the point
+            },
+            address(['*']): {
+                address('*'): {}
+            }
+        },
+        address([['*']]): {
+            None: {}  # indicates a degeneracy
+        }})
+    print(p)
+
+::
+
+    Graft(Shift(Graft(Shift(Shift(Point())), Shift(Point()), [*])), Degen(Point()), [[*]])
+
+
+.. code-block:: TeX
+
+    print(p.eval())
+
+::
+
+    ctx = {
+        [[ε]] → [ε]
+    }
+    src = {
+        [ε]: {
+            [ε]: ■
+            [*]: ■
+        }
+        [[*]]: degen(⧫)
+    }
+    tgt = {
+        [ε]: ■
+        [*]: ■
+    }
+
+
+Here, we try to construct the proof tree of the invalid :math:`\mathsf{Y}_{\underline{1}} \circ_{[[***]]} \mathsf{Y}_{\underline{1}}`
+
+.. code-block:: TeX
+
+    ProofTree({
+        address([], 2): {
+            address([], 1): {
+                address('*'): {}
+            }
+        },
+        address([['*', '*', '*']]): {
+            address([], 1): {
+                address('*'): {}
+            }
+        }})
+
+which raises an exception.
+
+
 Documentation
 =============
 

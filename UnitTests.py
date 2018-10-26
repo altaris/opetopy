@@ -573,6 +573,46 @@ class Test_UnnamedOpetope_Utils(unittest.TestCase):
         with self.assertRaises(DerivationError):
             UnnamedOpetope.address([[['*'], [['*']]]])
 
+    def test_ProofTree(self):
+        self.assertEqual(
+            UnnamedOpetope.ProofTree({}).eval(),
+            UnnamedOpetope.Point().eval())
+        self.assertEqual(
+            UnnamedOpetope.ProofTree({
+                UnnamedOpetope.address('*'): {}
+            }).eval(),
+            UnnamedOpetope.Arrow().eval())
+        self.assertEqual(
+            UnnamedOpetope.ProofTree({
+                None: {}
+            }).eval(),
+            UnnamedOpetope.OpetopicInteger(0).eval())
+        self.assertEqual(
+            UnnamedOpetope.ProofTree({
+                UnnamedOpetope.address([], 1): {
+                    UnnamedOpetope.address('*'): {}
+                },
+                UnnamedOpetope.address(['*']): {
+                    UnnamedOpetope.address('*'): {}
+                }
+            }).eval(),
+            UnnamedOpetope.OpetopicInteger(2).eval())
+        with self.assertRaises(DerivationError):
+            UnnamedOpetope.ProofTree({
+                UnnamedOpetope.address(['*']): {
+                    UnnamedOpetope.address('*'): {}
+                }
+            })
+        with self.assertRaises(DerivationError):
+            UnnamedOpetope.ProofTree({
+                UnnamedOpetope.address([], 1): {
+                    UnnamedOpetope.address('*'): {}
+                },
+                UnnamedOpetope.address(['*', '*']): {
+                    UnnamedOpetope.address('*'): {}
+                }
+            }).eval()
+
 
 class Test_UnnamedOpetopicSet_Variable(unittest.TestCase):
 
