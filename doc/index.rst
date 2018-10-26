@@ -12,6 +12,17 @@ opetopy
     :target: https://opetopy.readthedocs.io/en/latest/
     :alt: Documentation Status
 
+.. image:: https://badgen.net/badge//GitHub/green?icon=github
+    :target: https://github.com/altaris/opetopy
+    :alt: GitHub
+
+.. image:: https://badgen.net/badge/Python/3/blue
+    :alt: Python 3
+
+.. image:: https://badgen.net/badge/license/MIT/blue
+    :target: https://choosealicense.com/licenses/mit/
+    :alt: MIT License
+
 .. contents:: Contents
     :depth: 2
 

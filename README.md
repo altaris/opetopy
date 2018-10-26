@@ -3,6 +3,8 @@ opetopy
 
 [![Build status](https://travis-ci.com/altaris/opetopy.svg?branch=master)](https://travis-ci.com/altaris/opetopy)
 [![Documentation](https://readthedocs.org/projects/opetopy/badge/?version=latest)](https://opetopy.readthedocs.io/en/latest/)
+![Python 3](https://badgen.net/badge/Python/3/blue)
+[![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
 
 # Introduction
 
