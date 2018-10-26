@@ -695,6 +695,28 @@ class Preopetope:
                 r += (b, p.source(a))
             return r
 
+    def toDict(self) -> Dict[Optional[Address], Dict]:
+        """
+        Transforms the current preopetope into a ``dict``.
+        """
+        if self.isDegenerate:
+            if self.degeneracy is None:
+                raise RuntimeError(
+                    "Preopetope, to dict",
+                    "Preopetope is degenerate but doesn't have any "
+                    "degeneracy. In valid derivations, this should not happen")
+            return {None: self.degeneracy.toDict()}
+        else:
+            if self.nodes is None:
+                raise RuntimeError(
+                    "Preopetope, to dict",
+                    "Preopetope is not degenerate but doesn't have any "
+                    "node dict. In valid derivations, this should not happen")
+            res = {}  # type: Dict[Optional[Address], Dict]
+            for addr in self.nodes.keys():
+                res[addr] = self.nodes[addr].toDict()
+            return res
+
     def toTex(self) -> str:
         """
         Converts the preopetope to TeX code.

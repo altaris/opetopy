@@ -168,6 +168,7 @@ Documentation
     namedopetopicset
     unnamedopetope
     unnamedopetopicset
+    unnamedopetopiccategory
 
 
 .. [CHM18] Pierre-Louis Curien, Cédric Ho Thanh, and Samuel Mimram. Type theoretical approaches to opetopes. In preparation.

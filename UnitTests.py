@@ -479,6 +479,13 @@ class Test_UnnamedOpetope_Preopetope(unittest.TestCase):
             i4, UnnamedOpetope.Address.fromList(['*', '*'], 1), ctx, i2),
             i5)
 
+    def test_toDict(self):
+        for i in range(5):
+            seq = UnnamedOpetope.OpetopicInteger(i).eval()
+            self.assertEqual(
+                seq,
+                UnnamedOpetope.ProofTree(seq.source.toDict()).eval())
+
 
 class Test_UnnamedOpetope_InferenceRules(unittest.TestCase):
 
