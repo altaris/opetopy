@@ -59,8 +59,8 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
 
     from opetopy.UnnamedOpetopicSet import *
     from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger, OpetopicTree
-    frop opetopy.UnnamedOpetope import Graft as OptGraft
-    frop opetopy.UnnamedOpetope import Shift as OptShift
+    from opetopy.UnnamedOpetope import Graft as OptGraft
+    from opetopy.UnnamedOpetope import Shift as OptShift
 
     # Derivation of ω
     omega = OptGraft(
@@ -72,51 +72,51 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
     omega = OpetopicTree([None, [None, None]])
 
     # Derivation of a
-    classic = Point("a")
+    classic = Point(None, "a")
 
     # Derivation of f
     classic = Graft(
+        classic,
         pastingDiagram(
             Arrow(),
             {
                 address([], 0): "a"
-            }),
-        classic)
-    classic = Fill("a", "f", classic)
+            }))
+    classic = Fill(classic, "a", "f")
 
     # Derivation of α
     classic = Graft(
+        classic,
         pastingDiagram(
             OpetopicInteger(2),
             {
                 address([], 1): "f",
                 address(['*']): "f"
-            }),
-        classic)
-    classic = Fill("f", "α", classic)
+            }))
+    classic = Fill(classic, "f", "α")
 
     # Derivation of β
     classic = Graft(
+        classic,
         pastingDiagram(
             OpetopicInteger(3),
             {
                 address([], 1): "f",
                 address(['*']): "f",
                 address(['*', '*']): "f"
-            }),
-        classic)
-    classic = Fill("f", "β", classic)
+            }))
+    classic = Fill(classic, "f", "β")
 
     # Derivation of A
     classic = Graft(
+        classic,
         pastingDiagram(
             omega,
             {
                 address([], 2): "α",
                 address([['*']]): "α"
-            }),
-        classic)
-    classic = Fill("β", "A", classic)
+            }))
+    classic = Fill(classic, "β", "A")
 
     print(classic.eval())
 

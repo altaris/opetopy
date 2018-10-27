@@ -184,7 +184,7 @@ class Address:
         """
         Recursibely create an address of dimension ``dim`` from a list of lists
         that themselves represent addresses. The empty address is
-        represented by [''], and ``'*'`` represents the
+        represented by ``[]``, and ``'*'`` represents the
         :math:`0`-dimensional empty address.
         """
         if (dim < 0):
@@ -196,7 +196,7 @@ class Address:
             return Address.epsilon(dim)
         la = []  # type: List[Address]
         for x in l:
-            if x == ['']:
+            if x == []:
                 la += [Address.epsilon(dim - 1)]
             elif x == '*':
                 la += [Address.epsilon(0)]

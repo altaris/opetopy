@@ -483,24 +483,40 @@ class Sequent:
             ctx = self.context.toTex(), pd = pd)
 
 
-def point(seq: Sequent, name: str) -> Sequent:
+def point(seq: Sequent, name: Union[str, List[str]]) -> Sequent:
     """
     The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{point}` rule.
+
+    * If argument ``name`` is a ``str``, creates a new point with that name
+      (this is just the :math:`\\texttt{point}`);
+    * if it is a list of ``str``, then creates as many points.
+
     """
-    if seq.pastingDiagram is not None:
+    if isinstance(name, list):
+        res = seq
+        for n in name:
+            res = point(res, n)
+        return res
+    elif isinstance(name, str):
+        if seq.pastingDiagram is not None:
+            raise DerivationError(
+                "point rule",
+                "Sequent cannot have a pasting diagram")
+        var = Variable(name, UnnamedOpetope.Point())
+        if var in seq.context:
+            raise DerivationError(
+                "point rule",
+                "Point shaped variable {name} is already typed in context "
+                "{ctx}",
+                name = name, ctx = str(seq.context))
+        res = deepcopy(seq)
+        res.context = res.context + Typing(
+            var, Type(PastingDiagram.point(), None))
+        return res
+    else:
         raise DerivationError(
             "point rule",
-            "Sequent cannot have a pasting diagram")
-    var = Variable(name, UnnamedOpetope.Point())
-    if var in seq.context:
-        raise DerivationError(
-            "point rule",
-            "Point shaped variable {name} is already typed in context {ctx}",
-            name = name, ctx = str(seq.context))
-    res = deepcopy(seq)
-    res.context = res.context + Typing(
-        var, Type(PastingDiagram.point(), None))
-    return res
+            "Argument name is expected to be a str or list of str")
 
 
 def degen(seq: Sequent, name: str) -> Sequent:
@@ -643,10 +659,11 @@ class Point(RuleInstance):
     proof tree.
     """
 
-    name: str
+    name: Union[str, List[str]]
     proofTree: Optional[RuleInstance]
 
-    def __init__(self, name: str, p: Optional[RuleInstance] = None) -> None:
+    def __init__(self, p: Optional[RuleInstance],
+                 name: Union[str, List[str]]) -> None:
         self.name = name
         self.proofTree = p
 
@@ -655,14 +672,14 @@ class Point(RuleInstance):
             prepr = ""
         else:
             prepr = repr(self.proofTree)
-        return "Point(" + prepr + "," + self.name + ")"
+        return "Point(" + prepr + "," + str(self.name) + ")"
 
     def __str__(self) -> str:
         if self.proofTree is None:
             pstr = ""
         else:
             pstr = str(self.proofTree)
-        return "Point(" + pstr + ", " + self.name + ")"
+        return "Point(" + pstr + ", " + str(self.name) + ")"
 
     def _toTex(self) -> str:
         """
@@ -674,7 +691,11 @@ class Point(RuleInstance):
             ptex = "\\AxiomC{}"
         else:
             ptex = self.proofTree._toTex()
-        return ptex + "\n\t\\RightLabel{\\texttt{point-$" + self.name + \
+        if isinstance(self.name, str):
+            namestr = self.name
+        else:
+            namestr = "(" + ", ".join(self.name) + ")"
+        return ptex + "\n\t\\RightLabel{\\texttt{point-$" + namestr + \
             "$}}\n\t\\UnaryInfC{$" + self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
@@ -696,7 +717,7 @@ class Degen(RuleInstance):
     name: str
     proofTree: RuleInstance
 
-    def __init__(self, name: str, p: RuleInstance) -> None:
+    def __init__(self, p: RuleInstance, name: str) -> None:
         self.name = name
         self.proofTree = p
 
@@ -732,7 +753,7 @@ class Graft(RuleInstance):
     pastingDiagram: PastingDiagram
     proofTree: RuleInstance
 
-    def __init__(self, pd: PastingDiagram, p: RuleInstance) -> None:
+    def __init__(self, p: RuleInstance, pd: PastingDiagram) -> None:
         self.pastingDiagram = pd
         self.proofTree = p
 
@@ -769,7 +790,7 @@ class Fill(RuleInstance):
     proofTree: RuleInstance
     targetName: str
 
-    def __init__(self, targetName: str, name: str, p: RuleInstance) -> None:
+    def __init__(self, p: RuleInstance, targetName: str, name: str) -> None:
         self.name = name
         self.proofTree = p
         self.targetName = targetName
