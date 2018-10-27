@@ -152,11 +152,9 @@ def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
 
     # Source of alpha
     P = seq.pastingDiagram
-    shapeProof = P.shapeProof
-    targetShapeProof = UnnamedOpetope.ProofTree(P.shapeTarget().toDict())
+    tPshapeProof = UnnamedOpetope.ProofTree(P.shapeTarget().toDict())
 
     # Target of t
-    u = str()
     if P.shape.isDegenerate:
         u = P.degeneracyVariable()
     else:
@@ -164,16 +162,16 @@ def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
             P.source(UnnamedOpetope.address([], P.shape.dimension - 1)))
 
     # Source of t
-    Q = UnnamedOpetopicSet.PastingDiagram()
     if P.shapeTarget().isDegenerate:
-        Q = UnnamedOpetopicSet.pastingDiagram(targetShapeProof, u)
+        Q = UnnamedOpetopicSet.pastingDiagram(
+            tPshapeProof, seq.context.target(u))
     else:
         nodes = {}  # type: Dict[UnnamedOpetope.Address, str]
         readdress = P.shapeProof.eval().context
         for l in P.shape.leafAddresses():
             p, q = l.edgeDecomposition()
             nodes[readdress(l)] = seq.context.source(P[p], q)
-        Q = UnnamedOpetopicSet.pastingDiagram(targetShapeProof, nodes)
+        Q = UnnamedOpetopicSet.pastingDiagram(tPshapeProof, nodes)
 
     # Derive Q
     res = deepcopy(seq)
@@ -188,7 +186,7 @@ def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
 
     # Derive P
     if P.shape.isDegenerate:
-        res = UnnamedOpetopicSet.degen(res, P.degeneracyVariable())
+        res = UnnamedOpetopicSet.degen(res, u)
     else:
         res = UnnamedOpetopicSet.graft(res, P)
 
