@@ -8,6 +8,10 @@ opetopy
     :target: https://travis-ci.com/altaris/opetopy
     :alt: Build Status
 
+.. image:: https://coveralls.io/repos/github/altaris/opetopy/badge.svg?branch=master
+    :target: https://coveralls.io/github/altaris/opetopy?branch=master
+    :alt: Coverage Status
+
 .. image:: https://readthedocs.org/projects/opetopy/badge/?version=latest
     :target: https://opetopy.readthedocs.io/en/latest/
     :alt: Documentation Status
