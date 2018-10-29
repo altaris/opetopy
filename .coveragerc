@@ -11,7 +11,7 @@ exclude_lines =
     toTex
     _toTex
 omit =
-    UnitTests.py
+    tests/*.py
 
 [run]
 branch = True

@@ -252,3 +252,9 @@ def applyTargetUniversalProperty(
 
     # Done
     return res
+
+
+def applySourceUniversalProperty():
+    """
+    """
+    pass

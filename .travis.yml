@@ -5,6 +5,6 @@ install:
   - pip install -r requirements.txt
 script:
   - make all
-  - coverage run UnitTests.py
+  - coverage run -m unittest discover --start-directory tests --verbose
 after_success:
   - coveralls

@@ -10,7 +10,7 @@ doc:
 
 .PHONY: unittests
 unittests:
-	$(RUN) UnitTests.py
+	python3 -m unittest discover --start-directory tests --verbose
 
 .PHONY: typecheck
 typecheck:
@@ -19,4 +19,4 @@ typecheck:
 	$(TYPECHECK) UnnamedOpetope.py
 	$(TYPECHECK) UnnamedOpetopicSet.py
 	$(TYPECHECK) UnnamedOpetopicCategory.py
-	$(TYPECHECK) UnitTests.py
+	$(TYPECHECK) tests/*.py
