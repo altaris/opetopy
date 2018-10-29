@@ -129,20 +129,7 @@ class PastingDiagram:
         return not (self == other)
 
     def __repr__(self) -> str:
-        if self.degeneracy is None:
-            if self.nodes is None:
-                raise RuntimeError("[Pasting diagram, repr] Both the "
-                                   "degeneracy and node dict of the pasting "
-                                   "diagram are None. In valid derivations, "
-                                   "this should not happen")
-            if self.shape == UnnamedOpetope.point().source:
-                return "⧫"
-            else:
-                lines = [repr(addr) + " ← " + self.nodes[addr]
-                         for addr in self.nodes.keys()]
-                return "PD({})".format(",".join(lines))
-        else:
-            return "DPD({})".format(self.degeneracy)
+        return str(self)
 
     def __str__(self) -> str:
         if self.degeneracy is None:
@@ -156,9 +143,9 @@ class PastingDiagram:
             else:
                 lines = [str(addr) + " ← " + str(self.nodes[addr])
                          for addr in self.nodes.keys()]
-                return "PastingDiagram({})".format(", ".join(lines))
+                return "{" + ", ".join(lines) + "}"
         else:
-            return "DegeneratePastingDiagram({})".format(str(self.degeneracy))
+            return "{{" + str(self.degeneracy) + "}}"
 
     def degeneracyVariable(self) -> str:
         """
@@ -415,7 +402,7 @@ class Context(Set[Typing]):
         return str(self)
 
     def __str__(self) -> str:
-        return ", ".join([str(t) for t in self])
+        return ", ".join([str(self[v]) for v in sorted(self.variableNames())])
 
     def source(self, name: str, addr: UnnamedOpetope.Address) -> str:
         """
@@ -444,6 +431,15 @@ class Context(Set[Typing]):
 
     def toTex(self) -> str:
         return ", ".join([t.toTex() for t in self])
+
+    def variableNames(self) -> List[str]:
+        """
+        Return a list containing all variable names typed in this context.
+        """
+        variables = []  # type: List[str]
+        for t in self:
+            variables += t.variable.name
+        return variables
 
 
 class Sequent:
@@ -475,16 +471,17 @@ class Sequent:
         self.pastingDiagram = None
 
     def __repr__(self) -> str:
-        pd = ""
-        if self.pastingDiagram is not None:
-            pd = repr(self.pastingDiagram)
-        return "{ctx} ⊢ {pd}".format(ctx = repr(self.context), pd = pd)
+        return str(self)
 
     def __str__(self) -> str:
         pd = ""
         if self.pastingDiagram is not None:
             pd = str(self.pastingDiagram)
-        return "{ctx} ⊢ {pd}".format(ctx = str(self.context), pd = pd)
+        res = "ctx = {"
+        for v in sorted(self.context.variableNames()):
+            res += "\n    " + str(self.context[v])
+        res += "\npd =" + pd
+        return res
 
     def toTex(self) -> str:
         pd = ""

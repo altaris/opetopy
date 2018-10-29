@@ -38,31 +38,7 @@ class Type(UnnamedOpetopicSet.Type):
         self.targetUniversal = False
 
     def __repr__(self) -> str:
-        srcstr = str()
-        if self.source.degeneracy is None:
-            if self.source.nodes is None:
-                raise RuntimeError("[Pasting diagram, to string] Both the "
-                                   "degeneracy and node dict of the pasting "
-                                   "diagram are None. In valid derivations, "
-                                   "this should not happen")
-            if self.source.shape == UnnamedOpetope.point().source:
-                srcstr = "⧫"
-            else:
-                lines = []  # type: List[str]
-                for addr in self.source.nodes.keys():
-                    if self.isSourceUniversal(addr):
-                        lines += [repr(addr) + "←!" +
-                                  repr(self.source.nodes[addr])]
-                    else:
-                        lines += [repr(addr) + "←" +
-                                  repr(self.source.nodes[addr])]
-                srcstr = "PD({})".format(",".join(lines))
-        else:
-            srcstr = "DPD({})".format(repr(self.source.degeneracy))
-        if self.isTargetUniversal():
-            return srcstr + "→!" + repr(self.target)
-        else:
-            return srcstr + "→" + repr(self.target)
+        return str(self)
 
     def __str__(self) -> str:
         srcstr = str()
@@ -78,17 +54,16 @@ class Type(UnnamedOpetopicSet.Type):
                 lines = []  # type: List[str]
                 for addr in self.source.nodes.keys():
                     if self.isSourceUniversal(addr):
-                        lines += [str(addr) + " ← !" +
+                        lines += [str(addr) + " ← ∀" +
                                   str(self.source.nodes[addr])]
                     else:
                         lines += [str(addr) + " ← " +
                                   str(self.source.nodes[addr])]
-                srcstr = "PastingDiagram({})".format(", ".join(lines))
+                srcstr = "{" + ", ".join(lines) + "}"
         else:
-            srcstr = "DegeneratePastingDiagram({})".format(
-                str(self.source.degeneracy))
+            srcstr = "{{" + str(self.source.degeneracy) + "}}"
         if self.isTargetUniversal():
-            return srcstr + " → !" + str(self.target)
+            return srcstr + " → ∀" + str(self.target)
         else:
             return srcstr + " → " + str(self.target)
 
@@ -167,10 +142,14 @@ def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
             tPshapeProof, seq.context.target(u))
     else:
         nodes = {}  # type: Dict[UnnamedOpetope.Address, str]
-        readdress = P.shapeProof.eval().context
-        for l in P.shape.leafAddresses():
-            p, q = l.edgeDecomposition()
-            nodes[readdress(l)] = seq.context.source(P[p], q)
+        if P.shape.isDegenerate:
+            nodes[UnnamedOpetope.address([], P.shape.dimension - 2)] = \
+                P.degeneracyVariable()
+        else:
+            readdress = P.shapeProof.eval().context
+            for l in P.shape.leafAddresses():
+                p, q = l.edgeDecomposition()
+                nodes[readdress(l)] = seq.context.source(P[p], q)
         Q = UnnamedOpetopicSet.pastingDiagram(tPshapeProof, nodes)
 
     # Derive Q
