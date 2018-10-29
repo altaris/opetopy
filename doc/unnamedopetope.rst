@@ -16,88 +16,24 @@ The arrow
 ---------
 
 
-.. code-block:: python
+.. literalinclude:: ../tests/test_unnamedopetope_arrow.py
+    :language: python
+    :linenos:
 
-    from opetopy.UnnamedOpetope import *
-
-    ar = Shift(Point())
-    print(ar.eval())
-
-    # Faster way
-    ar = Arrow()
-
-::
-
-    ctx = {}
-    src = ■
-    tgt = ⧫
+.. literalinclude:: build/tests/test_unnamedopetope_arrow.out
+    :linenos:
 
 
 A classic
 ---------
 
 
-.. code-block:: python
+.. literalinclude:: ../tests/test_unnamedopetope_classic.py
+    :language: python
+    :linenos:
 
-    from opetopy.UnnamedOpetope import *
-
-    classic = Graft(
-        Shift(OpetopicInteger(2)),
-        OpetopicInteger(2),
-        address([['*']])
-    )
-    print(classic.eval())
-
-    # Faster way
-    classic = OpetopicTree([None, [None, None]])
-
-::
-
-    ctx = {
-        [[]] ↦ []
-        [[*][]] ↦ [*]
-        [[*][*]] ↦ [**]
-    }
-    src = {
-        [] : {
-            [] : ■
-            [*] : ■
-        }
-        [[*]] : {
-            [] : ■
-            [*] : ■
-        }
-    }
-    tgt = {
-        [] : ■
-        [*] : ■
-        [**] : ■
-    }
-
-.. code-block:: python
-
-    print(classic.toTex())
-
-.. code-block:: TeX
-
-    \begin{prooftree}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash \zeroOpt \longrightarrow \emptyset$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$ \vdash \oneOpt \longrightarrow \zeroOpt$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[] \sep \oneOpt} \longrightarrow \oneOpt$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$\frac{[[]]}{[]} \vdash \opetope{[] \sep \opetope{[] \sep \oneOpt}} \longrightarrow \opetope{[] \sep \oneOpt}$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash \zeroOpt \longrightarrow \emptyset$}
-        \RightLabel{\texttt{degen}}
-        \UnaryInfC{$\frac{[]}{*} \vdash \degenopetope{\zeroOpt} \longrightarrow \oneOpt$}
-        \RightLabel{\texttt{graft-}$[[]]$}
-        \BinaryInfC{$ \vdash \opetope{[] \sep \opetope{[] \sep \oneOpt} \\ [[]] \sep \degenopetope{\zeroOpt}} \longrightarrow \degenopetope{\zeroOpt}$}
-    \end{prooftree}
+.. literalinclude:: build/tests/test_unnamedopetope_classic.out
+    :linenos:
 
 
 Opetopic integers
@@ -112,72 +48,12 @@ Recall that for :math:`n \in \mathbb{N}`:
 
 This is exactly the implementation of :func:`UnnamedOpetope.OpetopicInteger`.
 
-.. code-block:: python
+.. literalinclude:: ../tests/test_unnamedopetope_opetopicinteger.py
+    :language: python
+    :linenos:
 
-    from UnnamedOpetope import OpetopicInteger
-
-    oi5 = OpetopicInteger(5)
-    print(oi5.eval())
-
-::
-
-    ctx = {
-        [*****] ↦ *
-    }
-    src = {
-        []: ■
-        [*]: ■
-        [**]: ■
-        [***]: ■
-        [****]: ■
-    }
-    tgt = ■
-
-
-.. code-block:: python
-
-    print(oi5.toTex())
-
-.. code-block:: TeX
-
-    \begin{prooftree}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[] \sep \optOne} \longrightarrow \optOne$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
-        \RightLabel{\texttt{graft-}$[*]$}
-        \BinaryInfC{$\frac{[**]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne} \longrightarrow \optOne$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
-        \RightLabel{\texttt{graft-}$[**]$}
-        \BinaryInfC{$\frac{[***]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne \\ [**] \sep \optOne} \longrightarrow \optOne$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
-        \RightLabel{\texttt{graft-}$[***]$}
-        \BinaryInfC{$\frac{[****]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne \\ [**] \sep \optOne \\ [***] \sep \optOne} \longrightarrow \optOne$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
-        \RightLabel{\texttt{shift}}
-        \UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
-        \RightLabel{\texttt{graft-}$[****]$}
-        \BinaryInfC{$\frac{[*****]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne \\ [**] \sep \optOne \\ [***] \sep \optOne \\ [****] \sep \optOne} \longrightarrow \optOne$}
-    \end{prooftree}
-
+.. literalinclude:: build/tests/test_unnamedopetope_opetopicinteger.out
+    :linenos:
 
 
 Deciding opetopes
@@ -189,54 +65,19 @@ The :func:`UnnamedOpetope.ProofTree` effectively decides opetopes among preopeto
 
 Here, we construct the proof tree of :math:`\mathsf{Y}_{\mathbf{2}} \circ_{[[*]]} \mathsf{Y}_{\mathbf{0}}`
 
-.. code-block:: python
+.. literalinclude:: ../tests/test_unnamedopetope_decision_valid.py
+    :language: python
+    :linenos:
 
-    from UnnamedOpetope import address, ProofTree
-
-    p = ProofTree({
-        address([], 2): {
-            address([], 1): {
-                address('*'): {}  # {} represents the point
-            },
-            address(['*']): {
-                address('*'): {}
-            }
-        },
-        address([['*']]): {
-            None: {}  # indicates a degeneracy
-        }})
-    print(p)
-
-::
-
-    Graft(Shift(Graft(Shift(Shift(Point())), Shift(Point()), [*])), Degen(Point()), [[*]])
-
-
-.. code-block:: python
-
-    print(p.eval())
-
-::
-
-    ctx = {
-        [[]] ↦ []
-    }
-    src = {
-        []: {
-            []: ■
-            [*]: ■
-        }
-        [[*]]: degen(⧫)
-    }
-    tgt = {
-        []: ■
-        [*]: ■
-    }
-
+.. literalinclude:: build/tests/test_unnamedopetope_decision_valid.out
+    :linenos:
 
 Here, we try to construct the proof tree of the invalid :math:`\mathsf{Y}_{\mathbf{1}} \circ_{[[***]]} \mathsf{Y}_{\mathbf{1}}`
 
-.. code-block:: TeX
+.. code-block:: python
+    :linenos:
+
+    from UnnamedOpetope import address, ProofTree
 
     ProofTree({
         address([], 2): {

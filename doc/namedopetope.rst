@@ -10,83 +10,24 @@ The point
 ---------
 
 
-.. code-block:: python
+.. literalinclude:: ../tests/test_namedopetope_point.py
+    :language: python
+    :linenos:
 
-    from opetopy.NamedOpetope import *
-
-    pt = Point("x")
-    print(pt.eval())
-
-::
-
-     ▷ x : ∅ ⊢ x : ∅
+.. literalinclude:: build/tests/test_namedopetope_point.out
+    :linenos:
 
 
 A classic
 ---------
 
 
-.. code-block:: python
+.. literalinclude:: ../tests/test_namedopetope_classic.py
+    :language: python
+    :linenos:
 
-    from opetopy.NamedOpetope import *
-
-    beta = Fill(Graft(
-        Fill(Point("c"), "h"),
-        Fill(Point("a"), "i"),
-        "c"),
-        "β")
-    alpha = Fill(Graft(
-        Fill(Point("b"), "g"),
-        Fill(Point("a"), "f"),
-        "b"),
-        "α")
-    classic = Fill(Graft(beta, alpha, "i"), "A")
-    print(classic.eval())
-
-::
-
-     ▷ A : β(i ← α) ⊷ h(c ← g(b ← f)) ⊷ a ⊷ ∅, f : a ⊷ ∅, α : g(b ← f) ⊷ a ⊷ ∅, a : ∅, h : c ⊷ ∅, c : ∅, β : h(c ← i) ⊷ a ⊷ ∅, g : b ⊷ ∅, i : a ⊷ ∅, b : ∅ ⊢ A : β(i ← α) ⊷ h(c ← g(b ← f)) ⊷ a ⊷ ∅
-
-.. code-block:: python
-
-    print(classic.toTex())
-
-.. code-block:: TeX
-
-    \begin{prooftree}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash_{0} c : \emptyset$}
-        \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} h : c \blackwhitespoon \emptyset$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash_{0} a : \emptyset$}
-        \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} i : a \blackwhitespoon \emptyset$}
-        \RightLabel{\texttt{graft-}$c$}
-        \BinaryInfC{$ \vdash_{1} h(c \leftarrow i) : a \blackwhitespoon \emptyset$}
-        \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{2} β : h(c \leftarrow i) \blackwhitespoon a \blackwhitespoon \emptyset$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash_{0} b : \emptyset$}
-        \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} g : b \blackwhitespoon \emptyset$}
-        \AxiomC{}
-        \RightLabel{\texttt{point}}
-        \UnaryInfC{$ \vdash_{0} a : \emptyset$}
-        \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{1} f : a \blackwhitespoon \emptyset$}
-        \RightLabel{\texttt{graft-}$b$}
-        \BinaryInfC{$ \vdash_{1} g(b \leftarrow f) : a \blackwhitespoon \emptyset$}
-        \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{2} α : g(b \leftarrow f) \blackwhitespoon a \blackwhitespoon \emptyset$}
-        \RightLabel{\texttt{graft-}$i$}
-        \BinaryInfC{$ \vdash_{2} β(i \leftarrow α) : h(c \leftarrow g(b \leftarrow f)) \blackwhitespoon a \blackwhitespoon \emptyset$}
-        \RightLabel{\texttt{fill}}
-        \UnaryInfC{$ \vdash_{3} A : β(i \leftarrow α) \blackwhitespoon h(c \leftarrow g(b \leftarrow f)) \blackwhitespoon a \blackwhitespoon \emptyset$}
-    \end{prooftree}
+.. literalinclude:: build/tests/test_namedopetope_classic.out
+    :linenos:
 
 
 Documentation
