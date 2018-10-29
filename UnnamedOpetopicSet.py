@@ -100,6 +100,14 @@ class PastingDiagram:
     shapeSequent: UnnamedOpetope.Sequent  # For optimization purposes
     shapeProof: UnnamedOpetope.RuleInstance
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, PastingDiagram):
+            raise NotImplementedError
+        else:
+            return self.shape == other.shape and \
+                self.degeneracy == other.degeneracy and \
+                self.nodes == other.nodes
+
     def __getitem__(self, addr: UnnamedOpetope.Address) -> str:
         """
         Returns the source variable at ``addr`` of a non degenerate pasting
@@ -116,6 +124,9 @@ class PastingDiagram:
                 addr = repr(addr), pd = repr(self))
         else:
             return self.nodes[addr]
+
+    def __ne__(self, other) -> bool:
+        return not (self == other)
 
     def __repr__(self) -> str:
         if self.degeneracy is None:

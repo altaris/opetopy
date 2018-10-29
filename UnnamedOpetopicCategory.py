@@ -201,3 +201,75 @@ def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
 
     # Done
     return res
+
+
+def applyTargetUniversalProperty(
+        seq: UnnamedOpetopicSet.Sequent,
+        tuCell: str,
+        cell: str,
+        factorizationName: str,
+        fillerName: str) -> UnnamedOpetopicSet.Sequent:
+    """
+    From a target universal cell :math:`\\alpha : \\mathbf{P}
+    \\longrightarrow t` (whose name is ``tuCell``), and another cell
+    :math:`\\beta : \\mathbf{P} \\longrightarrow u`, creates the universal
+    factorization.
+    """
+    # Inits
+    typealpha = seq.context[tuCell].type
+    typebeta = seq.context[cell].type
+    P = typealpha.source
+    targetalpha = typealpha.target
+    targetbeta = typebeta.target
+
+    # Checks
+    if seq.pastingDiagram is not None:
+        raise DerivationError(
+            "Apply target univ. prop.",
+            "Sequent cannot type a pasting diagram")
+    elif not isTargetUniversal(typealpha):
+        raise DerivationError(
+            "Apply target univ. prop.",
+            "First cell is expected to be target universal")
+    elif typebeta.source != P:
+        raise DerivationError(
+            "Apply target univ. prop.",
+            "Cells are expected to have the same source pasting diagram")
+    elif targetalpha is None or targetbeta is None:
+        raise RuntimeError(
+            "[Apply target univ. prop.] Target universal cell is a point. In "
+            "valid derivations, this should not happen")
+
+    # Derive the factorization cell
+    n = targetalpha.shape.dimension
+    res = UnnamedOpetopicSet.graft(
+        deepcopy(seq), UnnamedOpetopicSet.pastingDiagram(
+            UnnamedOpetope.Shift(targetalpha.shapeProof),
+            {
+                UnnamedOpetope.address([], n): targetalpha.name
+            }))
+    res = UnnamedOpetopicSet.fill(res, targetbeta.name, factorizationName)
+
+    # Derive the filler
+    res = UnnamedOpetopicSet.graft(
+        res, UnnamedOpetopicSet.pastingDiagram(
+            UnnamedOpetope.Graft(
+                UnnamedOpetope.Shift(
+                    UnnamedOpetope.Shift(targetalpha.shapeProof)),
+                P.shapeProof,
+                UnnamedOpetope.address([[]], n + 1)),
+            {
+                UnnamedOpetope.address([], n + 1): factorizationName,
+                UnnamedOpetope.address([[]], n + 1): tuCell
+            }))
+    res = UnnamedOpetopicSet.fill(res, cell, fillerName)
+
+    # Mark the filler as target universal and source universal at the facto.
+    rawFillerType = res.context[fillerName].type
+    fillerType = Type(rawFillerType.source, rawFillerType.target)
+    fillerType.targetUniversal = True
+    fillerType.sourceUniversal.add(UnnamedOpetope.address([], n + 1))
+    res.context[fillerName].type = fillerType
+
+    # Done
+    return res

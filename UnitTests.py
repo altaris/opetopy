@@ -697,6 +697,53 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test___eq__(self):
+        self.assertEqual(
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(0), "a"),
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(0), "a"))
+        self.assertNotEqual(
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(0), "a"),
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(0), "b"))
+        self.assertNotEqual(
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(0), "a"),
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.Degen(UnnamedOpetope.Arrow()), "a"))
+        self.assertNotEqual(
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(1),
+                {UnnamedOpetope.address([], 1): "a"}),
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(1),
+                {UnnamedOpetope.address([], 1): "b"}))
+        self.assertNotEqual(
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(1),
+                {UnnamedOpetope.address([], 1): "a"}),
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(2),
+                {
+                    UnnamedOpetope.address([], 1): "a",
+                    UnnamedOpetope.address(['*']): "a"
+                }))
+        self.assertEqual(
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(2),
+                {
+                    UnnamedOpetope.address([], 1): "a",
+                    UnnamedOpetope.address(['*']): "b"
+                }),
+            UnnamedOpetopicSet.pastingDiagram(
+                UnnamedOpetope.OpetopicInteger(2),
+                {
+                    UnnamedOpetope.address(['*']): "b",
+                    UnnamedOpetope.address([], 1): "a"
+                }))
+
     def test___getitem__(self):
         d = UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
             UnnamedOpetope.OpetopicInteger(0), "d")
