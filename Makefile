@@ -11,6 +11,7 @@ TESTS 		= \
 	test_unnamedopetope_classic \
 	test_unnamedopetope_decision_valid \
 	test_unnamedopetope_opetopicinteger \
+	test_unnamedopetopiccategory_applysourceuniversalproperty \
 	test_unnamedopetopiccategory_applytargetuniversalproperty \
 	test_unnamedopetopiccategory_filltargethorn \
 	test_unnamedopetopicset_arrow \
@@ -45,4 +46,4 @@ typecheck:
 
 .PHONY: unittests
 unittests:
-	python3 -m unittest discover --start-directory tests --pattern "unittest*.py" --verbose
+	@$(RUN) -m unittest discover --start-directory tests --pattern "unittest*.py" --verbose

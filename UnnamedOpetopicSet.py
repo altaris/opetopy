@@ -280,6 +280,12 @@ class Type:
     source: PastingDiagram
     target: Optional[Variable]
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Type):
+            raise NotImplementedError
+        else:
+            return self.source == other.source and self.target == other.target
+
     def __init__(self, source: PastingDiagram,
                  target: Optional[Variable]) -> None:
         if target is None:
@@ -297,6 +303,9 @@ class Type:
                 should = source.shapeTarget())
         self.source = source
         self.target = target
+
+    def __ne__(self, other) -> bool:
+        return not (self == other)
 
     def __repr__(self) -> str:
         if self.target is None:

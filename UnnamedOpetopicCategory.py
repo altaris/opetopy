@@ -254,7 +254,112 @@ def applyTargetUniversalProperty(
     return res
 
 
-def applySourceUniversalProperty():
+def applySourceUniversalProperty(
+        seq: UnnamedOpetopicSet.Sequent,
+        suCellName: str,
+        cellName: str,
+        addr: UnnamedOpetope.Address,
+        factorizationName: str,
+        fillerName: str) -> UnnamedOpetopicSet.Sequent:
     """
+    From
+
+    * an address :math:`[p]` (argument ``addr``);
+    * a cell :math:`\\alpha : \\forall_{[p]} \\mathbf{P} \\longrightarrow u`
+      (with name``suCellName``);
+    * a cell :math:`\\beta : \\mathbf{P} \\smallsquare_{[p]} s \\longrightarrow
+      u` (with name``cellName``);
+
+    applies the source universal property of :math:`\\alpha` at :math:`[p]`
+    over :math:`\\beta`, thus creating
+
+    * a factorization cell :math:`\\xi : s \\longrightarrow \\mathsf{s}_{[p]}
+      \\mathbf{P}`;
+    * a filler :math:`A`, target universal, and source universal at
+      :math:`\\xi`, i.e. at address :math:`[[p]]`.
     """
-    pass
+
+    # Inits
+    alphatype = seq.context[suCellName].type
+    betatype = seq.context[cellName].type
+    P = alphatype.source
+    Q = betatype.source
+    u = alphatype.target
+
+    # Checks & inits
+    if seq.pastingDiagram is not None:
+        raise DerivationError(
+            "Apply source univ. prop.",
+            "Sequent expected to not type a pasting diagram")
+    elif u is None:
+        raise RuntimeError("[Apply source univ. prop.] Source universal cell "
+                           "{sucell} is a point. In valid derivations, this "
+                           "should not happen".format(sucell = suCellName))
+    elif P.nodes is None:
+        raise DerivationError(
+            "Apply source univ. prop.",
+            "Source universal cell {sucell} cannot be degenerate",
+            sucell = suCellName)
+    elif Q.nodes is None:
+        raise DerivationError(
+            "Apply source univ. prop.",
+            "Cell {cell} cannot be degenerate",
+            cell = cellName)
+    elif addr not in P.nodes.keys():
+        raise DerivationError(
+            "Apply source univ. prop.",
+            "Address {addr} not in source of {sucell}",
+            addr = addr, sucell = suCellName)
+    elif betatype.target != u:
+        raise DerivationError(
+            "Apply source univ. prop.",
+            "Cells {sucell} and {cell} are not compatible: targets differ",
+            cell = cellName, sucell = suCellName)
+    elif P.nodes.keys() != Q.nodes.keys():
+        raise DerivationError(
+            "Apply source univ. prop.",
+            "Cells {sucell} and {cell} are not compatible: source pasting "
+            "diagrams do not have the same addresses",
+            cell = cellName, sucell = suCellName)
+    for a in P.nodes.keys():
+        if a != addr and P.nodes[a] != Q.nodes[a]:
+            raise DerivationError(
+                "Apply source univ. prop.",
+                "Cells {sucell} and {cell} are not compatible: source pasting "
+                "diagrams do not agree on address {a}",
+                cell = cellName, sucell = suCellName, a = a)
+
+    # Derive xi
+    xishapeproof = seq.context[Q.source(addr)].type.source.shapeProof
+    res = UnnamedOpetopicSet.graft(
+        seq, UnnamedOpetopicSet.pastingDiagram(
+            UnnamedOpetope.Shift(xishapeproof),
+            {
+                UnnamedOpetope.address([], Q.shape.dimension - 1):
+                    Q.source(addr)
+            }))
+    res = UnnamedOpetopicSet.fill(res, P.source(addr), factorizationName)
+
+    # Derive A
+    omega = UnnamedOpetope.Graft(
+        UnnamedOpetope.Shift(P.shapeProof),
+        UnnamedOpetope.Shift(xishapeproof),
+        addr.shift())
+    res = UnnamedOpetopicSet.graft(
+        res, UnnamedOpetopicSet.pastingDiagram(
+            omega,
+            {
+                UnnamedOpetope.address([], P.shape.dimension): suCellName,
+                addr.shift(): factorizationName
+            }))
+    res = UnnamedOpetopicSet.fill(res, cellName, fillerName)
+
+    # Mark A as source universal at xi and target universal
+    rawFillerType = res.context[fillerName].type
+    fillerType = Type(rawFillerType.source, rawFillerType.target)
+    fillerType.targetUniversal = True
+    fillerType.sourceUniversal.add(addr.shift())
+    res.context[fillerName].type = fillerType
+
+    # Done
+    return res
