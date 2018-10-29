@@ -129,41 +129,44 @@ def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
     P = seq.pastingDiagram
     tPshapeProof = UnnamedOpetope.ProofTree(P.shapeTarget().toDict())
 
-    # Target of t
-    if P.shape.isDegenerate:
-        u = P.degeneracyVariable()
-    else:
-        u = seq.context.target(
-            P.source(UnnamedOpetope.address([], P.shape.dimension - 1)))
-
-    # Source of t
-    if P.shapeTarget().isDegenerate:
-        Q = UnnamedOpetopicSet.pastingDiagram(
-            tPshapeProof, seq.context.target(u))
-    else:
-        nodes = {}  # type: Dict[UnnamedOpetope.Address, str]
-        if P.shape.isDegenerate:
-            nodes[UnnamedOpetope.address([], P.shape.dimension - 2)] = \
-                P.degeneracyVariable()
-        else:
-            readdress = P.shapeProof.eval().context
-            for l in P.shape.leafAddresses():
-                p, q = l.edgeDecomposition()
-                nodes[readdress(l)] = seq.context.source(P[p], q)
-        Q = UnnamedOpetopicSet.pastingDiagram(tPshapeProof, nodes)
-
-    # Derive Q
+    # Start deriving
     res = deepcopy(seq)
     res.pastingDiagram = None
-    if Q.shape.isDegenerate:
-        res = UnnamedOpetopicSet.degen(res, Q.degeneracyVariable())
-    else:
-        res = UnnamedOpetopicSet.graft(res, Q)
 
     # Derive t
-    res = UnnamedOpetopicSet.fill(res, u, targetName)
+    if P.shape.dimension - 1 == 0:
+        # t is a point
+        res = UnnamedOpetopicSet.point(res, targetName)
+    else:
+        # Set u, target of t
+        if P.shape.isDegenerate:
+            u = P.degeneracyVariable()
+        else:
+            u = seq.context.target(
+                P.source(UnnamedOpetope.address([], P.shape.dimension - 1)))
+        # Derive Q, source of t
+        if P.shapeTarget().isDegenerate:
+            Q = UnnamedOpetopicSet.pastingDiagram(
+                tPshapeProof, seq.context.target(u))
+        else:
+            nodes = {}  # type: Dict[UnnamedOpetope.Address, str]
+            if P.shape.isDegenerate:
+                nodes[UnnamedOpetope.address([], P.shape.dimension - 2)] = \
+                    P.degeneracyVariable()
+            else:
+                readdress = P.shapeProof.eval().context
+                for l in P.shape.leafAddresses():
+                    p, q = l.edgeDecomposition()
+                    nodes[readdress(l)] = seq.context.source(P[p], q)
+            Q = UnnamedOpetopicSet.pastingDiagram(tPshapeProof, nodes)
+        if Q.shape.isDegenerate:
+            res = UnnamedOpetopicSet.degen(res, Q.degeneracyVariable())
+        else:
+            res = UnnamedOpetopicSet.graft(res, Q)
+        # Derive t, target of alpha
+        res = UnnamedOpetopicSet.fill(res, u, targetName)
 
-    # Derive P
+    # Derive P, source of alpha
     if P.shape.isDegenerate:
         res = UnnamedOpetopicSet.degen(res, u)
     else:
