@@ -11,6 +11,8 @@ TESTS 		= \
 	test_unnamedopetope_classic \
 	test_unnamedopetope_decision_valid \
 	test_unnamedopetope_opetopicinteger \
+	test_unnamedopetopiccategory_applytargetuniversalproperty \
+	test_unnamedopetopiccategory_filltargethorn \
 	test_unnamedopetopicset_arrow \
 	test_unnamedopetopicset_classic
 
