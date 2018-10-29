@@ -62,6 +62,20 @@ This hints that any two factorization in the application of the target universal
     :linenos:
 
 
+Target universal closure
+------------------------
+
+
+In this example, we derive two target universal arrows :math:`f` and :math:`g`, and their composition :math:`h`. We then apply the target universal closure property to prove that :math:`h` is target universal.
+
+.. literalinclude:: ../tests/test_unnamedopetopiccategory_applytargetuniversalclosure.py
+    :language: python
+    :linenos:
+
+.. literalinclude:: build/tests/test_unnamedopetopiccategory_applytargetuniversalclosure.out
+    :linenos:
+
+
 Documentation
 =============
 

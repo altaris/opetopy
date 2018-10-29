@@ -366,3 +366,82 @@ def applySourceUniversalProperty(
 
     # Done
     return res
+
+
+def applyTargetUniversalClosure(
+        seq: UnnamedOpetopicSet.Sequent,
+        tuCell: str) -> UnnamedOpetopicSet.Sequent:
+    """
+    From a target universal cell :math:`A : \\mathbf{P} \\longrightarrow
+    \\forall u` such that all its faces are target universal but one,
+    turns that one target universal as well.
+    """
+
+    # Inits
+    P = seq.context[tuCell].type.source
+    u = seq.context[tuCell].type.target
+
+    # Checks
+    if seq.pastingDiagram is not None:
+        raise DerivationError(
+            "Apply target univ. closure",
+            "Sequent expected to not type a pasting diagram")
+    elif u is None:
+        raise RuntimeError("[Apply target univ. closure] Target universal "
+                           "cell {cell} is a point. In valid derivations, "
+                           "this should not happen".format(cell = tuCell))
+
+    # If P is degenerate, make u target universal
+    if P.shape.isDegenerate:
+        res = deepcopy(seq)
+        rawTargetType = res.context[u.name].type
+        targetType = Type(rawTargetType.source, rawTargetType.target)
+        targetType.targetUniversal = True
+        res.context[u.name].type = targetType
+        return res
+
+    # Get non target universal source address (if any)
+    if P.nodes is None:
+        raise RuntimeError("[Apply target univ. closure] Target universal "
+                           "cell {cell} non degenerate, yet it source pasting "
+                           "diagram has no nodes. In valid derivations, this "
+                           "should not happen".format(cell = tuCell))
+    else:
+        nonTuSource = None  # type: Optional[UnnamedOpetope.Address]
+        for addr in P.nodes.keys():
+            if not isTargetUniversal(seq.context[P.source(addr)].type):
+                if nonTuSource is None:
+                    nonTuSource = addr
+                else:
+                    raise DerivationError(
+                        "Apply target univ. closure",
+                        "Source pasting diagram has at least two non target "
+                        "universal sources: {addr1} and {addr2}"
+                        .format(addr1 = nonTuSource, addr2 = addr))
+
+    if isTargetUniversal(seq.context[u.name].type):
+        if nonTuSource is None:
+            raise DerivationError(
+                "Apply target univ. closure",
+                "All faces of source pasting diagram are already target "
+                "universal. You can just remove this rule instance")
+        # Make source at nonTuSource target universal
+        res = deepcopy(seq)
+        rawSourceType = res.context[P.source(nonTuSource)].type
+        sourceType = Type(rawSourceType.source, rawSourceType.target)
+        sourceType.targetUniversal = True
+        res.context[P.source(nonTuSource)].type = sourceType
+        return res
+    else:
+        if nonTuSource is not None:
+            raise DerivationError(
+                "Apply target univ. closure",
+                "Source pasting diagram has at least two non target universal "
+                "faces: target and {addr}".format(addr = nonTuSource))
+        # Make u target universal
+        res = deepcopy(seq)
+        rawTargetType = res.context[u.name].type
+        targetType = Type(rawTargetType.source, rawTargetType.target)
+        targetType.targetUniversal = True
+        res.context[u.name].type = targetType
+        return res
