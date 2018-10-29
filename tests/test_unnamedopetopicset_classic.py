@@ -1,4 +1,4 @@
-from UnnamedOpetopicSet import *
+from UnnamedOpetopicSet import Fill, Graft, pastingDiagram, Point, RuleInstance
 
 from UnnamedOpetope import address, Arrow, OpetopicInteger, OpetopicTree
 from UnnamedOpetope import Graft as OptGraft
@@ -10,11 +10,11 @@ omega = OptGraft(
     OpetopicInteger(2),
     address([['*']]))
 
-# Faster way
-omega = OpetopicTree([None, [None, None]])
+# Faster way:
+# >>> omega = OpetopicTree([None, [None, None]])
 
 # Derivation of a
-classic = Point(None, "a")
+classic = Point(None, "a")  # type: RuleInstance
 
 # Derivation of f
 classic = Graft(

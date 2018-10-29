@@ -1,7 +1,7 @@
-from UnnamedOpetopicSet import *
+from UnnamedOpetopicSet import Fill, Graft, pastingDiagram, Point, RuleInstance
 from UnnamedOpetope import address, Arrow
 
-ar = Point(None, "a")
+ar = Point(None, "a")  # type: RuleInstance
 ar = Point(ar, "b")
 ar = Graft(
     ar, pastingDiagram(
