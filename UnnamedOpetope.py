@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: opetopy.UnnamedOpetope
+.. module:: UnnamedOpetope
    :synopsis: Implementation of the unnamed approach for opetopes
 
 .. moduleauthor:: Cédric HT

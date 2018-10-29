@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: opetopy.NamedOpetope
+.. module:: NamedOpetope
    :synopsis: Implementation of the named approach
               for opetopes
 

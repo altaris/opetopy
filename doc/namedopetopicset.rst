@@ -19,6 +19,7 @@ Documentation
 
 .. automodule:: NamedOpetopicSet
     :members:
+    :noindex:
     :private-members:
     :special-members:
 

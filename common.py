@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: opetopy.common
+.. module:: common
    :synopsis: Some utilities and global definitions
 
 .. moduleauthor:: Cédric HT

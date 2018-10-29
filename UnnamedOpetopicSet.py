@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: opetopy.UnnamedOpetopicSet
+.. module:: UnnamedOpetopicSet
    :synopsis: Implementation of the unnamed approach for opetopic sets
 
 .. moduleauthor:: Cédric HT

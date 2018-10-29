@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: opetopy.NamedOpetopicSet
+.. module:: NamedOpetopicSet
    :synopsis: Implementation of the named approach
               for opetopic sets
 

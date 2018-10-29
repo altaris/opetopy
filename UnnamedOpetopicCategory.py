@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: opetopy.UnnamedOpetopicCategory
+.. module:: UnnamedOpetopicCategory
    :synopsis: Implementation of opetopic categories and groupoids using the
               unnamed approach to opetopes and opetopic sets
 
@@ -269,9 +269,10 @@ def applySourceUniversalProperty(
 
     * an address :math:`[p]` (argument ``addr``);
     * a cell :math:`\\alpha : \\forall_{[p]} \\mathbf{P} \\longrightarrow u`
-      (with name``suCellName``);
-    * a cell :math:`\\beta : \\mathbf{P} \\smallsquare_{[p]} s \\longrightarrow
-      u` (with name``cellName``);
+      (with name ``suCellName``);
+    * a cell :math:`\\beta : \\mathbf{P'} \\longrightarrow
+      u` (with name ``cellName``), where :math:`\\mathbf{P'}` is
+      :math:`\\mathbf{P}` except at address :math:`[p]` where it is :math:`s`;
 
     applies the source universal property of :math:`\\alpha` at :math:`[p]`
     over :math:`\\beta`, thus creating

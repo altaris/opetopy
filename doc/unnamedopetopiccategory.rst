@@ -34,7 +34,7 @@ Target universal property
 
 In this example, we have two cells of shape :math:`\mathbf{0}`:
 
-* :math:`\delta`, degenerate at :math:`a` with target :math:`f`, constructed via rules :math:`\texttt{degen}` and :math:`\texttt{fill}` of system :math:`\textsc{OptSet${}^?$}`;
+* :math:`\delta`, degenerate at :math:`a` with target :math:`f`, constructed via rules :math:`\texttt{degen}` and :math:`\texttt{fill}` of system :math:`\textbf{OptSet${}^?$}`;
 * :math:`\gamma`, constructed by filling the empty pasting diagram at :math:`a`, with universal target :math:`g`.
 
 We then apply the target universal property of :math:`\gamma` over :math:`\delta` to get a factorization cell :math:`\xi` and a filler :math:`A`.
@@ -88,5 +88,6 @@ Documentation
 
 .. automodule:: UnnamedOpetopicCategory
     :members:
+    :noindex:
     :private-members:
     :special-members:
