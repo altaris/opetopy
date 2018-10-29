@@ -1,0 +1,64 @@
+from UnnamedOpetope import address, Arrow, OpetopicInteger
+from UnnamedOpetopicSet import Fill, Graft, pastingDiagram, Point, RuleInstance
+from UnnamedOpetopicCategory import TUniv, SUniv, TFill
+
+# Derive points
+proof = Point(None, ["a", "b", "c"])  # type: RuleInstance
+
+# Derive f
+proof = Graft(
+    proof, pastingDiagram(
+        Arrow(),
+        {
+            address('*'): "a"
+        }))
+proof = Fill(proof, "b", "f")
+
+# Derive g
+proof = Graft(
+    proof, pastingDiagram(
+        Arrow(),
+        {
+            address('*'): "b"
+        }))
+proof = Fill(proof, "c", "g")
+
+# Derive the composition cells
+proof = Graft(
+    proof, pastingDiagram(
+        OpetopicInteger(2),
+        {
+            address([], 1): "g",
+            address(['*']): "f"
+        }))
+proof = TFill(proof, "h", "α")
+
+# Derive i, parallel to h
+proof = Graft(
+    proof, pastingDiagram(
+        Arrow(),
+        {
+            address('*'): "a"
+        }))
+proof = Fill(proof, "c", "i")
+
+# Derive β
+proof = Graft(
+    proof, pastingDiagram(
+        OpetopicInteger(2),
+        {
+            address([], 1): "g",
+            address(['*']): "f"
+        }))
+proof = Fill(proof, "i", "β")
+
+# Apply target universality of α over β
+proof = TUniv(proof, "α", "β", "ξ", "A")
+
+# Again
+proof = TUniv(proof, "α", "β", "ζ", "B")
+
+# Apply source universality of A over B
+proof = SUniv(proof, "A", "B", address([], 2), "C", "Ψ")
+
+print(proof.eval())

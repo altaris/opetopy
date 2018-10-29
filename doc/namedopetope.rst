@@ -36,6 +36,5 @@ Documentation
 
 .. automodule:: NamedOpetope
     :members:
-    :noindex:
     :private-members:
     :special-members:

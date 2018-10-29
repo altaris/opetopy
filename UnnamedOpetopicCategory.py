@@ -106,9 +106,8 @@ def isSourceUniversal(t: UnnamedOpetopicSet.Type,
         return False
 
 
-def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
-                   targetName: str,
-                   fillerName: str) -> UnnamedOpetopicSet.Sequent:
+def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
+          fillerName: str) -> UnnamedOpetopicSet.Sequent:
     """
     This function takes a :class:`UnnamedOpetopicSet.Sequent`, (recall that
     the context of a sequent derivable in :math:`\\textbf{OptSet${}^?$}` is
@@ -185,12 +184,9 @@ def fillTargetHorn(seq: UnnamedOpetopicSet.Sequent,
     return res
 
 
-def applyTargetUniversalProperty(
-        seq: UnnamedOpetopicSet.Sequent,
-        tuCell: str,
-        cell: str,
-        factorizationName: str,
-        fillerName: str) -> UnnamedOpetopicSet.Sequent:
+def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
+          factorizationName: str,
+          fillerName: str) -> UnnamedOpetopicSet.Sequent:
     """
     From a target universal cell :math:`\\alpha : \\mathbf{P}
     \\longrightarrow t` (whose name is ``tuCell``), and another cell
@@ -257,13 +253,9 @@ def applyTargetUniversalProperty(
     return res
 
 
-def applySourceUniversalProperty(
-        seq: UnnamedOpetopicSet.Sequent,
-        suCellName: str,
-        cellName: str,
-        addr: UnnamedOpetope.Address,
-        factorizationName: str,
-        fillerName: str) -> UnnamedOpetopicSet.Sequent:
+def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
+          addr: UnnamedOpetope.Address, factorizationName: str,
+          fillerName: str) -> UnnamedOpetopicSet.Sequent:
     """
     From
 
@@ -369,9 +361,8 @@ def applySourceUniversalProperty(
     return res
 
 
-def applyTargetUniversalClosure(
-        seq: UnnamedOpetopicSet.Sequent,
-        tuCell: str) -> UnnamedOpetopicSet.Sequent:
+def tclose(seq: UnnamedOpetopicSet.Sequent,
+           tuCell: str) -> UnnamedOpetopicSet.Sequent:
     """
     From a target universal cell :math:`A : \\mathbf{P} \\longrightarrow
     \\forall u` such that all its faces are target universal but one,
@@ -446,3 +437,166 @@ def applyTargetUniversalClosure(
         targetType.targetUniversal = True
         res.context[u.name].type = targetType
         return res
+
+
+class TFill(UnnamedOpetopicSet.RuleInstance):
+    """
+    A class representing an instance of the :math:`\\texttt{tfill}` rule in a
+    proof tree.
+    """
+
+    fillerName: str
+    proofTree: UnnamedOpetopicSet.RuleInstance
+    targetName: str
+
+    def __init__(self, p: UnnamedOpetopicSet.RuleInstance, targetName: str,
+                 fillerName: str) -> None:
+        self.fillerName = fillerName
+        self.proofTree = p
+        self.targetName = targetName
+
+    def __str__(self) -> str:
+        return "TFill({p}, {t}, {f})".format(
+            p = str(self.proofTree), t = self.targetName, f = self.fillerName)
+
+    def __repr__(self) -> str:
+        return "TFill({p},{t},{f})".format(
+            p = repr(self.proofTree), t = self.targetName, f = self.fillerName)
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{tfill}}\n\t\\UnaryInfC{$" + \
+            self.eval().toTex() + "$}"
+
+    def eval(self) -> UnnamedOpetopicSet.Sequent:
+        return tfill(self.proofTree.eval(), self.targetName, self.fillerName)
+
+
+class TUniv(UnnamedOpetopicSet.RuleInstance):
+    """
+    A class representing an instance of the :math:`\\texttt{tuniv}` rule in a
+    proof tree.
+    """
+
+    cellName: str
+    factorizationName: str
+    fillerName: str
+    proofTree: UnnamedOpetopicSet.RuleInstance
+    tuCellName: str
+
+    def __init__(self, p: UnnamedOpetopicSet.RuleInstance, tuCell: str,
+                 cell: str, factorizationName: str, fillerName: str) -> None:
+        self.cellName = cell
+        self.factorizationName = factorizationName
+        self.fillerName = fillerName
+        self.proofTree = p
+        self.tuCellName = tuCell
+
+    def __str__(self) -> str:
+        return "TUniv({p}, {tu}, {c})".format(
+            p = str(self.proofTree), tu = self.tuCellName, c = self.cellName)
+
+    def __repr__(self) -> str:
+        return "TUniv({p},{tu},{c})".format(
+            p = repr(self.proofTree), tu = self.tuCellName, c = self.cellName)
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{tuniv-$" + self.tuCellName + "$/$" + \
+            self.cellName + "$}}\n\t\\UnaryInfC{$" + self.eval().toTex() + "$}"
+
+    def eval(self) -> UnnamedOpetopicSet.Sequent:
+        return tuniv(self.proofTree.eval(), self.tuCellName, self.cellName,
+                     self.factorizationName, self.fillerName)
+
+
+class SUniv(UnnamedOpetopicSet.RuleInstance):
+    """
+    A class representing an instance of the :math:`\\texttt{suniv}` rule in a
+    proof tree.
+    """
+
+    address: UnnamedOpetope.Address
+    cellName: str
+    factorizationName: str
+    fillerName: str
+    proofTree: UnnamedOpetopicSet.RuleInstance
+    suCellName: str
+
+    def __init__(self, p: UnnamedOpetopicSet.RuleInstance, suCellName: str,
+                 cellName: str, addr: UnnamedOpetope.Address,
+                 factorizationName: str, fillerName: str) -> None:
+        self.address = addr
+        self.cellName = cellName
+        self.factorizationName = factorizationName
+        self.fillerName = fillerName
+        self.proofTree = p
+        self.suCellName = suCellName
+
+    def __str__(self) -> str:
+        return "SUniv({p}, {su}, {c})".format(
+            p = str(self.proofTree), su = self.suCellName, c = self.cellName)
+
+    def __repr__(self) -> str:
+        return "SUniv({p},{su},{c})".format(
+            p = repr(self.proofTree), su = self.suCellName, c = self.cellName)
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{suniv-$" + self.suCellName + "$/$" + \
+            self.cellName + "$}}\n\t\\UnaryInfC{$" + self.eval().toTex() + "$}"
+
+    def eval(self) -> UnnamedOpetopicSet.Sequent:
+        return suniv(self.proofTree.eval(), self.suCellName, self.cellName,
+                     self.address, self.factorizationName, self.fillerName)
+
+
+class TClose(UnnamedOpetopicSet.RuleInstance):
+    """
+    A class representing an instance of the :math:`\\texttt{tclose}` rule in a
+    proof tree.
+    """
+
+    proofTree: UnnamedOpetopicSet.RuleInstance
+    tuCellName: str
+
+    def __init__(self, p: UnnamedOpetopicSet.RuleInstance,
+                 tuCell: str) -> None:
+        self.proofTree = p
+        self.tuCellName = tuCell
+
+    def __str__(self) -> str:
+        return "TClose({p}, {tu})".format(
+            p = str(self.proofTree), tu = self.tuCellName)
+
+    def __repr__(self) -> str:
+        return "TClose({p},{tu})".format(
+            p = repr(self.proofTree), tu = self.tuCellName)
+
+    def _toTex(self) -> str:
+        """
+        Converts the proof tree in TeX code. This method should not be called
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
+        instead.
+        """
+        return self.proofTree._toTex() + \
+            "\n\t\\RightLabel{\\texttt{tclose-$" + self.tuCellName + \
+            "$}}\n\t\\UnaryInfC{$" + self.eval().toTex() + "$}"
+
+    def eval(self) -> UnnamedOpetopicSet.Sequent:
+        return tclose(self.proofTree.eval(), self.tuCellName)

@@ -100,6 +100,5 @@ Documentation
 
 .. automodule:: UnnamedOpetope
     :members:
-    :noindex:
     :private-members:
     :special-members:

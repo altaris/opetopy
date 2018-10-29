@@ -20,11 +20,11 @@ Filler of target horn
 In this simple example, we use the target filling of a pasting diagram of shape :math:`\mathbf{2}`, effectively composing arrow cells :math:`f` and :math:`g`. The result is the arrow :math:`h`, and the compositor is :math:`\alpha`.
 
 
-.. literalinclude:: ../tests/test_unnamedopetopiccategory_filltargethorn.py
+.. literalinclude:: ../tests/test_unnamedopetopiccategory_tfill.py
     :language: python
     :linenos:
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_filltargethorn.out
+.. literalinclude:: build/tests/test_unnamedopetopiccategory_tfill.out
     :linenos:
 
 
@@ -39,11 +39,11 @@ In this example, we have two cells of shape :math:`\mathbf{0}`:
 
 We then apply the target universal property of :math:`\gamma` over :math:`\delta` to get a factorization cell :math:`\xi` and a filler :math:`A`.
 
-.. literalinclude:: ../tests/test_unnamedopetopiccategory_applytargetuniversalproperty.py
+.. literalinclude:: ../tests/test_unnamedopetopiccategory_tuniv.py
     :language: python
     :linenos:
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_applytargetuniversalproperty.out
+.. literalinclude:: build/tests/test_unnamedopetopiccategory_tuniv.out
     :linenos:
 
 
@@ -60,11 +60,11 @@ We then apply the target universal property of :math:`\alpha` over :math:`\beta`
 
 This hints that any two factorization in the application of the target universality of the composition :math:`h` over :math:`i` are homotopic, and in fact, equivalent. 
 
-.. literalinclude:: ../tests/test_unnamedopetopiccategory_applysourceuniversalproperty.py
+.. literalinclude:: ../tests/test_unnamedopetopiccategory_suniv.py
     :language: python
     :linenos:
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_applysourceuniversalproperty.out
+.. literalinclude:: build/tests/test_unnamedopetopiccategory_suniv.out
     :linenos:
 
 
@@ -74,11 +74,11 @@ Target universal closure
 
 In this example, we derive two target universal arrows :math:`f` and :math:`g`, and their composition :math:`h`. We then apply the target universal closure property to prove that :math:`h` is target universal.
 
-.. literalinclude:: ../tests/test_unnamedopetopiccategory_applytargetuniversalclosure.py
+.. literalinclude:: ../tests/test_unnamedopetopiccategory_tclose.py
     :language: python
     :linenos:
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_applytargetuniversalclosure.out
+.. literalinclude:: build/tests/test_unnamedopetopiccategory_tclose.out
     :linenos:
 
 
@@ -88,6 +88,5 @@ Documentation
 
 .. automodule:: UnnamedOpetopicCategory
     :members:
-    :noindex:
     :private-members:
     :special-members:

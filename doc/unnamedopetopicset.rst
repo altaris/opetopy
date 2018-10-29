@@ -36,6 +36,5 @@ Documentation
 
 .. automodule:: UnnamedOpetopicSet
     :members:
-    :noindex:
     :private-members:
     :special-members:
