@@ -2,6 +2,12 @@ Opetopic categories: unnamed approach
 *************************************
 
 
+This part of ``opetopy`` implements finite opetopic categories as defined in [Baez1998]_ and [Finster]_.
+
+.. [Baez1998] Baez, John C. and Dolan, James. Higher-dimensional algebra III: :math:`n`-categories and the algebra of opetopes.
+.. [Finster] Eric Finster. http://opetopic.net . 
+
+
 Examples
 ========
 
