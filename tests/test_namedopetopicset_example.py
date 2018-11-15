@@ -1,11 +1,11 @@
 from NamedOpetope import Fill, Point
-from NamedOpetopicSet import Fold, Repr, Sum
+from NamedOpetopicSet import Glue, Repr, Sum
 
 alpha = Fill(Fill(Point("a"), "f"), "α")
 g = Fill(Point("c"), "g")
 h = Fill(Point("b"), "h")
-unfolded = Sum(Sum(Repr(alpha), Repr(g)), Repr(h))
-example = Fold(Fold(Fold(Fold(Fold(unfolded,
+unglued = Sum(Sum(Repr(alpha), Repr(g)), Repr(h))
+example = Glue(Glue(Glue(Glue(Glue(unglued,
                                    "a",
                                    "c"),
                               "b",

@@ -57,18 +57,18 @@ class Test_NamedOpetopicSet_InferenceRules(unittest.TestCase):
         self.assertEqual(len(d.theory.classes),
                          len(a.theory.classes) + len(c.theory.classes))
 
-    def test_fold(self):
+    def test_glue(self):
         a = NamedOpetopicSet.Repr(NamedOpetope.OpetopicInteger(3)).eval()
         with self.assertRaises(DerivationError):
-            NamedOpetopicSet.fold(a, "a_1", "f_1")
+            NamedOpetopicSet.glue(a, "a_1", "f_1")
         with self.assertRaises(DerivationError):
-            NamedOpetopicSet.fold(a, "f_1", "f_2")
-        a = NamedOpetopicSet.fold(a, "a_1", "a_2")
-        a = NamedOpetopicSet.fold(a, "a_1", "a_3")
-        a = NamedOpetopicSet.fold(a, "a_1", "ttA")
-        a = NamedOpetopicSet.fold(a, "f_1", "f_2")
-        a = NamedOpetopicSet.fold(a, "f_1", "f_3")
-        a = NamedOpetopicSet.fold(a, "f_1", "tA")
+            NamedOpetopicSet.glue(a, "f_1", "f_2")
+        a = NamedOpetopicSet.glue(a, "a_1", "a_2")
+        a = NamedOpetopicSet.glue(a, "a_1", "a_3")
+        a = NamedOpetopicSet.glue(a, "a_1", "ttA")
+        a = NamedOpetopicSet.glue(a, "f_1", "f_2")
+        a = NamedOpetopicSet.glue(a, "f_1", "f_3")
+        a = NamedOpetopicSet.glue(a, "f_1", "tA")
         self.assertEqual(len(a.theory.classes), 2)
 
     def test_zero(self):

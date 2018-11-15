@@ -76,7 +76,7 @@ Each implement the following:
 +                               +-----------------------------+----------------------------------------+------------------------------------------+
 |                               | :math:`\texttt{sum}`        | :func:`NamedOpetopicSet.sum`           | :class:`NamedOpetopicSet.Sum`            |
 +                               +-----------------------------+----------------------------------------+------------------------------------------+
-|                               | :math:`\texttt{fold}`       | :func:`NamedOpetopicSet.fold`          | :class:`NamedOpetopicSet.Fold`           |
+|                               | :math:`\texttt{glue}`       | :func:`NamedOpetopicSet.glue`          | :class:`NamedOpetopicSet.Glue`           |
 +-------------------------------+-----------------------------+----------------------------------------+------------------------------------------+
 | :math:`\textbf{Opt${}^?$}`    | :math:`\texttt{point}`      | :func:`UnnamedOpetope.point`           | :class:`UnnamedOpetope.Point`            |
 +                               +-----------------------------+----------------------------------------+------------------------------------------+
@@ -100,7 +100,7 @@ Each implement the following:
 +                               +-----------------------------+----------------------------------------+------------------------------------------+
 |                               | :math:`\texttt{suniv}`      | :func:`UnnamedOpetopicCategory.suniv`  | :class:`UnnamedOpetopicCategory.SUniv`   |
 +                               +-----------------------------+----------------------------------------+------------------------------------------+
-|                               | :math:`\texttt{tclose}`     | :func:`UnnamedOpetopicCategory.tclose` |  :class:`UnnamedOpetopicCategory.TClose` |
+|                               | :math:`\texttt{tclose}`     | :func:`UnnamedOpetopicCategory.tclose` | :class:`UnnamedOpetopicCategory.TClose`  |
 +-------------------------------+-----------------------------+----------------------------------------+------------------------------------------+
 
 

@@ -90,15 +90,15 @@ def sum(ocmt1: NamedOpetope.OCMT,
         ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
 
 
-def fold(ocmt: NamedOpetope.OCMT, aName: str, bName: str) -> NamedOpetope.OCMT:
+def glue(ocmt: NamedOpetope.OCMT, aName: str, bName: str) -> NamedOpetope.OCMT:
     """
-    The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{fold}` rule.
+    The :math:`\\textbf{OptSet${}^!$}` :math:`\\texttt{glue}` rule.
     """
     a = ocmt.context[aName]
     b = ocmt.context[bName]
     if a.dimension != b.dimension:
         raise DerivationError(
-            "fold rule",
+            "glue rule",
             "NamedOpetope.Variables {a} and {b} cannot be identified as they "
             "do not have the same dimension (have respectively {da} and {db})",
             a = str(a), b = str(b), da = a.dimension, db = b.dimension)
@@ -106,7 +106,7 @@ def fold(ocmt: NamedOpetope.OCMT, aName: str, bName: str) -> NamedOpetope.OCMT:
         (ocmt.equal(ocmt.source(a), ocmt.source(b)) and
          ocmt.theory.equal(ocmt.target(a), ocmt.target(b))):
         raise DerivationError(
-            "fold rule",
+            "glue rule",
             "NamedOpetope.Variables {a} and {b} cannot be identified as they "
             "are not parallel: sa = {sa}, sb = {sb}, ta = {ta}, tb = {tb}",
             a = str(a), b = str(b), sa = str(ocmt.source(a)),
@@ -208,9 +208,9 @@ class Sum(RuleInstance):
         return sum(self.proofTree1.eval(), self.proofTree2.eval())
 
 
-class Fold(RuleInstance):
+class Glue(RuleInstance):
     """
-    A class representing an instance of the ``fold`` rule in a proof tree.
+    A class representing an instance of the ``glue`` rule in a proof tree.
     """
 
     proofTree: RuleInstance
@@ -223,12 +223,12 @@ class Fold(RuleInstance):
         self.bName = b
 
     def __repr__(self) -> str:
-        return "Fold({p}, {a}, {b})".format(p = repr(self.proofTree),
+        return "Glue({p}, {a}, {b})".format(p = repr(self.proofTree),
                                             a = repr(self.aName),
                                             b = repr(self.bName))
 
     def __str__(self) -> str:
-        return "Fold({p}, {a}, {b})".format(p = str(self.proofTree),
+        return "Glue({p}, {a}, {b})".format(p = str(self.proofTree),
                                             a = str(self.aName),
                                             b = str(self.bName))
 
@@ -239,7 +239,7 @@ class Fold(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{fold-}$(" + self.aName + \
+            "\n\t\\RightLabel{\\texttt{glue-}$(" + self.aName + \
             " = " + self.bName + ")$}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
@@ -249,7 +249,7 @@ class Fold(RuleInstance):
         and then applying :func:`NamedOpetope.graft` at variable
         `self.a` on the resulting sequents.
         """
-        return fold(self.proofTree.eval(), self.aName, self.bName)
+        return glue(self.proofTree.eval(), self.aName, self.bName)
 
 
 class Zero(RuleInstance):
