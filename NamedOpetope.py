@@ -858,11 +858,14 @@ def fill(seq: Sequent, name: str) -> Sequent:
     Takes a sequent ``seq`` typing a term ``t`` and introduces
     a new variable ``x`` having ``t`` as :math:`1`-source.
     """
-    n = seq.typing.term.dimension
+    var = Variable(name, seq.typing.term.dimension + 1)
+    if var in seq.context:
+        raise DerivationError(
+            "fill rule",
+            "Variable {var} already typed in context",
+            var = name)
     res = deepcopy(seq)
-    typing = Typing(
-        Term(Variable(name, n + 1)),
-        Type([seq.typing.term] + seq.typing.type.terms))
+    typing = Typing(Term(var), Type([seq.typing.term] + seq.typing.type.terms))
     res.context += typing
     res.typing = typing
     return res
