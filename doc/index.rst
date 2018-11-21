@@ -158,8 +158,8 @@ Exporting to :math:`\TeX`
 
     \newcommand{\degenopetope}[1]{\left\lbrace \!\! \opetope{#1} \right.}
     \newcommand{\opetope}[1]{\left\lbrace \begin{matrix*}[l] #1 \end{matrix*} \right.}
-    \newcommand{\optOne}{\mbox{\raisebox{.01cm}{\tiny $\blacksquare$}}}
-    \newcommand{\optZero}{\mbox{\raisebox{.01cm}{\scriptsize $\blacklozenge$}}}
+    \newcommand{\optOne}{\filledsquare}
+    \newcommand{\optZero}{\filledlozenge}
     \newcommand{\sep}{\leftarrow}
 
     \begin{document}
