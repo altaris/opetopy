@@ -17,6 +17,7 @@ Example
 Documentation
 =============
 
+
 .. automodule:: NamedOpetopicSet
     :members:
     :private-members:

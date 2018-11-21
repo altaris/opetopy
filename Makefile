@@ -7,6 +7,7 @@ TESTS 		= \
 	test_namedopetope_classic \
 	test_namedopetope_point \
 	test_namedopetopicset_example \
+	test_namedopetopicsetm_example \
 	test_unnamedopetope_arrow \
 	test_unnamedopetope_classic \
 	test_unnamedopetope_decision_valid \
@@ -40,6 +41,7 @@ tests: $(TESTS)
 typecheck:
 	$(TYPECHECK) NamedOpetope.py
 	$(TYPECHECK) NamedOpetopicSet.py
+	$(TYPECHECK) NamedOpetopicSetM.py
 	$(TYPECHECK) UnnamedOpetope.py
 	$(TYPECHECK) UnnamedOpetopicSet.py
 	$(TYPECHECK) UnnamedOpetopicCategory.py
