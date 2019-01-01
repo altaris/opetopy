@@ -589,7 +589,7 @@ class Test_NamedOpetope_InferenceRules(unittest.TestCase):
             s.typing.term, NamedOpetope.Term(NamedOpetope.Variable("x", 0)))
         self.assertEqual(len(s.context), 1)
 
-    def test_fill(self):
+    def test_shift(self):
         pass
 
     def test_degen(self):
@@ -602,7 +602,7 @@ class Test_NamedOpetope_InferenceRules(unittest.TestCase):
         with self.assertRaises(DerivationError):
             NamedOpetope.degen(s)
 
-    def test_degenfill(self):
+    def test_degenshift(self):
         pass
 
     def test_graft(self):

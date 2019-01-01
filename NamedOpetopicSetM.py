@@ -65,9 +65,9 @@ def graft(seqt: NamedOpetope.Sequent, seqx: NamedOpetope.Sequent,
     return NamedOpetope.graft(seqt, seqx, name)
 
 
-def fill(seq: NamedOpetope.Sequent, name: str) -> NamedOpetope.OCMT:
+def shift(seq: NamedOpetope.Sequent, name: str) -> NamedOpetope.OCMT:
     """
-    The :math:`\\textbf{OptSet${}^!_m$}` :math:`\\texttt{fill}` rule.
+    The :math:`\\textbf{OptSet${}^!_m$}` :math:`\\texttt{shift}` rule.
     Takes a sequent ``seq`` typing a term ``t`` and introduces
     a new variable ``x`` having ``t`` as :math:`1`-source.
     """
@@ -75,7 +75,7 @@ def fill(seq: NamedOpetope.Sequent, name: str) -> NamedOpetope.OCMT:
     var = NamedOpetope.Variable(name, n + 1)
     if var in seq.context:
         raise DerivationError(
-            "fill rule",
+            "shift rule",
             "NamedOpetope.Variable {var} already typed in context",
             var = name)
     typing = NamedOpetope.Typing(
@@ -92,7 +92,7 @@ def fill(seq: NamedOpetope.Sequent, name: str) -> NamedOpetope.OCMT:
     termVar = seq.typing.term.variable
     if termVar is None:
         raise RuntimeError(
-            "[fill rule] Premiss sequent types an invalid term. In valid "
+            "[shift rule] Premiss sequent types an invalid term. In valid "
             "proof trees, this should not happen")
     if seq.typing.term.degenerate:
         for i in range(n):
@@ -334,9 +334,9 @@ class Graft(RuleInstance):
             return graft(seq1, seq2, self.variableName)
 
 
-class Fill(RuleInstance):
+class Shift(RuleInstance):
     """
-    A class representing an instance of the ``fill`` rule in a proof tree.
+    A class representing an instance of the ``shift`` rule in a proof tree.
     """
 
     proofTree: RuleInstance
@@ -347,10 +347,10 @@ class Fill(RuleInstance):
         self.variableName = name
 
     def __repr__(self) -> str:
-        return "Fill({}, {})".format(repr(self.proofTree), self.variableName)
+        return "Shift({}, {})".format(repr(self.proofTree), self.variableName)
 
     def __str__(self) -> str:
-        return "Fill({}, {})".format(str(self.proofTree), self.variableName)
+        return "Shift({}, {})".format(str(self.proofTree), self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -359,17 +359,17 @@ class Fill(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
+            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> NamedOpetope.OCMT:
         seq = self.proofTree.eval()
         if not isinstance(seq, NamedOpetope.Sequent):
             raise DerivationError(
-                "fill rule",
+                "shift rule",
                 "Premiss expected to be an sequent")
         else:
-            return fill(seq, self.variableName)
+            return shift(seq, self.variableName)
 
 
 class Zero(RuleInstance):
@@ -497,16 +497,16 @@ class Glue(RuleInstance):
             return glue(ocmt, self.aName, self.bName)
 
 
-class DegenFill(RuleInstance):
+class DegenShift(RuleInstance):
     """
     A convenient class chaining an instance of the ``degen`` rule with an
-    instance of the ``fill`` rule.
+    instance of the ``shift`` rule.
     """
 
     proofTree: RuleInstance
 
     def __init__(self, p: RuleInstance, dname: str, fname: str) -> None:
-        self.proofTree = Fill(Degen(p, dname), fname)
+        self.proofTree = Shift(Degen(p, dname), fname)
 
     def __repr__(self) -> str:
         return repr(self.proofTree)

@@ -3,7 +3,6 @@ import unittest
 from common import DerivationError
 
 import NamedOpetope
-import NamedOpetopicSet
 import NamedOpetopicSetM
 
 
@@ -45,8 +44,8 @@ class Test_NamedOpetopicSetM_InferenceRules(unittest.TestCase):
     def test_graft(self):
         pass
 
-    def test_fill(self):
-        s = NamedOpetopicSetM.Fill(
+    def test_shift(self):
+        s = NamedOpetopicSetM.Shift(
             NamedOpetopicSetM.Pd(
                 NamedOpetopicSetM.Point("x"),
                 "x"),

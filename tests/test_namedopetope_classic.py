@@ -1,16 +1,16 @@
-from NamedOpetope import Fill, Graft, Point
+from NamedOpetope import Graft, Point, Shift
 
-beta = Fill(Graft(
-    Fill(Point("c"), "h"),
-    Fill(Point("a"), "i"),
+beta = Shift(Graft(
+    Shift(Point("c"), "h"),
+    Shift(Point("a"), "i"),
     "c"),
     "β")
-alpha = Fill(Graft(
-    Fill(Point("b"), "g"),
-    Fill(Point("a"), "f"),
+alpha = Shift(Graft(
+    Shift(Point("b"), "g"),
+    Shift(Point("a"), "f"),
     "b"),
     "α")
-classic = Fill(Graft(beta, alpha, "i"), "A")
+classic = Shift(Graft(beta, alpha, "i"), "A")
 
 print(classic.eval())
 print()

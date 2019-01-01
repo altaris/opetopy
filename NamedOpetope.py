@@ -852,16 +852,16 @@ def point(name: str) -> Sequent:
     return Sequent(EquationalTheory(), Context() + t, t)
 
 
-def fill(seq: Sequent, name: str) -> Sequent:
+def shift(seq: Sequent, name: str) -> Sequent:
     """
-    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{fill}` rule.
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{shift}` rule.
     Takes a sequent ``seq`` typing a term ``t`` and introduces
     a new variable ``x`` having ``t`` as :math:`1`-source.
     """
     var = Variable(name, seq.typing.term.dimension + 1)
     if var in seq.context:
         raise DerivationError(
-            "fill rule",
+            "shift rule",
             "Variable {var} already typed in context",
             var = name)
     res = deepcopy(seq)
@@ -890,12 +890,12 @@ def degen(seq: Sequent) -> Sequent:
     return res
 
 
-def degenfill(seq: Sequent, name: str) -> Sequent:
+def degenshift(seq: Sequent, name: str) -> Sequent:
     """
-    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{degen-fill}` rule.
-    Applies the degen and the fill rule consecutively.
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{degen-shift}` rule.
+    Applies the degen and the shift rule consecutively.
     """
-    return fill(degen(seq), name)
+    return shift(degen(seq), name)
 
 
 def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
@@ -1075,9 +1075,9 @@ class Degen(RuleInstance):
         return degen(self.proofTree.eval())
 
 
-class Fill(RuleInstance):
+class Shift(RuleInstance):
     """
-    A class representing an instance of the ``fill`` rule in a proof tree.
+    A class representing an instance of the ``shift`` rule in a proof tree.
     """
 
     proofTree: RuleInstance
@@ -1088,10 +1088,10 @@ class Fill(RuleInstance):
         self.variableName = name
 
     def __repr__(self) -> str:
-        return "Fill({}, {})".format(repr(self.proofTree), self.variableName)
+        return "Shift({}, {})".format(repr(self.proofTree), self.variableName)
 
     def __str__(self) -> str:
-        return "Fill({}, {})".format(str(self.proofTree), self.variableName)
+        return "Shift({}, {})".format(str(self.proofTree), self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -1100,23 +1100,23 @@ class Fill(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
+            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
-        return fill(self.proofTree.eval(), self.variableName)
+        return shift(self.proofTree.eval(), self.variableName)
 
 
-class DegenFill(RuleInstance):
+class DegenShift(RuleInstance):
     """
-    A class representing an instance of the ``degen-fill`` rule in a proof
+    A class representing an instance of the ``degen-shift`` rule in a proof
     tree.
     """
 
     proofTree: RuleInstance
 
     def __init__(self, p: RuleInstance, name: str) -> None:
-        self.proofTree = Fill(Degen(p), name)
+        self.proofTree = Shift(Degen(p), name)
         self.eval()
 
     def __repr__(self) -> str:
@@ -1195,7 +1195,7 @@ def Arrow(pointName: str = "a", arrowName: str = "f") -> RuleInstance:
     Returns the proof tree of the arrow, with cell names as specified in the
     arguments.
     """
-    return Fill(Point(pointName), arrowName)
+    return Shift(Point(pointName), arrowName)
 
 
 def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
@@ -1218,7 +1218,7 @@ def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
             "Parameter n must be >=0 (is {n})",
             n = n)
     elif n == 0:
-        return DegenFill(Point(pointName), cellName)
+        return DegenShift(Point(pointName), cellName)
     else:
         def toTex(i: int) -> str:
             if 0 <= i and i < 10:
@@ -1227,9 +1227,9 @@ def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
                 return "{" + str(i) + "}"
         pointNames = [pointName + "_" + toTex(i) for i in range(1, n + 1)]
         arrowNames = [arrowName + "_" + toTex(i) for i in range(1, n + 1)]
-        arrows = [Fill(Point(pointNames[i - 1]), arrowNames[i - 1])
+        arrows = [Shift(Point(pointNames[i - 1]), arrowNames[i - 1])
                   for i in range(1, n + 1)]
-        res = arrows[0]  # type: Union[Fill, Graft]
+        res = arrows[0]  # type: Union[Shift, Graft]
         for i in range(1, n):
             res = Graft(res, arrows[i], pointNames[i - 1])
-        return Fill(res, cellName)
+        return Shift(res, cellName)
