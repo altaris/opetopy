@@ -1,0 +1,55 @@
+ctx = {
+    [[]] ↦ []
+    [[*][]] ↦ [*]
+    [[*][*]] ↦ [**]
+}
+src = {
+    []: {
+        []: ■
+        [*]: ■
+    }
+    [[*]]: {
+        []: ■
+        [*]: ■
+    }
+}
+tgt = {
+    []: ■
+    [*]: ■
+    [**]: ■
+}
+
+\begin{prooftree}
+	\AxiomC{}
+	\RightLabel{\texttt{point}}
+	\UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[] \sep \optOne} \longrightarrow \optOne$}
+	\AxiomC{}
+	\RightLabel{\texttt{point}}
+	\UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+	\RightLabel{\texttt{graft-}$[*]$}
+	\BinaryInfC{$\frac{[**]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne} \longrightarrow \optOne$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$\frac{[[]]}{[]}, \frac{[[*]]}{[*]} \vdash \opetope{[] \sep \opetope{[] \sep \optOne \\ [*] \sep \optOne}} \longrightarrow \opetope{[] \sep \optOne \\ [*] \sep \optOne}$}
+	\AxiomC{}
+	\RightLabel{\texttt{point}}
+	\UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$\frac{[*]}{*} \vdash \opetope{[] \sep \optOne} \longrightarrow \optOne$}
+	\AxiomC{}
+	\RightLabel{\texttt{point}}
+	\UnaryInfC{$ \vdash \optZero \longrightarrow \emptyset$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$ \vdash \optOne \longrightarrow \optZero$}
+	\RightLabel{\texttt{graft-}$[*]$}
+	\BinaryInfC{$\frac{[**]}{*} \vdash \opetope{[] \sep \optOne \\ [*] \sep \optOne} \longrightarrow \optOne$}
+	\RightLabel{\texttt{graft-}$[[*]]$}
+	\BinaryInfC{$\frac{[[]]}{[]}, \frac{[[*][]]}{[*]}, \frac{[[*][*]]}{[**]} \vdash \opetope{[] \sep \opetope{[] \sep \optOne \\ [*] \sep \optOne} \\ [[*]] \sep \opetope{[] \sep \optOne \\ [*] \sep \optOne}} \longrightarrow \opetope{[] \sep \optOne \\ [*] \sep \optOne \\ [**] \sep \optOne}$}
+\end{prooftree}

@@ -1,0 +1,17 @@
+ctx = {
+    a : ⧫
+    b : ⧫
+    f : {* ← a} → b
+pd =
+
+\begin{prooftree}
+	\AxiomC{}
+	\RightLabel{\texttt{point-$a$}}
+	\UnaryInfC{$a : \optZero \vdash $}
+	\RightLabel{\texttt{point-$b$}}
+	\UnaryInfC{$a : \optZero, b : \optZero \vdash $}
+	\RightLabel{\texttt{graft}}
+	\UnaryInfC{$b : \optZero, a : \optZero \vdash \opetope{* \sep a}$}
+	\RightLabel{\texttt{fill}}
+	\UnaryInfC{$a : \optZero, f : \opetope{* \sep a} \longrightarrow b, b : \optZero \vdash $}
+\end{prooftree}

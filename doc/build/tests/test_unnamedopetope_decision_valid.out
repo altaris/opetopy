@@ -1,0 +1,16 @@
+Graft(Shift(Graft(Shift(Shift(Point())), Shift(Point()), [*])), Degen(Point()), [[*]])
+
+ctx = {
+    [[]] ↦ []
+}
+src = {
+    []: {
+        []: ■
+        [*]: ■
+    }
+    [[*]]: degen(⧫)
+}
+tgt = {
+    []: ■
+    [*]: ■
+}
