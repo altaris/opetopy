@@ -163,7 +163,7 @@ def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
         else:
             res = UnnamedOpetopicSet.graft(res, Q)
         # Derive t, target of alpha
-        res = UnnamedOpetopicSet.fill(res, u, targetName)
+        res = UnnamedOpetopicSet.shift(res, u, targetName)
 
     # Derive P, source of alpha
     if P.shape.isDegenerate:
@@ -172,7 +172,7 @@ def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
         res = UnnamedOpetopicSet.graft(res, P)
 
     # Derive alpha
-    res = UnnamedOpetopicSet.fill(res, targetName, fillerName)
+    res = UnnamedOpetopicSet.shift(res, targetName, fillerName)
 
     # Mark t as universal in the type of alpha
     rawFillerType = res.context[fillerName].type
@@ -226,7 +226,7 @@ def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
             {
                 UnnamedOpetope.address([], n): targetalpha.name
             }))
-    res = UnnamedOpetopicSet.fill(res, targetbeta.name, factorizationName)
+    res = UnnamedOpetopicSet.shift(res, targetbeta.name, factorizationName)
 
     # Derive the filler
     res = UnnamedOpetopicSet.graft(
@@ -240,7 +240,7 @@ def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
                 UnnamedOpetope.address([], n + 1): factorizationName,
                 UnnamedOpetope.address([[]], n + 1): tuCell
             }))
-    res = UnnamedOpetopicSet.fill(res, cell, fillerName)
+    res = UnnamedOpetopicSet.shift(res, cell, fillerName)
 
     # Mark the filler as target universal and source universal at the facto.
     rawFillerType = res.context[fillerName].type
@@ -334,7 +334,7 @@ def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
                 UnnamedOpetope.address([], Q.shape.dimension - 1):
                     Q.source(addr)
             }))
-    res = UnnamedOpetopicSet.fill(res, P.source(addr), factorizationName)
+    res = UnnamedOpetopicSet.shift(res, P.source(addr), factorizationName)
 
     # Derive A
     omega = UnnamedOpetope.Graft(
@@ -348,7 +348,7 @@ def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
                 UnnamedOpetope.address([], P.shape.dimension): suCellName,
                 addr.shift(): factorizationName
             }))
-    res = UnnamedOpetopicSet.fill(res, cellName, fillerName)
+    res = UnnamedOpetopicSet.shift(res, cellName, fillerName)
 
     # Mark A as source universal at xi and target universal
     rawFillerType = res.context[fillerName].type
