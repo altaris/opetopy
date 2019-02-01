@@ -317,7 +317,7 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
         with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.degen(s, "x")
 
-    def test_fill(self):
+    def test_shift(self):
         s = UnnamedOpetopicSet.graft(
             self.seq,
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
@@ -326,10 +326,10 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                     UnnamedOpetope.Address.epsilon(1): "ac"
                 }))
         with self.assertRaises(DerivationError):
-            UnnamedOpetopicSet.fill(s, "ab", "A")
+            UnnamedOpetopicSet.shift(s, "ab", "A")
         with self.assertRaises(DerivationError):
-            UnnamedOpetopicSet.fill(s, "bc", "A")
-        UnnamedOpetopicSet.fill(s, "ac", "A")
+            UnnamedOpetopicSet.shift(s, "bc", "A")
+        UnnamedOpetopicSet.shift(s, "ac", "A")
 
     def test_graft(self):
         with self.assertRaises(DerivationError):

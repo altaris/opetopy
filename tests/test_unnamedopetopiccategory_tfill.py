@@ -1,6 +1,6 @@
 from UnnamedOpetope import address, Arrow, OpetopicInteger
-from UnnamedOpetopicSet import Fill, Graft, pastingDiagram, Point, \
-    RuleInstance
+from UnnamedOpetopicSet import Graft, pastingDiagram, Point, \
+    RuleInstance, Shift
 from UnnamedOpetopicCategory import TFill
 
 # Derive points
@@ -13,7 +13,7 @@ proof = Graft(
         {
             address('*'): "a"
         }))
-proof = Fill(proof, "b", "f")
+proof = Shift(proof, "b", "f")
 
 # Derive g
 proof = Graft(
@@ -22,7 +22,7 @@ proof = Graft(
         {
             address('*'): "b"
         }))
-proof = Fill(proof, "c", "g")
+proof = Shift(proof, "c", "g")
 
 # Derive the composition cells
 proof = Graft(

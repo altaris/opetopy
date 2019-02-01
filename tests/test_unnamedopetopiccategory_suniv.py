@@ -1,5 +1,6 @@
 from UnnamedOpetope import address, Arrow, OpetopicInteger
-from UnnamedOpetopicSet import Fill, Graft, pastingDiagram, Point, RuleInstance
+from UnnamedOpetopicSet import Graft, pastingDiagram, Point, RuleInstance, \
+    Shift
 from UnnamedOpetopicCategory import TUniv, SUniv, TFill
 
 # Derive points
@@ -12,7 +13,7 @@ proof = Graft(
         {
             address('*'): "a"
         }))
-proof = Fill(proof, "b", "f")
+proof = Shift(proof, "b", "f")
 
 # Derive g
 proof = Graft(
@@ -21,7 +22,7 @@ proof = Graft(
         {
             address('*'): "b"
         }))
-proof = Fill(proof, "c", "g")
+proof = Shift(proof, "c", "g")
 
 # Derive the composition cells
 proof = Graft(
@@ -40,7 +41,7 @@ proof = Graft(
         {
             address('*'): "a"
         }))
-proof = Fill(proof, "c", "i")
+proof = Shift(proof, "c", "i")
 
 # Derive β
 proof = Graft(
@@ -50,7 +51,7 @@ proof = Graft(
             address([], 1): "g",
             address(['*']): "f"
         }))
-proof = Fill(proof, "i", "β")
+proof = Shift(proof, "i", "β")
 
 # Apply target universality of α over β
 proof = TUniv(proof, "α", "β", "ξ", "A")

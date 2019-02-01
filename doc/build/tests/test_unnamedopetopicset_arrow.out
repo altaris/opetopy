@@ -9,9 +9,9 @@ pd =
 	\RightLabel{\texttt{point-$a$}}
 	\UnaryInfC{$a : \optZero \vdash $}
 	\RightLabel{\texttt{point-$b$}}
-	\UnaryInfC{$a : \optZero, b : \optZero \vdash $}
+	\UnaryInfC{$b : \optZero, a : \optZero \vdash $}
 	\RightLabel{\texttt{graft}}
-	\UnaryInfC{$b : \optZero, a : \optZero \vdash \opetope{* \sep a}$}
-	\RightLabel{\texttt{fill}}
-	\UnaryInfC{$a : \optZero, f : \opetope{* \sep a} \longrightarrow b, b : \optZero \vdash $}
+	\UnaryInfC{$a : \optZero, b : \optZero \vdash \opetope{* \sep a}$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$b : \optZero, f : \opetope{* \sep a} \longrightarrow b, a : \optZero \vdash $}
 \end{prooftree}

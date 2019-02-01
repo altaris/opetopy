@@ -12,18 +12,18 @@ pd =
 	\UnaryInfC{$a : \optZero \vdash $}
 	\RightLabel{\texttt{graft}}
 	\UnaryInfC{$a : \optZero \vdash \opetope{* \sep a}$}
-	\RightLabel{\texttt{fill}}
-	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, a : \optZero \vdash $}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$a : \optZero, f : \opetope{* \sep a} \longrightarrow a \vdash $}
 	\RightLabel{\texttt{graft}}
-	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, a : \optZero \vdash \opetope{[] \sep f \\ [*] \sep f}$}
-	\RightLabel{\texttt{fill}}
-	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, a : \optZero, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f \vdash $}
+	\UnaryInfC{$a : \optZero, f : \opetope{* \sep a} \longrightarrow a \vdash \opetope{[] \sep f \\ [*] \sep f}$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero, f : \opetope{* \sep a} \longrightarrow a \vdash $}
 	\RightLabel{\texttt{graft}}
 	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, a : \optZero, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f \vdash \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f}$}
-	\RightLabel{\texttt{fill}}
-	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f \vdash $}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero \vdash $}
 	\RightLabel{\texttt{graft}}
-	\UnaryInfC{$α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, f : \opetope{* \sep a} \longrightarrow a, a : \optZero \vdash \opetope{[] \sep α \\ [[*]] \sep α}$}
-	\RightLabel{\texttt{fill}}
-	\UnaryInfC{$α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, f : \opetope{* \sep a} \longrightarrow a, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, a : \optZero, A : \opetope{[] \sep α \\ [[*]] \sep α} \longrightarrow β \vdash $}
+	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, a : \optZero, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f \vdash \opetope{[] \sep α \\ [[*]] \sep α}$}
+	\RightLabel{\texttt{shift}}
+	\UnaryInfC{$f : \opetope{* \sep a} \longrightarrow a, β : \opetope{[] \sep f \\ [*] \sep f \\ [**] \sep f} \longrightarrow f, α : \opetope{[] \sep f \\ [*] \sep f} \longrightarrow f, a : \optZero, A : \opetope{[] \sep α \\ [[*]] \sep α} \longrightarrow β \vdash $}
 \end{prooftree}

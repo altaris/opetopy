@@ -1,4 +1,5 @@
-from UnnamedOpetopicSet import Fill, Graft, pastingDiagram, Point, RuleInstance
+from UnnamedOpetopicSet import Graft, pastingDiagram, Point, RuleInstance, \
+    Shift
 
 from UnnamedOpetope import address, Arrow, OpetopicInteger, OpetopicTree
 from UnnamedOpetope import Graft as OptGraft
@@ -24,7 +25,7 @@ classic = Graft(
         {
             address([], 0): "a"
         }))
-classic = Fill(classic, "a", "f")
+classic = Shift(classic, "a", "f")
 
 # Derivation of α
 classic = Graft(
@@ -35,7 +36,7 @@ classic = Graft(
             address([], 1): "f",
             address(['*']): "f"
         }))
-classic = Fill(classic, "f", "α")
+classic = Shift(classic, "f", "α")
 
 # Derivation of β
 classic = Graft(
@@ -47,7 +48,7 @@ classic = Graft(
             address(['*']): "f",
             address(['*', '*']): "f"
         }))
-classic = Fill(classic, "f", "β")
+classic = Shift(classic, "f", "β")
 
 # Derivation of A
 classic = Graft(
@@ -58,7 +59,7 @@ classic = Graft(
             address([], 2): "α",
             address([['*']]): "α"
         }))
-classic = Fill(classic, "β", "A")
+classic = Shift(classic, "β", "A")
 
 print(classic.eval())
 print()

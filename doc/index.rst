@@ -108,7 +108,7 @@ Each implement the following:
 +                                 +------------------------------+----------------------------------------+-----------------------------------------+
 |                                 | :math:`\texttt{graft}`       | :func:`UnnamedOpetopicSet.graft`       | :class:`UnnamedOpetopicSet.Graft`       |
 +                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{fill}`        | :func:`UnnamedOpetopicSet.fill`        | :class:`UnnamedOpetopicSet.Fill`        |
+|                                 | :math:`\texttt{shift}`       | :func:`UnnamedOpetopicSet.shift`       | :class:`UnnamedOpetopicSet.Shift`       |
 +---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
 | :math:`\textbf{OptCat${}^?$}`   | :math:`\texttt{tfill}`       | :func:`UnnamedOpetopicCategory.tfill`  | :class:`UnnamedOpetopicCategory.TFill`  |
 +                                 +------------------------------+----------------------------------------+-----------------------------------------+
