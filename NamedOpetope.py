@@ -44,7 +44,7 @@ class Variable:
             raise DerivationError(
                 "Variable decrlaration",
                 "Dimension of new variable {name} must be >= 0 (is {dim})",
-                name = name, dim = dim)
+                name=name, dim=dim)
         self.dimension = dim
         self.name = name
 
@@ -54,7 +54,7 @@ class Variable:
         return not (self == other)
 
     def __repr__(self) -> str:
-        return "{name}{dim}".format(name = self.name, dim = self.dimension)
+        return "{name}{dim}".format(name=self.name, dim=self.dimension)
 
     def __str__(self) -> str:
         return self.name
@@ -202,7 +202,7 @@ class Term(Dict[Variable, 'Term']):
                         "[Term, graftTuples] An invalid / null term has been "
                         "grafted at variable {var} in term {term}. In valid "
                         "proof trees, this should not happen"
-                        .format(var = str(k), term = str(self)))
+                        .format(var=str(k), term=str(self)))
                 res |= set({(k, a)}) | self[k].graftTuples()
         return res
 
@@ -293,9 +293,9 @@ class Type:
                     "Type declaration",
                     "Invalid dimensions in term list: {i}th term {term} has "
                     "dimension {dim}, sould have {should}",
-                    i = i, term = str(self.terms[i]),
-                    dim = self.terms[i].dimension,
-                    should = self.dimension - i - 1)
+                    i=i, term=str(self.terms[i]),
+                    dim=self.terms[i].dimension,
+                    should=self.dimension - i - 1)
 
     def __repr__(self) -> str:
         return str(self)
@@ -342,7 +342,7 @@ class Typing:
                 "Typing declaration",
                 "Dimension mismatch in typing: term has dimension {dterm}, "
                 "type has dimension {dtype}",
-                dterm = term.dimension, dtype = type.dimension)
+                dterm=term.dimension, dtype=type.dimension)
         self.term = term
         self.type = type
 
@@ -370,12 +370,12 @@ class Context(Set[Typing]):
             raise DerivationError(
                 "Context, new typing",
                 "Context typings only type variables, and {term} is not one",
-                term = str(typing.term))
+                term=str(typing.term))
         elif typing.term.variable in self:
             raise DerivationError(
                 "Context, new typing",
                 "Variable {var} is already yped in this context",
-                var = str(typing.term.variable))
+                var=str(typing.term.variable))
         else:
             res = deepcopy(self)
             res.add(typing)
@@ -415,7 +415,7 @@ class Context(Set[Typing]):
         raise DerivationError(
             "Context, get variable",
             "Context types no variable named {name}",
-            name = name)
+            name=name)
 
     def __or__(self, other):
         """
@@ -457,14 +457,14 @@ class Context(Set[Typing]):
                 "Index out of bounds: dimension of variable {var} is {dim}, "
                 "so index should be between 0 and {max} included "
                 "(is {k})",
-                var = str(var), dim = var.dimension,
-                max = var.dimension + 1, k = k)
+                var=str(var), dim=var.dimension,
+                max=var.dimension + 1, k=k)
         elif var not in self:
             raise DerivationError(
                 "Context, source computation",
                 "Variable {var} with dimension {dim} is not typed in context, "
                 "so computing its source is not possible",
-                var = str(var), dim = var.dimension)
+                var=str(var), dim=var.dimension)
         elif k == 0:
             return Term(var)
         else:
@@ -487,7 +487,7 @@ class Context(Set[Typing]):
             "Context, type computation",
             "Variable {var} with dimension {dim} is not typed in context, so "
             "computing its type is not possible",
-            var = str(var), dim = var.dimension)
+            var=str(var), dim=var.dimension)
 
     def variables(self) -> Set[Variable]:
         """
@@ -517,7 +517,7 @@ class EquationalTheory:
                 "Eq. th. extension",
                 "Dimension mismatch in new equality {a} = {b}: respective "
                 "dimensions are {da} and {db}",
-                a = str(a), b = str(b), da = a.dimension, db = b.dimension)
+                a=str(a), b=str(b), da=a.dimension, db=b.dimension)
         else:
             ia = self._index(a)
             ib = self._index(b)
@@ -624,8 +624,8 @@ class OCMT:
         return str(self)
 
     def __str__(self) -> str:
-        return "{th} ▷ {ctx}".format(th = str(self.theory),
-                                     ctx = str(self.context))
+        return "{th} ▷ {ctx}".format(th=str(self.theory),
+                                     ctx=str(self.context))
 
     def equal(self, t: Term, u: Term) -> bool:
         """
@@ -684,7 +684,7 @@ class OCMT:
             raise DerivationError(
                 "OCMT, target computation",
                 "Cannot compute target of 0-dimensional variable {var}",
-                var = str(var))
+                var=str(var))
         else:
             return Variable((OCMT.targetSymbol * k) + var.name,
                             var.dimension - k)
@@ -727,9 +727,9 @@ class Sequent(OCMT):
         return str(self)
 
     def __str__(self) -> str:
-        return "{th} ▷ {ctx} ⊢ {typ}".format(th = str(self.theory),
-                                             ctx = str(self.context),
-                                             typ = str(self.typing))
+        return "{th} ▷ {ctx} ⊢ {typ}".format(th=str(self.theory),
+                                             ctx=str(self.context),
+                                             typ=str(self.typing))
 
     def graft(self, t: Term, x: Variable, u: Term) -> Term:
         """
@@ -743,7 +743,7 @@ class Sequent(OCMT):
                     "Sequent, grafting",
                     "Variable {var} in term {term} has already been used for "
                     "a grafting",
-                    var = str(x), term = str(t))
+                    var=str(x), term=str(t))
         if t.variable is None:
             raise DerivationError(
                 "Sequent, grafting",
@@ -756,7 +756,7 @@ class Sequent(OCMT):
                     "Sequent, grafting",
                     "Incompatible graft: term {term} is degenerate, so the "
                     "grafting variable must be {var} (is {x})",
-                    term = str(t), var = str(t.variable), x = str(x))
+                    term=str(t), var=str(t.variable), x=str(x))
         else:
             r = deepcopy(t)
             if self.isIn(x, self.source(t.variable, 1)):
@@ -808,7 +808,7 @@ class Sequent(OCMT):
                                             "trees, this error shouldn't "
                                             "happen, so congratulations, "
                                             "you broke everything"
-                                            .format(term = repr(ta)))
+                                            .format(term=repr(ta)))
                     r = deepcopy(u)
                     r[ka] = list(ta.values())[0]
                     return (r, (s.variable, ka))
@@ -863,7 +863,7 @@ def shift(seq: Sequent, name: str) -> Sequent:
         raise DerivationError(
             "shift rule",
             "Variable {var} already typed in context",
-            var = name)
+            var=name)
     res = deepcopy(seq)
     typing = Typing(Term(var), Type([seq.typing.term] + seq.typing.type.terms))
     res.context += typing
@@ -882,7 +882,7 @@ def degen(seq: Sequent) -> Sequent:
             "degen rule",
             "Term {term} typed in premiss sequent is expected to be a "
             "variable",
-            term = str(seq.typing.term))
+            term=str(seq.typing.term))
     res = deepcopy(seq)
     var = res.typing.term.variable
     res.typing = Typing(Term(var, True), Type([Term(var)] +
@@ -932,7 +932,7 @@ def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
         raise DerivationError(
             "graft rule",
             "Graft variable {var} not typed in first sequent",
-            var = str(a))
+            var=str(a))
     for i in range(0, a.dimension):   # all variables in the type of a are in
         for v in typea.variables(i):  # the context intersection
             if v not in inter:
@@ -940,7 +940,7 @@ def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
                     "graft rule",
                     "Intersection of the two premiss contexts does not "
                     "type variable {v} necessary to define variable {a}",
-                    v = str(v), a = str(a))
+                    v=str(v), a=str(a))
     for typing in inter:  # all variables in the intersection are in that of a
         w = typing.term.variable
         if w not in typea:
@@ -948,35 +948,35 @@ def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
                 "graft rule",
                 "Intersection of the two premiss contexts, variable {v} "
                 "is typed, but is not required to type variable {a}",
-                v = str(w), a = a.toTex())
+                v=str(w), a=a.toTex())
     # checking rule hypothesis
     if not seqx.typing.term.isVariable():
         raise DerivationError(
             "graft rule",
             "Second premiss sequent expected to type a variable (types "
             "{term})",
-            term = str(seqx.typing.term))
+            term=str(seqx.typing.term))
     elif a not in seqt.typing.type.terms[0]:
         raise DerivationError(
             "graft rule",
             "Graft variable {a} does not occur in the source of the term"
             "{term} grafted upon",
-            a = str(a), term = str(seqt.typing.term))
+            a=str(a), term=str(seqt.typing.term))
     elif a in seqt.typing.term:
         raise DerivationError(
             "graft rule",
             "Graft variable {a} occurs first premiss term {term}, meaning it "
             " has already been used for grafting",
-            a = str(a), term = str(seqt.typing.term))
+            a=str(a), term=str(seqt.typing.term))
     elif not seqt.equal(seqt.source(a, 1),
                         seqx.source(seqx.typing.term.variable, 2)):
         raise DerivationError(
             "graft rule",
             "Variables {a} and {x} have incompatible shapes: s{a} = {sa}, "
             "while ss{x} = {ssx}",
-            a = str(a), x = str(seqx.typing.term.variable),
-            sa = str(seqt.source(a, 1)),
-            ssx = str(seqx.source(seqx.typing.term.variable, 2)))
+            a=str(a), x=str(seqx.typing.term.variable),
+            sa=str(seqt.source(a, 1)),
+            ssx=str(seqx.source(seqx.typing.term.variable, 2)))
     # forming conclusion sequent
     theory = seqt.theory | seqx.theory     # union of both theories
     context = seqt.context | seqx.context  # union of both contexts
@@ -1160,14 +1160,14 @@ class Graft(RuleInstance):
         self.eval()
 
     def __repr__(self) -> str:
-        return "Graft({p1}, {p2}, {a})".format(p1 = repr(self.proofTree1),
-                                               p2 = repr(self.proofTree2),
-                                               a = self.variableName)
+        return "Graft({p1}, {p2}, {a})".format(p1=repr(self.proofTree1),
+                                               p2=repr(self.proofTree2),
+                                               a=self.variableName)
 
     def __str__(self) -> str:
-        return "Graft({p1}, {p2}, {a})".format(p1 = str(self.proofTree1),
-                                               p2 = str(self.proofTree2),
-                                               a = self.variableName)
+        return "Graft({p1}, {p2}, {a})".format(p1=str(self.proofTree1),
+                                               p2=str(self.proofTree2),
+                                               a=self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -1216,7 +1216,7 @@ def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
         raise DerivationError(
             "Opetopic integer",
             "Parameter n must be >=0 (is {n})",
-            n = n)
+            n=n)
     elif n == 0:
         return DegenShift(Point(pointName), cellName)
     else:

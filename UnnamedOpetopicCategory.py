@@ -16,6 +16,7 @@ from .common import *
 from . import UnnamedOpetope
 from . import UnnamedOpetopicSet
 
+
 class Type(UnnamedOpetopicSet.Type):
     """
     Similar to :class:`UnnamedOpetopicSet.Type` except information about the
@@ -288,40 +289,40 @@ def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
     elif u is None:
         raise RuntimeError("[Apply source univ. prop.] Source universal cell "
                            "{sucell} is a point. In valid derivations, this "
-                           "should not happen".format(sucell = suCellName))
+                           "should not happen".format(sucell=suCellName))
     elif P.nodes is None:
         raise DerivationError(
             "Apply source univ. prop.",
             "Source universal cell {sucell} cannot be degenerate",
-            sucell = suCellName)
+            sucell=suCellName)
     elif Q.nodes is None:
         raise DerivationError(
             "Apply source univ. prop.",
             "Cell {cell} cannot be degenerate",
-            cell = cellName)
+            cell=cellName)
     elif addr not in P.nodes.keys():
         raise DerivationError(
             "Apply source univ. prop.",
             "Address {addr} not in source of {sucell}",
-            addr = addr, sucell = suCellName)
+            addr=addr, sucell=suCellName)
     elif betatype.target != u:
         raise DerivationError(
             "Apply source univ. prop.",
             "Cells {sucell} and {cell} are not compatible: targets differ",
-            cell = cellName, sucell = suCellName)
+            cell=cellName, sucell=suCellName)
     elif P.nodes.keys() != Q.nodes.keys():
         raise DerivationError(
             "Apply source univ. prop.",
             "Cells {sucell} and {cell} are not compatible: source pasting "
             "diagrams do not have the same addresses",
-            cell = cellName, sucell = suCellName)
+            cell=cellName, sucell=suCellName)
     for a in P.nodes.keys():
         if a != addr and P.nodes[a] != Q.nodes[a]:
             raise DerivationError(
                 "Apply source univ. prop.",
                 "Cells {sucell} and {cell} are not compatible: source pasting "
                 "diagrams do not agree on address {a}",
-                cell = cellName, sucell = suCellName, a = a)
+                cell=cellName, sucell=suCellName, a=a)
 
     # Derive xi
     xishapeproof = seq.context[Q.source(addr)].type.source.shapeProof
@@ -379,7 +380,7 @@ def tclose(seq: UnnamedOpetopicSet.Sequent,
     elif u is None:
         raise RuntimeError("[Apply target univ. closure] Target universal "
                            "cell {cell} is a point. In valid derivations, "
-                           "this should not happen".format(cell = tuCell))
+                           "this should not happen".format(cell=tuCell))
 
     # If P is degenerate, make u target universal
     if P.shape.isDegenerate:
@@ -395,7 +396,7 @@ def tclose(seq: UnnamedOpetopicSet.Sequent,
         raise RuntimeError("[Apply target univ. closure] Target universal "
                            "cell {cell} non degenerate, yet it source pasting "
                            "diagram has no nodes. In valid derivations, this "
-                           "should not happen".format(cell = tuCell))
+                           "should not happen".format(cell=tuCell))
     else:
         nonTuSource = None  # type: Optional[UnnamedOpetope.Address]
         for addr in P.nodes.keys():
@@ -407,7 +408,7 @@ def tclose(seq: UnnamedOpetopicSet.Sequent,
                         "Apply target univ. closure",
                         "Source pasting diagram has at least two non target "
                         "universal sources: {addr1} and {addr2}"
-                        .format(addr1 = nonTuSource, addr2 = addr))
+                        .format(addr1=nonTuSource, addr2=addr))
 
     if isTargetUniversal(seq.context[u.name].type):
         if nonTuSource is None:
@@ -427,7 +428,7 @@ def tclose(seq: UnnamedOpetopicSet.Sequent,
             raise DerivationError(
                 "Apply target univ. closure",
                 "Source pasting diagram has at least two non target universal "
-                "faces: target and {addr}".format(addr = nonTuSource))
+                "faces: target and {addr}".format(addr=nonTuSource))
         # Make u target universal
         res = deepcopy(seq)
         rawTargetType = res.context[u.name].type
@@ -455,11 +456,11 @@ class TFill(UnnamedOpetopicSet.RuleInstance):
 
     def __str__(self) -> str:
         return "TFill({p}, {t}, {f})".format(
-            p = str(self.proofTree), t = self.targetName, f = self.fillerName)
+            p=str(self.proofTree), t=self.targetName, f=self.fillerName)
 
     def __repr__(self) -> str:
         return "TFill({p},{t},{f})".format(
-            p = repr(self.proofTree), t = self.targetName, f = self.fillerName)
+            p=repr(self.proofTree), t=self.targetName, f=self.fillerName)
 
     def _toTex(self) -> str:
         """
@@ -497,11 +498,11 @@ class TUniv(UnnamedOpetopicSet.RuleInstance):
 
     def __str__(self) -> str:
         return "TUniv({p}, {tu}, {c})".format(
-            p = str(self.proofTree), tu = self.tuCellName, c = self.cellName)
+            p=str(self.proofTree), tu=self.tuCellName, c=self.cellName)
 
     def __repr__(self) -> str:
         return "TUniv({p},{tu},{c})".format(
-            p = repr(self.proofTree), tu = self.tuCellName, c = self.cellName)
+            p=repr(self.proofTree), tu=self.tuCellName, c=self.cellName)
 
     def _toTex(self) -> str:
         """
@@ -543,11 +544,11 @@ class SUniv(UnnamedOpetopicSet.RuleInstance):
 
     def __str__(self) -> str:
         return "SUniv({p}, {su}, {c})".format(
-            p = str(self.proofTree), su = self.suCellName, c = self.cellName)
+            p=str(self.proofTree), su=self.suCellName, c=self.cellName)
 
     def __repr__(self) -> str:
         return "SUniv({p},{su},{c})".format(
-            p = repr(self.proofTree), su = self.suCellName, c = self.cellName)
+            p=repr(self.proofTree), su=self.suCellName, c=self.cellName)
 
     def _toTex(self) -> str:
         """
@@ -580,11 +581,11 @@ class TClose(UnnamedOpetopicSet.RuleInstance):
 
     def __str__(self) -> str:
         return "TClose({p}, {tu})".format(
-            p = str(self.proofTree), tu = self.tuCellName)
+            p=str(self.proofTree), tu=self.tuCellName)
 
     def __repr__(self) -> str:
         return "TClose({p},{tu})".format(
-            p = repr(self.proofTree), tu = self.tuCellName)
+            p=repr(self.proofTree), tu=self.tuCellName)
 
     def _toTex(self) -> str:
         """

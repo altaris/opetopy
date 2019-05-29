@@ -23,7 +23,7 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
         raise DerivationError(
             "repr rule",
             "Opt! sequent expected to type a variable, typing {term}",
-            term = repr(seq.typing.term))
+            term=repr(seq.typing.term))
     res = NamedOpetope.OCMT(deepcopy(seq.theory), deepcopy(seq.context))
     # new context
     for typing in seq.context:
@@ -48,7 +48,7 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
                                    "the variable {a} of dimension {dim}, "
                                    "whose first source is invalid / null. In "
                                    "valid proof trees, this should not happen"
-                                   .format(a = str(a), dim = a.dimension))
+                                   .format(a=str(a), dim=a.dimension))
             res.theory += (res.target(a, 2), res.target(s))
     for a in seq.context.variables():
         for k in range(0, a.dimension - 1):
@@ -60,8 +60,8 @@ def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:
                                        "{dim}, whose first source is invalid "
                                        "/ null. In valid proof trees, this "
                                        "should not happen".format(
-                                           var = str(res.target(a, k)),
-                                           dim = res.target(a, k).dimension))
+                                           var=str(res.target(a, k)),
+                                           dim=res.target(a, k).dimension))
                 res.theory += (res.target(a, k + 2), c)
     # identification of targets
     tmp = deepcopy(res.theory)
@@ -85,7 +85,7 @@ def sum(ocmt1: NamedOpetope.OCMT,
             "sum rule",
             "The two premiss OCTM are expected to have disjoint contexts, "
             "but intersection types the following variables {inter}",
-            inter = ocmt1.context.variables() & ocmt2.context.variables())
+            inter=ocmt1.context.variables() & ocmt2.context.variables())
     return NamedOpetope.OCMT(
         ocmt1.theory | ocmt2.theory, ocmt1.context | ocmt2.context)
 
@@ -101,7 +101,7 @@ def glue(ocmt: NamedOpetope.OCMT, aName: str, bName: str) -> NamedOpetope.OCMT:
             "glue rule",
             "NamedOpetope.Variables {a} and {b} cannot be identified as they "
             "do not have the same dimension (have respectively {da} and {db})",
-            a = str(a), b = str(b), da = a.dimension, db = b.dimension)
+            a=str(a), b=str(b), da=a.dimension, db=b.dimension)
     elif a.dimension != 0 and not \
         (ocmt.equal(ocmt.source(a), ocmt.source(b)) and
          ocmt.theory.equal(ocmt.target(a), ocmt.target(b))):
@@ -109,9 +109,9 @@ def glue(ocmt: NamedOpetope.OCMT, aName: str, bName: str) -> NamedOpetope.OCMT:
             "glue rule",
             "NamedOpetope.Variables {a} and {b} cannot be identified as they "
             "are not parallel: sa = {sa}, sb = {sb}, ta = {ta}, tb = {tb}",
-            a = str(a), b = str(b), sa = str(ocmt.source(a)),
-            sb = str(ocmt.source(b)), ta = str(ocmt.target(a)),
-            tb = str(ocmt.target(b)))
+            a=str(a), b=str(b), sa=str(ocmt.source(a)),
+            sb=str(ocmt.source(b)), ta=str(ocmt.target(a)),
+            tb=str(ocmt.target(b)))
     res = deepcopy(ocmt)
     res.theory += (a, b)
     return res
@@ -188,11 +188,11 @@ class Sum(RuleInstance):
 
     def __repr__(self) -> str:
         return "Sum({p1}, {p2})".format(
-            p1 = repr(self.proofTree1), p2 = repr(self.proofTree2))
+            p1=repr(self.proofTree1), p2=repr(self.proofTree2))
 
     def __str__(self) -> str:
         return "Sum({p1}, {p2})".format(
-            p1 = str(self.proofTree1), p2 = str(self.proofTree2))
+            p1=str(self.proofTree1), p2=str(self.proofTree2))
 
     def _toTex(self) -> str:
         """
@@ -223,14 +223,14 @@ class Glue(RuleInstance):
         self.bName = b
 
     def __repr__(self) -> str:
-        return "Glue({p}, {a}, {b})".format(p = repr(self.proofTree),
-                                            a = repr(self.aName),
-                                            b = repr(self.bName))
+        return "Glue({p}, {a}, {b})".format(p=repr(self.proofTree),
+                                            a=repr(self.aName),
+                                            b=repr(self.bName))
 
     def __str__(self) -> str:
-        return "Glue({p}, {a}, {b})".format(p = str(self.proofTree),
-                                            a = str(self.aName),
-                                            b = str(self.bName))
+        return "Glue({p}, {a}, {b})".format(p=str(self.proofTree),
+                                            a=str(self.aName),
+                                            b=str(self.bName))
 
     def _toTex(self) -> str:
         """

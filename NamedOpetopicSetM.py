@@ -77,7 +77,7 @@ def shift(seq: NamedOpetope.Sequent, name: str) -> NamedOpetope.OCMT:
         raise DerivationError(
             "shift rule",
             "NamedOpetope.Variable {var} already typed in context",
-            var = name)
+            var=name)
     typing = NamedOpetope.Typing(
         NamedOpetope.Term(var),
         NamedOpetope.Type([seq.typing.term] + seq.typing.type.terms))
@@ -294,14 +294,14 @@ class Graft(RuleInstance):
         self.variableName = a
 
     def __repr__(self) -> str:
-        return "Graft({p1}, {p2}, {a})".format(p1 = repr(self.proofTree1),
-                                               p2 = repr(self.proofTree2),
-                                               a = self.variableName)
+        return "Graft({p1}, {p2}, {a})".format(p1=repr(self.proofTree1),
+                                               p2=repr(self.proofTree2),
+                                               a=self.variableName)
 
     def __str__(self) -> str:
-        return "Graft({p1}, {p2}, {a})".format(p1 = str(self.proofTree1),
-                                               p2 = str(self.proofTree2),
-                                               a = self.variableName)
+        return "Graft({p1}, {p2}, {a})".format(p1=str(self.proofTree1),
+                                               p2=str(self.proofTree2),
+                                               a=self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -416,11 +416,11 @@ class Sum(RuleInstance):
 
     def __repr__(self) -> str:
         return "Sum({p1}, {p2})".format(
-            p1 = repr(self.proofTree1), p2 = repr(self.proofTree2))
+            p1=repr(self.proofTree1), p2=repr(self.proofTree2))
 
     def __str__(self) -> str:
         return "Sum({p1}, {p2})".format(
-            p1 = str(self.proofTree1), p2 = str(self.proofTree2))
+            p1=str(self.proofTree1), p2=str(self.proofTree2))
 
     def _toTex(self) -> str:
         """
@@ -462,14 +462,14 @@ class Glue(RuleInstance):
         self.bName = b
 
     def __repr__(self) -> str:
-        return "Glue({p}, {a}, {b})".format(p = repr(self.proofTree),
-                                            a = repr(self.aName),
-                                            b = repr(self.bName))
+        return "Glue({p}, {a}, {b})".format(p=repr(self.proofTree),
+                                            a=repr(self.aName),
+                                            b=repr(self.bName))
 
     def __str__(self) -> str:
-        return "Glue({p}, {a}, {b})".format(p = str(self.proofTree),
-                                            a = str(self.aName),
-                                            b = str(self.bName))
+        return "Glue({p}, {a}, {b})".format(p=str(self.proofTree),
+                                            a=str(self.aName),
+                                            b=str(self.bName))
 
     def _toTex(self) -> str:
         """

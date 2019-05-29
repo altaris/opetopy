@@ -46,8 +46,8 @@ class Variable:
         return not (self == other)
 
     def __repr__(self) -> str:
-        return "{name} : {shape}".format(name = self.name,
-                                         shape = repr(self.shape))
+        return "{name} : {shape}".format(name=self.name,
+                                         shape=repr(self.shape))
 
     def __str__(self) -> str:
         return self.name
@@ -121,7 +121,7 @@ class PastingDiagram:
             raise DerivationError(
                 "Pasting diagram, source",
                 "Address {addr} is not an address of the pasting diagram {pd}",
-                addr = repr(addr), pd = repr(self))
+                addr=repr(addr), pd=repr(self))
         else:
             return self.nodes[addr]
 
@@ -245,7 +245,7 @@ class PastingDiagram:
             raise DerivationError(
                 "Non degenerate pasting diagram, get source",
                 "Address {addr} not in pasting diagram {pd}",
-                addr = addr, pd = self)
+                addr=addr, pd=self)
         else:
             return self.nodes[addr]
 
@@ -299,8 +299,8 @@ class Type:
                 "Type, creation",
                 "Target variable {var} has shape {shape}, should have "
                 "{should}",
-                var = str(target), shape = target.shape,
-                should = source.shapeTarget())
+                var=str(target), shape=target.shape,
+                should=source.shapeTarget())
         self.source = source
         self.target = target
 
@@ -312,21 +312,21 @@ class Type:
             return repr(self.source)
         else:
             return "{src} → {tgt}".format(
-                src = repr(self.source), tgt = repr(self.target))
+                src=repr(self.source), tgt=repr(self.target))
 
     def __str__(self) -> str:
         if self.target is None:
             return str(self.source)
         else:
             return "{src} → {tgt}".format(
-                src = str(self.source), tgt = str(self.target))
+                src=str(self.source), tgt=str(self.target))
 
     def toTex(self) -> str:
         if self.target is None:
             return self.source.toTex()
         else:
             return "{src} \\longrightarrow {tgt}".format(
-                src = self.source.toTex(), tgt = self.target.toTex())
+                src=self.source.toTex(), tgt=self.target.toTex())
 
 
 class Typing:
@@ -349,7 +349,7 @@ class Typing:
                 "Typing, creation",
                 "Variable {var} cannot have type {type} as shapes do not "
                 "match",
-                var = str(variable), type = type)
+                var=str(variable), type=type)
         self.type = type
         self.variable = variable
 
@@ -361,7 +361,7 @@ class Typing:
 
     def toTex(self) -> str:
         return "{var} : {type}".format(
-            var = self.variable.toTex(), type = self.type.toTex())
+            var=self.variable.toTex(), type=self.type.toTex())
 
 
 class Context(Set[Typing]):
@@ -378,7 +378,7 @@ class Context(Set[Typing]):
             raise DerivationError(
                 "Context, new typing",
                 "Variable {var} is already typed in this context",
-                var = str(typing.variable))
+                var=str(typing.variable))
         else:
             res = deepcopy(self)
             res.add(typing)
@@ -405,7 +405,7 @@ class Context(Set[Typing]):
         raise DerivationError(
             "Context, get typing",
             "Variable {name} not typed in context",
-            name = name)
+            name=name)
 
     def __repr__(self) -> str:
         return str(self)
@@ -430,12 +430,12 @@ class Context(Set[Typing]):
             raise DerivationError(
                 "Context, target of variable",
                 "Variable {var} is a point, and do not have a target",
-                var = name)
+                var=name)
         elif res is None:
             raise RuntimeError("[Context, target of variable] Variable {var} "
                                "is not a point, but has no target. In valid "
                                "derivations, this should not happen".format(
-                                   var = name))
+                                   var=name))
         return res.name
 
     def toTex(self) -> str:
@@ -497,7 +497,7 @@ class Sequent:
         if self.pastingDiagram is not None:
             pd = self.pastingDiagram.toTex()
         return "{ctx} \\vdash {pd}".format(
-            ctx = self.context.toTex(), pd = pd)
+            ctx=self.context.toTex(), pd=pd)
 
 
 def point(seq: Sequent, name: Union[str, List[str]]) -> Sequent:
@@ -525,7 +525,7 @@ def point(seq: Sequent, name: Union[str, List[str]]) -> Sequent:
                 "point rule",
                 "Point shaped variable {name} is already typed in context "
                 "{ctx}",
-                name = name, ctx = str(seq.context))
+                name=name, ctx=str(seq.context))
         res = deepcopy(seq)
         res.context = res.context + Typing(
             var, Type(PastingDiagram.point(), None))
@@ -567,8 +567,8 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
                 "graft rule",
                 "Variable {var} has incompatible shape {psi}, should have "
                 "{should}",
-                var = seq[pd.nodes[addr]].name, psi = repr(psi),
-                should = repr(omega.source(addr)))
+                var=seq[pd.nodes[addr]].name, psi=repr(psi),
+                should=repr(omega.source(addr)))
     # [Inner] axiom
     for pj in pd.nodes.keys():
         if not pj.isEpsilon():
@@ -581,7 +581,7 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
                     "Parameter pasting diagram doesn't satisfy axiom [Inner]: "
                     "variables {xi} and {xj} don't agree on the decoration of "
                     "edge {edge}",
-                    xi = repr(xi), xj = repr(xj), edge = repr(pj))
+                    xi=repr(xi), xj=repr(xj), edge=repr(pj))
     res = deepcopy(seq)
     res.pastingDiagram = deepcopy(pd)
     return res
@@ -606,8 +606,8 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
         raise DerivationError(
             "shift rule",
             "Target variable {var} has shape {shape} should have {should}",
-            var = repr(x), shape = repr(x.shape),
-            should = repr(P.shapeTarget()))
+            var=repr(x), shape=repr(x.shape),
+            should=repr(P.shapeTarget()))
     if omega.isDegenerate:
         if a is None:  # x is a point
             raise RuntimeError("[shift rule] Variable {x} has a degenerate "
@@ -619,7 +619,7 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
                 "shift rule",
                 "Target variable {var}'s source is expected to be globular at "
                 "{var}'s target",
-                var = repr(x))
+                var=repr(x))
     else:
         # [Glob1] axiom
         r = P[UnnamedOpetope.Address.epsilon(n - 1)]
@@ -629,7 +629,7 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
                     "shift rule",
                     "Axiom [Glob1] is not satisfied: variable {x} is a point, "
                     "should have target {should}",
-                    x = repr(x), should = repr(seq.context[r].type.target))
+                    x=repr(x), should=repr(seq.context[r].type.target))
         else:
             b = seq.context.target(r)
             if b != a.name:
@@ -637,7 +637,7 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
                     "shift rule",
                     "Axiom [Glob1] is not satisfied: variable {x} has target "
                     "{a}, should have {should}",
-                    x = repr(x), a = a.name, should = repr(b))
+                    x=repr(x), a=a.name, should=repr(b))
         # [Glob2] axiom
         for l in omega.leafAddresses():
             p, q = l.edgeDecomposition()
@@ -648,8 +648,8 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
                     "shift rule",
                     "Axiom [Glob2] is not satisfied: variable {x} has {addr} "
                     "source {sx}, should have {should}",
-                    x = repr(x), addr = repr(readdress(l)),
-                    sx = repr(sx), should = repr(sP))
+                    x=repr(x), addr=repr(readdress(l)),
+                    sx=repr(sx), should=repr(sP))
     res = Sequent()
     res.context = seq.context + Typing(
         Variable(name, seq.pastingDiagram.shapeProof),
