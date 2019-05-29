@@ -12,7 +12,7 @@
 from copy import deepcopy
 from typing import ClassVar, Dict, List, Optional, Set, Tuple, Union
 
-from common import *
+from .common import *
 
 
 class Variable:

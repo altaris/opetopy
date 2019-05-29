@@ -11,8 +11,8 @@
 from copy import deepcopy
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-import UnnamedOpetope
-from common import *
+from .common import *
+from . import UnnamedOpetope
 
 
 class Variable:

@@ -1,4 +1,4 @@
-{b, tg, ttɑ, tf}, {g, tɑ}, {th, a} ▷ g : a ⊷ ∅, tf : ∅, h : b ⊷ ∅, ttɑ : ∅, ɑ : f ⊷ a ⊷ ∅, tg : ∅, a : ∅, th : ∅, tɑ : a ⊷ ∅, f : a ⊷ ∅, b : ∅
+{tg, tf, b, ttɑ}, {tɑ, g}, {th, a} ▷ g : a ⊷ ∅, b : ∅, tɑ : a ⊷ ∅, tg : ∅, h : b ⊷ ∅, f : a ⊷ ∅, tf : ∅, a : ∅, th : ∅, ttɑ : ∅, ɑ : f ⊷ a ⊷ ∅
 
 \begin{prooftree}
 	\AxiomC{}
@@ -7,32 +7,32 @@
 	\RightLabel{\texttt{pd}}
 	\UnaryInfC{$ \smalltriangleright a : \emptyset \vdash_{0} a : \emptyset$}
 	\RightLabel{\texttt{shift}}
-	\UnaryInfC{$ \smalltriangleright tf : \emptyset, a : \emptyset, f : a \blackwhitespoon \emptyset$}
+	\UnaryInfC{$ \smalltriangleright tf : \emptyset, f : a \blackwhitespoon \emptyset, a : \emptyset$}
 	\RightLabel{\texttt{pd}}
-	\UnaryInfC{$ \smalltriangleright tf : \emptyset, a : \emptyset, f : a \blackwhitespoon \emptyset \vdash_{0} a : \emptyset$}
+	\UnaryInfC{$ \smalltriangleright f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset \vdash_{0} a : \emptyset$}
 	\RightLabel{\texttt{shift}}
-	\UnaryInfC{$ \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, tg : \emptyset, a : \emptyset, f : a \blackwhitespoon \emptyset$}
+	\UnaryInfC{$ \smalltriangleright g : a \blackwhitespoon \emptyset, tg : \emptyset, tf : \emptyset, f : a \blackwhitespoon \emptyset, a : \emptyset$}
 	\AxiomC{}
 	\RightLabel{\texttt{point}}
 	\UnaryInfC{$ \smalltriangleright b : \emptyset$}
 	\RightLabel{\texttt{pd}}
 	\UnaryInfC{$ \smalltriangleright b : \emptyset \vdash_{0} b : \emptyset$}
 	\RightLabel{\texttt{shift}}
-	\UnaryInfC{$ \smalltriangleright b : \emptyset, h : b \blackwhitespoon \emptyset, th : \emptyset$}
+	\UnaryInfC{$ \smalltriangleright th : \emptyset, h : b \blackwhitespoon \emptyset, b : \emptyset$}
 	\RightLabel{\texttt{sum}}
-	\BinaryInfC{$ \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset$}
+	\BinaryInfC{$ \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset$}
 	\RightLabel{\texttt{glue-}$(b = tf)$}
-	\UnaryInfC{$\left\{b, tf\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset$}
+	\UnaryInfC{$\left\{tf, b\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset$}
 	\RightLabel{\texttt{glue-}$(b = tg)$}
-	\UnaryInfC{$\left\{b, tg, tf\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset$}
+	\UnaryInfC{$\left\{tg, tf, b\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset$}
 	\RightLabel{\texttt{pd}}
-	\UnaryInfC{$\left\{b, tg, tf\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset \vdash_{1} f : a \blackwhitespoon \emptyset$}
+	\UnaryInfC{$\left\{tg, tf, b\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset \vdash_{1} f : a \blackwhitespoon \emptyset$}
 	\RightLabel{\texttt{shift}}
-	\UnaryInfC{$\left\{b, tg, tf\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, tɑ : a \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset$}
+	\UnaryInfC{$\left\{tg, tf, b\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tɑ : a \blackwhitespoon \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset$}
 	\RightLabel{\texttt{glue-}$(b = ttɑ)$}
-	\UnaryInfC{$\left\{b, tg, ttɑ, tf\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, tɑ : a \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset$}
+	\UnaryInfC{$\left\{tg, tf, b, ttɑ\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tɑ : a \blackwhitespoon \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset$}
 	\RightLabel{\texttt{glue-}$(g = tɑ)$}
-	\UnaryInfC{$\left\{b, tg, ttɑ, tf\right\}, \left\{g, tɑ\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, tɑ : a \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset$}
+	\UnaryInfC{$\left\{tg, tf, b, ttɑ\right\}, \left\{tɑ, g\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tɑ : a \blackwhitespoon \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset$}
 	\RightLabel{\texttt{glue-}$(a = th)$}
-	\UnaryInfC{$\left\{b, tg, ttɑ, tf\right\}, \left\{g, tɑ\right\}, \left\{th, a\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, tf : \emptyset, h : b \blackwhitespoon \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset, tg : \emptyset, a : \emptyset, th : \emptyset, tɑ : a \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, b : \emptyset$}
+	\UnaryInfC{$\left\{tg, tf, b, ttɑ\right\}, \left\{tɑ, g\right\}, \left\{th, a\right\} \smalltriangleright g : a \blackwhitespoon \emptyset, b : \emptyset, tɑ : a \blackwhitespoon \emptyset, tg : \emptyset, h : b \blackwhitespoon \emptyset, f : a \blackwhitespoon \emptyset, tf : \emptyset, a : \emptyset, th : \emptyset, ttɑ : \emptyset, ɑ : f \blackwhitespoon a \blackwhitespoon \emptyset$}
 \end{prooftree}

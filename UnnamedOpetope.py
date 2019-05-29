@@ -11,13 +11,11 @@
 from copy import deepcopy
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-from common import *
+from .common import *
 
 
 class Address:
     """
-    Main class of the module.
-
     The :math:`0`-address :math:`*` is construced as::
 
       Address.epsilon(0)

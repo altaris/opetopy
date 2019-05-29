@@ -35,25 +35,27 @@ Introduction
 
 
 This project is the Python implementation of the opetope derivation systems
-presented in [CHM18]_ and some other work in progress.
+presented in [CHM19]_ and some other work in progress.
 
 The :mod:`opetopy` module is decomposed as follow:
 
-+---------------------------+------------------------+-------------------------------+
-| Module                    | Syntactical construct  | Derivation system             |
-+===========================+========================+===============================+
-| :mod:`NamedOpetope`       | Named opetopes         | :math:`\textbf{Opt${}^!$}`    |
-+---------------------------+------------------------+-------------------------------+
-| :mod:`NamedOpetopicSet`   | Named opetopic sets    | :math:`\textbf{OptSet${}^!$}` |
-+---------------------------+------------------------+-------------------------------+
-| :mod:`UnnamedOpetope`     | Unnamed opetopes       | :math:`\textbf{Opt${}^?$}`    |
-+---------------------------+------------------------+-------------------------------+
-| :mod:`UnnamedOpetopicSet` | Unnamed opetopic sets  | :math:`\textbf{OptSet${}^?$}` |
-+---------------------------+------------------------+-------------------------------+
++--------------------------------+------------------------------+-------------------------------+
+| Module                         | Syntactical construct        | Derivation system             |
++================================+==============================+===============================+
+| :mod:`NamedOpetope`            | Named opetopes               | :math:`\textbf{Opt${}^!$}`    |
++--------------------------------+------------------------------+-------------------------------+
+| :mod:`NamedOpetopicSet`        | Named opetopic sets          | :math:`\textbf{OptSet${}^!$}` |
++--------------------------------+------------------------------+-------------------------------+
+| :mod:`UnnamedOpetope`          | Unnamed opetopes             | :math:`\textbf{Opt${}^?$}`    |
++--------------------------------+------------------------------+-------------------------------+
+| :mod:`UnnamedOpetopicSet`      | Unnamed opetopic sets        | :math:`\textbf{OptSet${}^?$}` |
++--------------------------------+------------------------------+-------------------------------+
+| :mod:`UnnamedOpetopicCategory` | Unnamed opetopic categories  | :math:`\textbf{OptCat${}^?$}` |
++--------------------------------+------------------------------+-------------------------------+
 
 Each implement the following:
 
-1. the syntactical constructs required to describe opetopes / opetopic sets and their sequents;
+1. the syntactic constructs required to describe opetopes / opetopic sets and their sequents;
 2. the derivation rules of the relevant system;
 3. wrappers of those rules to describe proof trees.
 
@@ -127,9 +129,12 @@ Usage
 Derivations and proof trees
 ---------------------------
 
-A derivation / proof tree in any of those system can then be written as a Python expression. If it evaluates without raising the :python:`ValueError` exceptions, it is considered correct.
+A derivation / proof tree in any of those system can then be written as a Python
+expression. If it evaluates without raising any exception, it is considered
+valid.
 
-For example, in system :math:`\textbf{Opt${}^?$}`, the unique :math:`1`-opetope has the following expression:
+For example, in system :math:`\textbf{Opt${}^?$}`, the unique :math:`1`-opetope
+has the following expression:
 
 .. code-block:: python
 
@@ -139,7 +144,11 @@ For example, in system :math:`\textbf{Opt${}^?$}`, the unique :math:`1`-opetope 
 
 which indeed evaluates without raising exceptions.
 
-The preferred way to construct proof trees is to use the proof tree node classes (see table above), who act as instances of those rules. They behave as their function counterparts, taking proof trees instead of sequents as constructor arguments. Then, a proof tree can be evaluated with the :func:`eval` method. For instance, the proof tree described above is written as:
+The preferred way to construct proof trees is to use the proof tree node classes
+(see table above), who act as instances of those rules. They behave as their
+function counterparts, taking proof trees instead of sequents as constructor
+arguments. Then, a proof tree can be evaluated with the :func:`eval` method. For
+instance, the proof tree described above is written as:
 
 .. code-block:: python
 
@@ -161,7 +170,8 @@ Exporting to :math:`\TeX`
 -------------------------
 
 
-:mod:`opetopy`'s main classes can be translated to :math:`\TeX` code using method :func:`toTeX`. Here is the minimal template to compile the returned code
+:mod:`opetopy`'s main classes can be translated to :math:`\TeX` code using
+method :func:`toTeX`. Here is the minimal template to compile the returned code
 
 .. code-block:: TeX
 
@@ -190,7 +200,7 @@ Documentation
 
 
 .. toctree::
-    
+
     common
     namedopetope
     namedopetopicset
@@ -200,4 +210,5 @@ Documentation
     unnamedopetopiccategory
 
 
-.. [CHM18] Pierre-Louis Curien, Cédric Ho Thanh, and Samuel Mimram. Type theoretical approaches to opetopes. In preparation.
+.. [CHM19] Pierre-Louis Curien, Cédric Ho Thanh, and Samuel Mimram. Syntactic
+    approaches to opetopes. arXiv:1903.05848
