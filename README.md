@@ -10,30 +10,36 @@ opetopy
 # Introduction
 
 This project is the Python implementation of the opetope derivation systems
-presented in **Type theoretical approaches to opetopes**, by [Pierre-Louis Curien](https://www.irif.fr/~curien/), [Cédric Ho Thanh](https://chothanh.wordpress.com/), and [Samuel Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram/), and some other work in progress.
+presented in **Syntactic approaches to opetopes**, by [Pierre-Louis
+Curien](https://www.irif.fr/~curien/), [Cédric Ho
+Thanh](https://hothanh.fr/), and [Samuel
+Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram/), and some other
+work in progress.
 
 # Documentation
 
 Available at [readthedocs.io](https://readthedocs.io/en/latest/?badge=latest).
 
-Generating the documentation requires [Sphinx](http://www.sphinx-doc.org/en/stable/). After running
+Generating the documentation requires
+[Sphinx](http://www.sphinx-doc.org/en/stable/). After running
 
 ```sh
-    make doc
+make doc
 ```
 
 the HTML documentation should be located at `doc/build/html/index.html`.
 
 # Tests
 
-Unit tests are written in [UnitTests.py](UnitTests.py), and can executed by running
+Unit tests are located in folder [tests](tests/), and can executed by running
 
 ```sh
-    make unittests
+make unittests
 ```
 
-Additionaly, the code can be typechecked with [mypy](http://mypy-lang.org/) (according to [PEP484](https://www.python.org/dev/peps/pep-0484/)) by running
+Additionaly, the code can be typechecked with [mypy](http://mypy-lang.org/)
+(according to [PEP484](https://www.python.org/dev/peps/pep-0484/)) by running
 
 ```sh
-    make typecheck
+make typecheck
 ```
