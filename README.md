@@ -12,9 +12,10 @@ opetopy
 This project is the Python implementation of the opetope derivation systems
 presented in [**Syntactic approaches to
 opetopes**](https://arxiv.org/abs/1903.05848), by [Pierre-Louis
-Curien](https://www.irif.fr/~curien/), [Cédric Ho Thanh](https://hothanh.fr/),
-and [Samuel Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram/), and
-some other work in progress.
+Curien](https://www.irif.fr/~curien/), [Cédric Ho
+Thanh](https://hothanh.fr/cedric), and [Samuel
+Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram/), and some other
+work in progress.
 
 # Documentation
 
