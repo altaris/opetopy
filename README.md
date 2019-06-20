@@ -10,11 +10,11 @@ opetopy
 # Introduction
 
 This project is the Python implementation of the opetope derivation systems
-presented in **Syntactic approaches to opetopes**, by [Pierre-Louis
-Curien](https://www.irif.fr/~curien/), [Cédric Ho
-Thanh](https://hothanh.fr/), and [Samuel
-Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram/), and some other
-work in progress.
+presented in [**Syntactic approaches to
+opetopes**](https://arxiv.org/abs/1903.05848), by [Pierre-Louis
+Curien](https://www.irif.fr/~curien/), [Cédric Ho Thanh](https://hothanh.fr/),
+and [Samuel Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram/), and
+some other work in progress.
 
 # Documentation
 
@@ -34,7 +34,7 @@ the HTML documentation should be located at `doc/build/html/index.html`.
 Unit tests are located in folder [tests](tests/), and can executed by running
 
 ```sh
-make unittests
+make unittest
 ```
 
 Additionaly, the code can be typechecked with [mypy](http://mypy-lang.org/)
