@@ -1,9 +1,12 @@
 import unittest
 
-from common import DerivationError
+import sys
+sys.path.insert(0, "../")
 
-import NamedOpetope
-import NamedOpetopicSet
+from opetopy.common import DerivationError
+
+from opetopy import NamedOpetope
+from opetopy import NamedOpetopicSet
 
 
 class Test_NamedOpetopicSet_InferenceRules(unittest.TestCase):

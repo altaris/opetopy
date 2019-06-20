@@ -1,5 +1,8 @@
-from NamedOpetope import Point, Shift
-from NamedOpetopicSet import Glue, Repr, Sum
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.NamedOpetope import Point, Shift
+from opetopy.NamedOpetopicSet import Glue, Repr, Sum
 
 alpha = Shift(Shift(Point("a"), "f"), "α")
 g = Shift(Point("c"), "g")

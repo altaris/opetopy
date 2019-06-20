@@ -1,7 +1,10 @@
-from UnnamedOpetope import address, Arrow, OpetopicInteger
-from UnnamedOpetopicSet import Graft, pastingDiagram, Point, RuleInstance, \
-    Shift
-from UnnamedOpetopicCategory import TUniv, SUniv, TFill
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger
+from opetopy.UnnamedOpetopicSet import Graft, pastingDiagram, Point, \
+    RuleInstance, Shift
+from opetopy.UnnamedOpetopicCategory import TUniv, SUniv, TFill
 
 # Derive points
 proof = Point(None, ["a", "b", "c"])  # type: RuleInstance

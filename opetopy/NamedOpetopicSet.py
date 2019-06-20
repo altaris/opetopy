@@ -11,8 +11,8 @@
 
 from copy import deepcopy
 
-from .common import *
-from . import NamedOpetope
+from opetopy.common import *
+from opetopy import NamedOpetope
 
 
 def repres(seq: NamedOpetope.Sequent) -> NamedOpetope.OCMT:

@@ -1,9 +1,12 @@
-from UnnamedOpetopicSet import Graft, pastingDiagram, Point, RuleInstance, \
-    Shift
+import sys
+sys.path.insert(0, "../")
 
-from UnnamedOpetope import address, Arrow, OpetopicInteger, OpetopicTree
-from UnnamedOpetope import Graft as OptGraft
-from UnnamedOpetope import Shift as OptShift
+from opetopy.UnnamedOpetopicSet import Graft, pastingDiagram, Point, \
+    RuleInstance, Shift
+from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger, \
+    OpetopicTree
+from opetopy.UnnamedOpetope import Graft as OptGraft
+from opetopy.UnnamedOpetope import Shift as OptShift
 
 # Derivation of ω
 omega = OptGraft(

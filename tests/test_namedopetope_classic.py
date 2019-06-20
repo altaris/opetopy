@@ -1,4 +1,7 @@
-from NamedOpetope import Graft, Point, Shift
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.NamedOpetope import Graft, Point, Shift
 
 beta = Shift(Graft(
     Shift(Point("c"), "h"),

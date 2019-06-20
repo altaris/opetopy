@@ -6,7 +6,7 @@ Documentation
 =============
 
 
-.. automodule:: common
+.. automodule:: opetopy.common
     :members:
     :private-members:
     :special-members:

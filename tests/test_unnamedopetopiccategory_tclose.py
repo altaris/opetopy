@@ -1,6 +1,10 @@
-from UnnamedOpetope import address, Arrow, OpetopicInteger
-from UnnamedOpetopicSet import Graft, pastingDiagram, Point, RuleInstance
-from UnnamedOpetopicCategory import TClose, TFill
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger
+from opetopy.UnnamedOpetopicSet import Graft, pastingDiagram, Point, \
+    RuleInstance
+from opetopy.UnnamedOpetopicCategory import TClose, TFill
 
 proof = Point(None, "a")  # type: RuleInstance
 

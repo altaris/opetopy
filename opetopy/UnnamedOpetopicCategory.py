@@ -12,9 +12,9 @@
 from copy import deepcopy
 from typing import Dict, List, Optional, Set
 
-from .common import *
-from . import UnnamedOpetope
-from . import UnnamedOpetopicSet
+from opetopy.common import *
+from opetopy import UnnamedOpetope
+from opetopy import UnnamedOpetopicSet
 
 
 class Type(UnnamedOpetopicSet.Type):

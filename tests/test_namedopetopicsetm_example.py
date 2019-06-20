@@ -1,4 +1,7 @@
-from NamedOpetopicSetM import Glue, Pd, Point, RuleInstance, Shift, Sum
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.NamedOpetopicSetM import Glue, Pd, Point, RuleInstance, Shift, Sum
 
 p1 = Shift(Pd(Point("a"), "a"), "f")
 p1 = Shift(Pd(p1, "a"), "g")

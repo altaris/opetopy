@@ -1,6 +1,9 @@
-from UnnamedOpetopicSet import Graft, pastingDiagram, Point, RuleInstance, \
-    Shift
-from UnnamedOpetope import address, Arrow
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.UnnamedOpetopicSet import Graft, pastingDiagram, Point, \
+    RuleInstance, Shift
+from opetopy.UnnamedOpetope import address, Arrow
 
 ar = Point(None, "a")  # type: RuleInstance
 ar = Point(ar, "b")

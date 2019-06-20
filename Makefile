@@ -1,9 +1,9 @@
 RUN 		= python3
 TYPECHECK	= mypy
 
-TESTOUT		= doc/build/tests
+TESTOUTDIR	= doc/build/tests
 
-TESTS 		= \
+TESTFILES	= \
 	test_namedopetope_classic \
 	test_namedopetope_point \
 	test_namedopetopicset_example \
@@ -19,34 +19,33 @@ TESTS 		= \
 	test_unnamedopetopicset_arrow \
 	test_unnamedopetopicset_classic
 
-all: typecheck unittests
+all: typecheck unittest
 
 .PHONY: doc
-doc: $(TESTS)
+doc: $(TESTFILES)
 	cd doc && make html
 	-xdg-open doc/build/html/index.html
 
 test_%:
-	@mkdir -p $(TESTOUT)
-	@echo 
+	@mkdir -p $(TESTOUTDIR)
+	@echo
 	@echo "----------------------------------------"
 	@echo $@
 	@echo "----------------------------------------"
 	@echo
-	@$(RUN) -m tests.$@ | tee $(TESTOUT)/$@.out
+	@$(RUN) -m tests.$@ | tee $(TESTOUTDIR)/$@.out
 
-tests: $(TESTS)
+test: $(TESTFILES)
 
 .PHONY: typecheck
 typecheck:
-	$(TYPECHECK) NamedOpetope.py
-	$(TYPECHECK) NamedOpetopicSet.py
-	$(TYPECHECK) NamedOpetopicSetM.py
-	$(TYPECHECK) UnnamedOpetope.py
-	$(TYPECHECK) UnnamedOpetopicSet.py
-	$(TYPECHECK) UnnamedOpetopicCategory.py
-	$(TYPECHECK) tests/*.py
+	$(TYPECHECK) opetopy/NamedOpetope.py
+	$(TYPECHECK) opetopy/NamedOpetopicSet.py
+	$(TYPECHECK) opetopy/NamedOpetopicSetM.py
+	$(TYPECHECK) opetopy/UnnamedOpetope.py
+	$(TYPECHECK) opetopy/UnnamedOpetopicSet.py
+	$(TYPECHECK) opetopy/UnnamedOpetopicCategory.py
 
-.PHONY: unittests
-unittests:
+.PHONY: unittest
+unittest:
 	@$(RUN) -m unittest discover --start-directory tests --pattern "unittest*.py" --verbose

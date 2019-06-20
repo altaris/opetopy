@@ -5,7 +5,7 @@ Opetopic categories: unnamed approach
 This part of ``opetopy`` implements finite opetopic categories as defined in [Baez1998]_ and [Finster]_.
 
 .. [Baez1998] Baez, John C. and Dolan, James. Higher-dimensional algebra III: :math:`n`-categories and the algebra of opetopes.
-.. [Finster] Eric Finster. http://opetopic.net . 
+.. [Finster] Eric Finster. http://opetopic.net .
 
 
 Examples
@@ -23,6 +23,7 @@ In this simple example, we use the target filling of a pasting diagram of shape 
 .. literalinclude:: ../tests/test_unnamedopetopiccategory_tfill.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetopiccategory_tfill.out
     :linenos:
@@ -42,6 +43,7 @@ We then apply the target universal property of :math:`\gamma` over :math:`\delta
 .. literalinclude:: ../tests/test_unnamedopetopiccategory_tuniv.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetopiccategory_tuniv.out
     :linenos:
@@ -58,7 +60,7 @@ This example is a continuation of that presented in :ref:`uoptcat-ex-fill-tgt`. 
 
 We then apply the target universal property of :math:`\alpha` over :math:`\beta` to obtain a factorization :math:`\xi : h \longrightarrow i` and a filler :math:`A`. We do it again, with a new factorization :math:`\zeta` and filler :math:`B`. Finally, we apply the source univerality of :math:`A` over :math:`B` to obtain a factorization :math:`C : \zeta \longrightarrow \xi`.
 
-This hints that any two factorization in the application of the target universality of the composition :math:`h` over :math:`i` are homotopic, and in fact, equivalent. 
+This hints that any two factorization in the application of the target universality of the composition :math:`h` over :math:`i` are homotopic, and in fact, equivalent.
 
 .. literalinclude:: ../tests/test_unnamedopetopiccategory_suniv.py
     :language: python
@@ -77,6 +79,7 @@ In this example, we derive two target universal arrows :math:`f` and :math:`g`, 
 .. literalinclude:: ../tests/test_unnamedopetopiccategory_tclose.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetopiccategory_tclose.out
     :linenos:
@@ -86,7 +89,7 @@ Documentation
 =============
 
 
-.. automodule:: UnnamedOpetopicCategory
+.. automodule:: opetopy.UnnamedOpetopicCategory
     :members:
     :private-members:
     :special-members:

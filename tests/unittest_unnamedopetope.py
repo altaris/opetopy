@@ -1,8 +1,11 @@
 import unittest
 
-from common import DerivationError
+import sys
+sys.path.insert(0, "../")
 
-import UnnamedOpetope
+from opetopy.common import DerivationError
+
+from opetopy import UnnamedOpetope
 
 
 class Test_UnnamedOpetope_Address(unittest.TestCase):

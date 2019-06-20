@@ -12,9 +12,9 @@
 from copy import deepcopy
 from typing import Union
 
-from .common import *
-from . import NamedOpetope
-from . import NamedOpetopicSet
+from opetopy.common import *
+from opetopy import NamedOpetope
+from opetopy import NamedOpetopicSet
 
 
 def point(name: str) -> NamedOpetope.OCMT:

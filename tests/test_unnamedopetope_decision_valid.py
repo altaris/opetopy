@@ -1,4 +1,7 @@
-from UnnamedOpetope import address, ProofTree
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.UnnamedOpetope import address, ProofTree
 
 p = ProofTree({
     address([], 2): {

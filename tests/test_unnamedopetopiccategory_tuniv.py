@@ -1,7 +1,10 @@
-from UnnamedOpetope import address, Arrow
-from UnnamedOpetopicSet import Degen, Graft, pastingDiagram, Point, \
+import sys
+sys.path.insert(0, "../")
+
+from opetopy.UnnamedOpetope import address, Arrow
+from opetopy.UnnamedOpetopicSet import Degen, Graft, pastingDiagram, Point, \
     RuleInstance, Shift
-from UnnamedOpetopicCategory import TUniv, TFill
+from opetopy.UnnamedOpetopicCategory import TUniv, TFill
 
 # Derive a cell degenerate at point a
 proof = Point(None, "a")  # type: RuleInstance

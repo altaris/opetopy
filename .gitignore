@@ -1,3 +1,11 @@
+# Docs
+doc/_build
+doc/build
+
+# VSCode
+*.code-workspace
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

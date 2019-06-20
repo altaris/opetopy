@@ -13,6 +13,7 @@ The arrow
 .. literalinclude:: ../tests/test_unnamedopetopicset_arrow.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetopicset_arrow.out
     :linenos:
@@ -26,6 +27,7 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
 .. literalinclude:: ../tests/test_unnamedopetopicset_classic.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetopicset_classic.out
     :linenos:
@@ -34,7 +36,7 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
 Documentation
 =============
 
-.. automodule:: UnnamedOpetopicSet
+.. automodule:: opetopy.UnnamedOpetopicSet
     :members:
     :private-members:
     :special-members:

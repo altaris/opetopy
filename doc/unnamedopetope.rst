@@ -19,6 +19,7 @@ The arrow
 .. literalinclude:: ../tests/test_unnamedopetope_arrow.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetope_arrow.out
     :linenos:
@@ -31,6 +32,7 @@ A classic
 .. literalinclude:: ../tests/test_unnamedopetope_classic.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetope_classic.out
     :linenos:
@@ -68,6 +70,7 @@ Here, we construct the proof tree of :math:`\mathsf{Y}_{\mathbf{2}} \circ_{[[*]]
 .. literalinclude:: ../tests/test_unnamedopetope_decision_valid.py
     :language: python
     :linenos:
+    :lines: 4-
 
 .. literalinclude:: build/tests/test_unnamedopetope_decision_valid.out
     :linenos:
@@ -98,7 +101,7 @@ Documentation
 =============
 
 
-.. automodule:: UnnamedOpetope
+.. automodule:: opetopy.UnnamedOpetope
     :members:
     :private-members:
     :special-members:

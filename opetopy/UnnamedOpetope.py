@@ -11,7 +11,7 @@
 from copy import deepcopy
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-from .common import *
+from opetopy.common import *
 
 
 class Address:
