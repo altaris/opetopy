@@ -181,7 +181,7 @@ class Sum(RuleInstance):
         Creates an instance of the ``graft`` rule at variable ``a``, and plugs
         proof tree ``p1`` on the first premise, and ``p2`` on the second.
 
-        :see: :func:`NamedOpetope.graft`.
+        :see: :func:`opetopy.NamedOpetope.graft`.
         """
         self.proofTree1 = p1
         self.proofTree2 = p2
@@ -246,7 +246,7 @@ class Glue(RuleInstance):
     def eval(self) -> NamedOpetope.OCMT:
         """
         Evaluates this instance of ``graft`` by first evaluating its premises,
-        and then applying :func:`NamedOpetope.graft` at variable
+        and then applying :func:`opetopy.NamedOpetope.graft` at variable
         `self.a` on the resulting sequents.
         """
         return glue(self.proofTree.eval(), self.aName, self.bName)

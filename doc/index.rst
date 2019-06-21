@@ -59,67 +59,67 @@ Each implement the following:
 2. the derivation rules of the relevant system;
 3. wrappers of those rules to describe proof trees.
 
-+---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
-| Derivation system               | Rule                         | Implementation                         | Proof tree node                         |
-+=================================+==============================+========================================+=========================================+
-| :math:`\textbf{Opt${}^!$}`      | :math:`\texttt{point}`       | :func:`NamedOpetope.point`             | :class:`NamedOpetope.Point`             |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{degen}`       | :func:`NamedOpetope.degen`             | :class:`NamedOpetope.Degen`             |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{degen-shift}` | :func:`NamedOpetope.degenshift`        | :class:`NamedOpetope.DegenShift`        |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{shift}`       | :func:`NamedOpetope.shift`             | :class:`NamedOpetope.Shift`             |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{graft}`       | :func:`NamedOpetope.graft`             | :class:`NamedOpetope.Graft`             |
-+---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
-| :math:`\textbf{OptSet${}^!$}`   | :math:`\texttt{repr}`        | :func:`NamedOpetopicSet.repres`        | :class:`NamedOpetopicSet.Repr`          |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{zero}`        | :func:`NamedOpetopicSet.zero`          | :class:`NamedOpetopicSet.Zero`          |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{sum}`         | :func:`NamedOpetopicSet.sum`           | :class:`NamedOpetopicSet.Sum`           |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{glue}`        | :func:`NamedOpetopicSet.glue`          | :class:`NamedOpetopicSet.Glue`          |
-+---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
-| :math:`\textbf{OptSet${}^!_m$}` | :math:`\texttt{point}`       | :func:`NamedOpetopicSetM.point`        | :class:`NamedOpetopicSetM.Point`        |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{degen}`       | :func:`NamedOpetopicSetM.degen`        | :class:`NamedOpetopicSetM.Degen`        |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{pd}`          | :func:`NamedOpetopicSetM.pd`           | :class:`NamedOpetopicSetM.Pd`           |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{graft}`       | :func:`NamedOpetopicSetM.graft`        | :class:`NamedOpetopicSetM.Graft`        |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{shift}`       | :func:`NamedOpetopicSetM.shift`        | :class:`NamedOpetopicSetM.Shift`        |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{zero}`        | :func:`NamedOpetopicSetM.zero`         | :class:`NamedOpetopicSetM.Zero`         |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{sum}`         | :func:`NamedOpetopicSetM.sum`          | :class:`NamedOpetopicSetM.Sum`          |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{glue}`        | :func:`NamedOpetopicSetM.glue`         | :class:`NamedOpetopicSetM.Glue`         |
-+---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
-| :math:`\textbf{Opt${}^?$}`      | :math:`\texttt{point}`       | :func:`UnnamedOpetope.point`           | :class:`UnnamedOpetope.Point`           |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{degen}`       | :func:`UnnamedOpetope.degen`           | :class:`UnnamedOpetope.Degen`           |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{shift}`       | :func:`UnnamedOpetope.shift`           | :class:`UnnamedOpetope.Shift`           |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{graft}`       | :func:`UnnamedOpetope.graft`           | :class:`UnnamedOpetope.Graft`           |
-+---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
-| :math:`\textbf{OptSet${}^?$}`   | :math:`\texttt{point}`       | :func:`UnnamedOpetopicSet.point`       | :class:`UnnamedOpetopicSet.Point`       |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{degen}`       | :func:`UnnamedOpetopicSet.degen`       | :class:`UnnamedOpetopicSet.Degen`       |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{graft}`       | :func:`UnnamedOpetopicSet.graft`       | :class:`UnnamedOpetopicSet.Graft`       |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{shift}`       | :func:`UnnamedOpetopicSet.shift`       | :class:`UnnamedOpetopicSet.Shift`       |
-+---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
-| :math:`\textbf{OptCat${}^?$}`   | :math:`\texttt{tfill}`       | :func:`UnnamedOpetopicCategory.tfill`  | :class:`UnnamedOpetopicCategory.TFill`  |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{tuniv}`       | :func:`UnnamedOpetopicCategory.tuniv`  | :class:`UnnamedOpetopicCategory.TUniv`  |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{suniv}`       | :func:`UnnamedOpetopicCategory.suniv`  | :class:`UnnamedOpetopicCategory.SUniv`  |
-+                                 +------------------------------+----------------------------------------+-----------------------------------------+
-|                                 | :math:`\texttt{tclose}`      | :func:`UnnamedOpetopicCategory.tclose` | :class:`UnnamedOpetopicCategory.TClose` |
-+---------------------------------+------------------------------+----------------------------------------+-----------------------------------------+
++---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
+| Derivation system               | Rule                         | Implementation                                 | Proof tree node                                 |
++=================================+==============================+================================================+=================================================+
+| :math:`\textbf{Opt${}^!$}`      | :math:`\texttt{point}`       | :func:`opetopy.NamedOpetope.point`             | :class:`opetopy.NamedOpetope.Point`             |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{degen}`       | :func:`opetopy.NamedOpetope.degen`             | :class:`opetopy.NamedOpetope.Degen`             |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{degen-fill}`  | :func:`opetopy.NamedOpetope.degenfill`         | :class:`opetopy.NamedOpetope.DegenFill`         |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{fill}`        | :func:`opetopy.NamedOpetope.fill`              | :class:`opetopy.NamedOpetope.Fill`              |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{graft}`       | :func:`opetopy.NamedOpetope.graft`             | :class:`opetopy.NamedOpetope.Graft`             |
++---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
+| :math:`\textbf{OptSet${}^!$}`   | :math:`\texttt{repr}`        | :func:`opetopy.NamedOpetopicSet.repres`        | :class:`opetopy.NamedOpetopicSet.Repr`          |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{zero}`        | :func:`opetopy.NamedOpetopicSet.zero`          | :class:`opetopy.NamedOpetopicSet.Zero`          |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{sum}`         | :func:`opetopy.NamedOpetopicSet.sum`           | :class:`opetopy.NamedOpetopicSet.Sum`           |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{glue}`        | :func:`opetopy.NamedOpetopicSet.glue`          | :class:`opetopy.NamedOpetopicSet.Glue`          |
++---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
+| :math:`\textbf{OptSet${}^!_m$}` | :math:`\texttt{point}`       | :func:`opetopy.NamedOpetopicSetM.point`        | :class:`opetopy.NamedOpetopicSetM.Point`        |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{degen}`       | :func:`opetopy.NamedOpetopicSetM.degen`        | :class:`opetopy.NamedOpetopicSetM.Degen`        |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{pd}`          | :func:`opetopy.NamedOpetopicSetM.pd`           | :class:`opetopy.NamedOpetopicSetM.Pd`           |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{graft}`       | :func:`opetopy.NamedOpetopicSetM.graft`        | :class:`opetopy.NamedOpetopicSetM.Graft`        |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{fill}`        | :func:`opetopy.NamedOpetopicSetM.fill`         | :class:`opetopy.NamedOpetopicSetM.Fill`         |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{zero}`        | :func:`opetopy.NamedOpetopicSetM.zero`         | :class:`opetopy.NamedOpetopicSetM.Zero`         |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{sum}`         | :func:`opetopy.NamedOpetopicSetM.sum`          | :class:`opetopy.NamedOpetopicSetM.Sum`          |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{glue}`        | :func:`opetopy.NamedOpetopicSetM.glue`         | :class:`opetopy.NamedOpetopicSetM.Glue`         |
++---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
+| :math:`\textbf{Opt${}^?$}`      | :math:`\texttt{point}`       | :func:`opetopy.UnnamedOpetope.point`           | :class:`opetopy.UnnamedOpetope.Point`           |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{degen}`       | :func:`opetopy.UnnamedOpetope.degen`           | :class:`opetopy.UnnamedOpetope.Degen`           |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{fill}`        | :func:`opetopy.UnnamedOpetope.fill`            | :class:`opetopy.UnnamedOpetope.Fill`            |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{graft}`       | :func:`opetopy.UnnamedOpetope.graft`           | :class:`opetopy.UnnamedOpetope.Graft`           |
++---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
+| :math:`\textbf{OptSet${}^?$}`   | :math:`\texttt{point}`       | :func:`opetopy.UnnamedOpetopicSet.point`       | :class:`opetopy.UnnamedOpetopicSet.Point`       |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{degen}`       | :func:`opetopy.UnnamedOpetopicSet.degen`       | :class:`opetopy.UnnamedOpetopicSet.Degen`       |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{graft}`       | :func:`opetopy.UnnamedOpetopicSet.graft`       | :class:`opetopy.UnnamedOpetopicSet.Graft`       |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{fill}`        | :func:`opetopy.UnnamedOpetopicSet.fill`        | :class:`opetopy.UnnamedOpetopicSet.Fill`        |
++---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
+| :math:`\textbf{OptCat${}^?$}`   | :math:`\texttt{tfill}`       | :func:`opetopy.UnnamedOpetopicCategory.tfill`  | :class:`opetopy.UnnamedOpetopicCategory.TFill`  |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{tuniv}`       | :func:`opetopy.UnnamedOpetopicCategory.tuniv`  | :class:`opetopy.UnnamedOpetopicCategory.TUniv`  |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{suniv}`       | :func:`opetopy.UnnamedOpetopicCategory.suniv`  | :class:`opetopy.UnnamedOpetopicCategory.SUniv`  |
++                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
+|                                 | :math:`\texttt{tclose}`      | :func:`opetopy.UnnamedOpetopicCategory.tclose` | :class:`opetopy.UnnamedOpetopicCategory.TClose` |
++---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
 
 
 Usage
@@ -138,22 +138,23 @@ has the following expression:
 
 .. code-block:: python
 
-    from UnnamedOpetope import *
-    shift(point())
+    from opetopy.UnnamedOpetope import *
+    fill(point())
 
 
 which indeed evaluates without raising exceptions.
 
-The preferred way to construct proof trees is to use the proof tree node classes
-(see table above), who act as instances of those rules. They behave as their
-function counterparts, taking proof trees instead of sequents as constructor
-arguments. Then, a proof tree can be evaluated with the :func:`eval` method. For
-instance, the proof tree described above is written as:
+The preferred way to construct proof trees is to use the proof tree node
+classes (see table above), who act as instances of those rules. They behave as
+their function counterparts, taking proof trees instead of sequents as
+constructor arguments. Then, a proof tree can be evaluated with the
+:func:`opetopy.common.AbstractRuleInstance.eval` method. For instance, the
+proof tree described above is written as:
 
 .. code-block:: python
 
-    from UnnamedOpetope import *
-    proof = Shift(Point())
+    from opetopy.UnnamedOpetope import *
+    proof = Fill(Point())
 
 
 and evaluated as:
@@ -170,8 +171,9 @@ Exporting to :math:`\TeX`
 -------------------------
 
 
-:mod:`opetopy`'s main classes can be translated to :math:`\TeX` code using
-method :func:`toTeX`. Here is the minimal template to compile the returned code
+`opetopy`'s main classes can be translated to :math:`\TeX` code using method
+:func:`opetopy.common.AbstractRuleInstance.toTeX`. Here is the minimal template
+to compile the returned code
 
 .. code-block:: TeX
 

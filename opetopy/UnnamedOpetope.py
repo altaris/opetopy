@@ -212,28 +212,28 @@ class Address:
                 "Address creation",
                 "Cannot create address from an empty list of addresses")
         else:
-            a = l[0].shift()
+            a = l[0].fill()
             for b in l[1:]:
                 a += b
             return a
 
-    def shift(self, n: int = 1) -> 'Address':
+    def fill(self, n: int = 1) -> 'Address':
         """
         Returns the curent address shifted by :math:`n` dimensions.
 
         Example:
-          :math:`[[][*]]` ``.shift(2)`` is
+          :math:`[[][*]]` ``.fill(2)`` is
           :math:`[[[[][*]]]]`
         """
         if n < 0:
             raise DerivationError(
-                "Address shift",
-                "Shift exponent must be >= 0 (is {dim})",
+                "Address fill",
+                "Fill exponent must be >= 0 (is {dim})",
                 dim=n)
         elif n == 0:
             return self
         else:
-            return Address.epsilon(self.dimension + n) + self.shift(n - 1)
+            return Address.epsilon(self.dimension + n) + self.fill(n - 1)
 
     @staticmethod
     def substitution(a: 'Address', b: 'Address', c: 'Address') -> 'Address':
@@ -820,9 +820,9 @@ def degen(seq: Sequent) -> Sequent:
     )
 
 
-def shift(seq: Sequent) -> Sequent:
+def fill(seq: Sequent) -> Sequent:
     """
-    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{shift}` rule.
+    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{fill}` rule.
     From an :math:`n`-opetope :math:`\\omega`, creates the
     globular :math:`(n+1)`-opetope
     :math:`\\lbrace []: \\omega`.
@@ -830,7 +830,7 @@ def shift(seq: Sequent) -> Sequent:
     n = seq.source.dimension
     ctx = Context(n + 1)
     for a in seq.source.nodeAddresses():
-        ctx += (a.shift(), a)
+        ctx += (a.fill(), a)
 
     return Sequent(
         ctx,
@@ -912,7 +912,7 @@ class Point(RuleInstance):
     def eval(self) -> Sequent:
         """
         Evaluates the proof tree, in this cases returns the point sequent by
-        calling :func:`UnnamedOpetope.point`.
+        calling :func:`opetopy.UnnamedOpetope.point`.
         """
         return point()
 
@@ -950,31 +950,31 @@ class Degen(RuleInstance):
     def eval(self) -> Sequent:
         """
         Evaluates this instance of ``degen`` by first evaluating its premise,
-        and then applying :func:`UnnamedOpetope.degen` on the resulting
+        and then applying :func:`opetopy.UnnamedOpetope.degen` on the resulting
         sequent.
         """
         return degen(self.proofTree.eval())
 
 
-class Shift(RuleInstance):
+class Fill(RuleInstance):
     """
-    A class representing an instance of the ``shift`` rule in a proof tree.
+    A class representing an instance of the ``fill`` rule in a proof tree.
     """
 
     proofTree: RuleInstance
 
     def __init__(self, p: RuleInstance) -> None:
         """
-        Creates an instance of the ``shift`` rule and plugs proof tree ``p``
+        Creates an instance of the ``fill`` rule and plugs proof tree ``p``
         on the unique premise.
         """
         self.proofTree = p
 
     def __repr__(self):
-        return "Shift({})".format(repr(self.proofTree))
+        return "Fill({})".format(repr(self.proofTree))
 
     def __str__(self):
-        return "Shift({})".format(str(self.proofTree))
+        return "Fill({})".format(str(self.proofTree))
 
     def _toTex(self) -> str:
         """
@@ -983,16 +983,16 @@ class Shift(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
+            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
         """
-        Evaluates this instance of ``shift`` by first evaluating its premise,
-        and then applying :func:`UnnamedOpetope.shift` on the resulting
+        Evaluates this instance of ``fill`` by first evaluating its premise,
+        and then applying :func:`opetopy.UnnamedOpetope.fill` on the resulting
         sequent.
         """
-        return shift(self.proofTree.eval())
+        return fill(self.proofTree.eval())
 
 
 class Graft(RuleInstance):
@@ -1010,7 +1010,7 @@ class Graft(RuleInstance):
         plugs proof tree ``p1`` on the first premise, and ``p2`` on the second.
         Recall that the opetope described in the second premise will be
         impropely grafted on that of the first. See
-        :func:`UnnamedOpetope.graft`.
+        :func:`opetopy.UnnamedOpetope.graft`.
         """
         self.proofTree1 = p1
         self.proofTree2 = p2
@@ -1039,7 +1039,7 @@ class Graft(RuleInstance):
     def eval(self) -> Sequent:
         """
         Evaluates this instance of ``graft`` by first evaluating its premises,
-        and then applying :func:`UnnamedOpetope.graft` at address
+        and then applying :func:`opetopy.UnnamedOpetope.graft` at address
         `self.addr` on the resulting sequents.
         """
         return graft(self.proofTree1.eval(), self.proofTree2.eval(),
@@ -1109,7 +1109,7 @@ def Arrow() -> RuleInstance:
     """
     Returns the proof tree of the arrow.
     """
-    return Shift(Point())
+    return Fill(Point())
 
 
 def OpetopicInteger(n: int) -> RuleInstance:
@@ -1123,7 +1123,7 @@ def OpetopicInteger(n: int) -> RuleInstance:
     elif n == 0:
         return Degen(Point())
     elif n == 1:
-        return Shift(Arrow())
+        return Fill(Arrow())
     else:
         return Graft(OpetopicInteger(n - 1), Arrow(), address(['*'] * (n - 1)))
 
@@ -1159,7 +1159,7 @@ def OpetopicTree(tree: Optional[List[Any]]) -> RuleInstance:
     else:
         d = toDict(tree)
         sa = sorted(d.keys())
-        res = Shift(d[address([], 2)])  # type: RuleInstance
+        res = Fill(d[address([], 2)])  # type: RuleInstance
         for i in range(1, len(sa)):
             res = Graft(res, d[sa[i]], sa[i])
         return res
@@ -1168,9 +1168,9 @@ def OpetopicTree(tree: Optional[List[Any]]) -> RuleInstance:
 def ProofTree(p: Dict[Optional[Address], Dict]) -> RuleInstance:
     """
     Returns the proof tree of a preopetope described as a dict, or raises a
-    :class:`common.DerivationError` if the preopetope is not an opetope. For
-    ``T`` the type of the argument, ``T`` is a ``dict`` mapping
-    :class:`UnnamedOpetope.Address` or ``None`` to instances of ``T``.
+    :class:`opetopy.common.DerivationError` if the preopetope is not an
+    opetope. For ``T`` the type of the argument, ``T`` is a ``dict`` mapping
+    :class:`opetopy.UnnamedOpetope.Address` or ``None`` to instances of ``T``.
     For example,
 
     .. code-block:: python
@@ -1219,7 +1219,7 @@ def ProofTree(p: Dict[Optional[Address], Dict]) -> RuleInstance:
                 "Proof tree of a preopetope",
                 "Argument is not an opetope: doesn't contain address {e}. {p}",
                 e=Address.epsilon(a.dimension), p=p)
-        res = Shift(ProofTree(p[sa[0]]))  # type: RuleInstance
+        res = Fill(ProofTree(p[sa[0]]))  # type: RuleInstance
         for i in range(1, len(sa)):
             res = Graft(res, ProofTree(p[sa[i]]), sa[i])
         res.eval()

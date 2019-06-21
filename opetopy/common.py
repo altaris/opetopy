@@ -45,4 +45,4 @@ class DerivationError(Exception):
         super().__init__(self, message)
 
     def __str__(self):
-        return "[{scope}] {msg}".format(scope = self.scope, msg = self.message)
+        return "[{scope}] {msg}".format(scope=self.scope, msg=self.message)

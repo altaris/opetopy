@@ -1,19 +1,19 @@
 import sys
 sys.path.insert(0, "../")
 
-from opetopy.NamedOpetope import Graft, Point, Shift
+from opetopy.NamedOpetope import Graft, Point, Fill
 
-beta = Shift(Graft(
-    Shift(Point("c"), "h"),
-    Shift(Point("a"), "i"),
+beta = Fill(Graft(
+    Fill(Point("c"), "h"),
+    Fill(Point("a"), "i"),
     "c"),
     "β")
-alpha = Shift(Graft(
-    Shift(Point("b"), "g"),
-    Shift(Point("a"), "f"),
+alpha = Fill(Graft(
+    Fill(Point("b"), "g"),
+    Fill(Point("a"), "f"),
     "b"),
     "α")
-classic = Shift(Graft(beta, alpha, "i"), "A")
+classic = Fill(Graft(beta, alpha, "i"), "A")
 
 print(classic.eval())
 print()

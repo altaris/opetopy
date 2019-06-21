@@ -18,7 +18,7 @@ from opetopy import UnnamedOpetope
 class Variable:
     """
     A variable is just a string representing its name, annotated by an opetope
-    (:class:`UnnamedOpetope.Preopetope`) representing its shape. To construct
+    (:class:`opetopy.UnnamedOpetope.Preopetope`) representing its shape. To construct
     a variable, however, not only does the shape need to be specified, but its
     whole proof tree.
     """
@@ -55,18 +55,18 @@ class Variable:
     @property
     def shape(self) -> UnnamedOpetope.Preopetope:
         """
-        Returns the actual shape (:class:`UnnamedOpetope.Preopetope`) of the
+        Returns the actual shape (:class:`opetopy.UnnamedOpetope.Preopetope`) of the
         variable, from the proof tree
-        (:class:`UnnamedOpetope.RuleInstance`) that was provided
+        (:class:`opetopy.UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.source
 
     def shapeTarget(self) -> UnnamedOpetope.Preopetope:
         """
-        Returns the shape target (:class:`UnnamedOpetope.Preopetope`) of the
+        Returns the shape target (:class:`opetopy.UnnamedOpetope.Preopetope`) of the
         variable, from the proof tree
-        (:class:`UnnamedOpetope.RuleInstance`) that was provided
+        (:class:`opetopy.UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.target
@@ -82,17 +82,17 @@ class Variable:
 class PastingDiagram:
     """
     A pasting diagram consist in a shape :math:`\\omega`
-    (:class:`UnnamedOpetope.Preopetope`) and
+    (:class:`opetopy.UnnamedOpetope.Preopetope`) and
 
     * if :math:`\\omega` is not degenerate, a mapping
       :math:`f : \\omega^\\bullet \\longrightarrow \\mathbb{V}` such that
       :math:`f (\\mathsf{s}_{[p]} \\omega)^\\natural = f([p])^\\natural`, where
       :math:`\\mathbb{V}` is the set of variable
-      (:class:`UnnamedOpetopicSet.Variable`); this case is implemented in
-      :class:`UnnamedOpetopicSet.NonDegeneratePastingDiagram`;
+      (:class:`opetopy.UnnamedOpetopicSet.Variable`); this case is implemented in
+      :class:`opetopy.UnnamedOpetopicSet.NonDegeneratePastingDiagram`;
     * if :math:`\\omega` is degenerate, say :math:`\\omega = \\{\\{\\phi`, a
       variable of shape :math:`\\phi`; this case is implemented in
-      :class:`UnnamedOpetopicSet.DegeneratePastingDiagram`.
+      :class:`opetopy.UnnamedOpetopicSet.DegeneratePastingDiagram`.
     """
 
     degeneracy: Optional[str]
@@ -216,18 +216,18 @@ class PastingDiagram:
     @property
     def shape(self) -> UnnamedOpetope.Preopetope:
         """
-        Returns the actual shape (:class:`UnnamedOpetope.Preopetope`) of the
+        Returns the actual shape (:class:`opetopy.UnnamedOpetope.Preopetope`) of the
         pasting diagram, from the proof tree
-        (:class:`UnnamedOpetope.RuleInstance`) that was provided
+        (:class:`opetopy.UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.source
 
     def shapeTarget(self) -> UnnamedOpetope.Preopetope:
         """
-        Returns the shape target (:class:`UnnamedOpetope.Preopetope`) of the
+        Returns the shape target (:class:`opetopy.UnnamedOpetope.Preopetope`) of the
         pasting diagram, from the proof tree
-        (:class:`UnnamedOpetope.RuleInstance`) that was provided
+        (:class:`opetopy.UnnamedOpetope.RuleInstance`) that was provided
         at its creation.
         """
         return self.shapeSequent.target
@@ -270,9 +270,9 @@ class Type:
     """
     A type consist in
 
-    * a source pasting diagram (:class:`UnnamedOpetopicSet.PastingDiagram`),
+    * a source pasting diagram (:class:`opetopy.UnnamedOpetopicSet.PastingDiagram`),
       say :math:`\\mathbf{P}`,
-    * a target variable (:class:`UnnamedOpetopicSet.Variable`), say :math:`x`,
+    * a target variable (:class:`opetopy.UnnamedOpetopicSet.Variable`), say :math:`x`,
 
     such that :math:`\\mathsf{t} \\mathbf{P}^\\natural = x^\\natural`
     """
@@ -333,8 +333,8 @@ class Typing:
     """
     A typing consists in
 
-    * a variable :class:`UnnamedOpetopicSet.Variable`, say :math:`v`,
-    * a type :class:`UnnamedOpetopicSet.Type`, say
+    * a variable :class:`opetopy.UnnamedOpetopicSet.Variable`, say :math:`v`,
+    * a type :class:`opetopy.UnnamedOpetopicSet.Type`, say
       :math:`\\mathbf{P} \\longrightarrow t`
 
     such that :math:`x^\\natural = \\mathbf{P}^\\natural`.
@@ -366,7 +366,7 @@ class Typing:
 
 class Context(Set[Typing]):
     """
-    A context is a set of tyings (see :class:`UnnamedOpetopicSet.Typing`).
+    A context is a set of tyings (see :class:`opetopy.UnnamedOpetopicSet.Typing`).
     """
 
     def __add__(self, typing: Typing) -> 'Context':
@@ -455,9 +455,9 @@ class Sequent:
     """
     A sequent is composed of
 
-    * a context (:class:`UnnamedOpetopicSet.Context`);
+    * a context (:class:`opetopy.UnnamedOpetopicSet.Context`);
     * optionally, a pasting diagram
-      (:class:`UnnamedOpetopicSet`.PastingDiagram).
+      (:class:`opetopy.UnnamedOpetopicSet`.PastingDiagram).
     """
 
     context: Context
@@ -466,9 +466,9 @@ class Sequent:
     def __getitem__(self, name: str) -> Variable:
         """
         Returns the variable in the sequent's context whose name is ``name``.
-        Note that unlike :func:`UnnamedOpetopicSet.Context.__getitem__`, this
-        function returns a :class:`UnnamedOpetopicSet.Variable` (and not a
-        :class:`UnnamedOpetopicSet.Typing`)
+        Note that unlike :func:`opetopy.UnnamedOpetopicSet.Context.__getitem__`, this
+        function returns a :class:`opetopy.UnnamedOpetopicSet.Variable` (and not a
+        :class:`opetopy.UnnamedOpetopicSet.Typing`)
         """
         return self.context[name].variable
 
@@ -587,13 +587,13 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
     return res
 
 
-def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
+def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
     """
-    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{shift}` rule.
+    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{fill}` rule.
     """
     if seq.pastingDiagram is None:
         raise DerivationError(
-            "shift rule",
+            "fill rule",
             "Sequent must have a pasting diagram")
     P = seq.pastingDiagram
     omega = P.shape
@@ -604,19 +604,19 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
     Q = seq.context[targetName].type.source
     if x.shape != P.shapeTarget():
         raise DerivationError(
-            "shift rule",
+            "fill rule",
             "Target variable {var} has shape {shape} should have {should}",
             var=repr(x), shape=repr(x.shape),
             should=repr(P.shapeTarget()))
     if omega.isDegenerate:
         if a is None:  # x is a point
-            raise RuntimeError("[shift rule] Variable {x} has a degenerate "
+            raise RuntimeError("[fill rule] Variable {x} has a degenerate "
                                "shape but no target. In valid derivations, "
                                "this should not happen")
         # [Degen] axiom
         if Q.nodes != {UnnamedOpetope.Address.epsilon(n - 2): a.name}:
             raise DerivationError(
-                "shift rule",
+                "fill rule",
                 "Target variable {var}'s source is expected to be globular at "
                 "{var}'s target",
                 var=repr(x))
@@ -626,7 +626,7 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
         if a is None:  # x is a point
             if seq.context[r].type.target is not None:  # r must be a point
                 raise DerivationError(
-                    "shift rule",
+                    "fill rule",
                     "Axiom [Glob1] is not satisfied: variable {x} is a point, "
                     "should have target {should}",
                     x=repr(x), should=repr(seq.context[r].type.target))
@@ -634,7 +634,7 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
             b = seq.context.target(r)
             if b != a.name:
                 raise DerivationError(
-                    "shift rule",
+                    "fill rule",
                     "Axiom [Glob1] is not satisfied: variable {x} has target "
                     "{a}, should have {should}",
                     x=repr(x), a=a.name, should=repr(b))
@@ -645,7 +645,7 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
             sx = seq.context.source(x.name, readdress(l))
             if sP != sx:
                 raise DerivationError(
-                    "shift rule",
+                    "fill rule",
                     "Axiom [Glob2] is not satisfied: variable {x} has {addr} "
                     "source {sx}, should have {should}",
                     x=repr(x), addr=repr(readdress(l)),
@@ -797,9 +797,9 @@ class Graft(RuleInstance):
         return graft(self.proofTree.eval(), self.pastingDiagram)
 
 
-class Shift(RuleInstance):
+class Fill(RuleInstance):
     """
-    A class representing an instance of the :math:`\\texttt{shift}` rule in a
+    A class representing an instance of the :math:`\\texttt{fill}` rule in a
     proof tree.
     """
 
@@ -813,10 +813,10 @@ class Shift(RuleInstance):
         self.targetName = targetName
 
     def __repr__(self) -> str:
-        return "Shift(" + repr(self.proofTree) + "," + self.name + ")"
+        return "Fill(" + repr(self.proofTree) + "," + self.name + ")"
 
     def __str__(self) -> str:
-        return "Shift(" + str(self.proofTree) + ", " + self.name + ")"
+        return "Fill(" + str(self.proofTree) + ", " + self.name + ")"
 
     def _toTex(self) -> str:
         """
@@ -825,14 +825,14 @@ class Shift(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
+            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
         """
         Evaluates the proof tree.
         """
-        return shift(self.proofTree.eval(), self.targetName, self.name)
+        return fill(self.proofTree.eval(), self.targetName, self.name)
 
 
 def pastingDiagram(shapeProof: UnnamedOpetope.RuleInstance,

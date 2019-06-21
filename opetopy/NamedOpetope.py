@@ -146,7 +146,7 @@ class Term(Dict[Variable, 'Term']):
     def __init__(self, var: Optional[Variable] = None,
                  degen: bool = False) -> None:
         """
-        Creates a term from a :class:`NamedOpetope.Variable` ``var``.
+        Creates a term from a :class:`opetopy.NamedOpetope.Variable` ``var``.
         If it is ``None`` (default), then this term represents the unique
         :math:`(-1)`-term.
         """
@@ -325,8 +325,8 @@ class Type:
 
 class Typing:
     """
-    A typing is simply an :math:`n`-term (:class:`NamedOpetope.Term`)
-     together with an :math:`n`-type (:class:`NamedOpetope.Type`).
+    A typing is simply an :math:`n`-term (:class:`opetopy.NamedOpetope.Term`)
+     together with an :math:`n`-type (:class:`opetopy.NamedOpetope.Type`).
 
     """
 
@@ -358,7 +358,7 @@ class Typing:
 
 class Context(Set[Typing]):
     """
-    A context is a set of tyings (see :class:`NamedOpetope.Typing`).
+    A context is a set of tyings (see :class:`opetopy.NamedOpetope.Typing`).
     """
 
     def __add__(self, typing: Typing) -> 'Context':
@@ -438,8 +438,8 @@ class Context(Set[Typing]):
         Returns all tuples (b, a) for :math:`b \\leftarrow a (\\ldots)` a
         grafting occurring in a term in a type in the context.
 
-        :see: :meth:`NamedOpetope.Term.graftTuples`
-        :see: :func:`NamedOpetopicSet.repres`
+        :see: :meth:`opetopy.NamedOpetope.Term.graftTuples`
+        :see: :func:`opetopy.NamedOpetopicSet.repres`
         """
         res = set()  # type: Set[Tuple[Variable, Variable]]
         for typing in self:
@@ -509,7 +509,7 @@ class EquationalTheory:
     def __add__(self, eq: Tuple[Variable, Variable]) -> 'EquationalTheory':
         """
         Adds an equality (represented by a tuple of two
-        :class:`NamedOpetope.Variable`) to the theory.
+        :class:`opetopy.NamedOpetope.Variable`) to the theory.
         """
         a, b = eq
         if a.dimension != b.dimension:
@@ -578,7 +578,7 @@ class EquationalTheory:
 
     def equal(self, a: Variable, b: Variable) -> bool:
         """
-        Tells wether variables (:class:`NamedOpetope.Variable`)
+        Tells wether variables (:class:`opetopy.NamedOpetope.Variable`)
         ``a`` and ``b`` are equal modulo the equational theory.
         """
         ia = self._index(a)
@@ -608,7 +608,7 @@ class EquationalTheory:
 class OCMT:
     """
     Opetopic context modulo theory. Basically the same as a
-    :class:`NamedOpetope.Sequent`, without the typing.
+    :class:`opetopy.NamedOpetope.Sequent`, without the typing.
     """
 
     theory: EquationalTheory
@@ -705,9 +705,9 @@ class OCMT:
 class Sequent(OCMT):
     """
     A sequent consists of an equational theory
-    (:class:`NamedOpetope.EquationalTheory`), a context
-    (:class:`NamedOpetope.Context`), and a typing
-    (:class:`NamedOpetope.Typing`).
+    (:class:`opetopy.NamedOpetope.EquationalTheory`), a context
+    (:class:`opetopy.NamedOpetope.Context`), and a typing
+    (:class:`opetopy.NamedOpetope.Typing`).
     """
 
     typing: Typing
@@ -733,8 +733,8 @@ class Sequent(OCMT):
 
     def graft(self, t: Term, x: Variable, u: Term) -> Term:
         """
-        Grafts term (:class:`NamedOpetope.Term`) u on term t via
-        variable (:class:`NamedOpetope.Variable`) x. In other words,
+        Grafts term (:class:`opetopy.NamedOpetope.Term`) u on term t via
+        variable (:class:`opetopy.NamedOpetope.Variable`) x. In other words,
         computes :math:`t(x \\leftarrow u)`.
         """
         for k in t.keys():
@@ -769,8 +769,8 @@ class Sequent(OCMT):
     def substitute(self, u: Term, s: Term, a: Variable) -> \
             Tuple[Term, Optional[Tuple[Variable, Variable]]]:
         """
-        Substitute term (:class:`NamedOpetope.Term`) ``s`` for variable
-        (:class:`NamedOpetope.Variable`) ``a`` in term ``u``. In other
+        Substitute term (:class:`opetopy.NamedOpetope.Term`) ``s`` for variable
+        (:class:`opetopy.NamedOpetope.Variable`) ``a`` in term ``u``. In other
         words, computes :math:`u[s/a]`.
 
         Returns a tuple containing
@@ -852,16 +852,16 @@ def point(name: str) -> Sequent:
     return Sequent(EquationalTheory(), Context() + t, t)
 
 
-def shift(seq: Sequent, name: str) -> Sequent:
+def fill(seq: Sequent, name: str) -> Sequent:
     """
-    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{shift}` rule.
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{fill}` rule.
     Takes a sequent ``seq`` typing a term ``t`` and introduces
     a new variable ``x`` having ``t`` as :math:`1`-source.
     """
     var = Variable(name, seq.typing.term.dimension + 1)
     if var in seq.context:
         raise DerivationError(
-            "shift rule",
+            "fill rule",
             "Variable {var} already typed in context",
             var=name)
     res = deepcopy(seq)
@@ -890,12 +890,12 @@ def degen(seq: Sequent) -> Sequent:
     return res
 
 
-def degenshift(seq: Sequent, name: str) -> Sequent:
+def degenfill(seq: Sequent, name: str) -> Sequent:
     """
-    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{degen-shift}` rule.
-    Applies the degen and the shift rule consecutively.
+    The :math:`\\textbf{Opt${}^!$}` :math:`\\texttt{degen-fill}` rule.
+    Applies the degen and the fill rule consecutively.
     """
-    return shift(degen(seq), name)
+    return fill(degen(seq), name)
 
 
 def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
@@ -1031,7 +1031,7 @@ class Point(RuleInstance):
     def eval(self) -> Sequent:
         """
         Evaluates the proof tree, in this cases returns the point sequent by
-        calling :func:`NamedOpetope.point`.
+        calling :func:`opetopy.NamedOpetope.point`.
         """
         return point(self.variableName)
 
@@ -1069,15 +1069,15 @@ class Degen(RuleInstance):
     def eval(self) -> Sequent:
         """
         Evaluates this instance of ``degen`` by first evaluating its premise,
-        and then applying :func:`NamedOpetope.degenerate` on the
+        and then applying :func:`opetopy.NamedOpetope.degenerate` on the
         resulting sequent.
         """
         return degen(self.proofTree.eval())
 
 
-class Shift(RuleInstance):
+class Fill(RuleInstance):
     """
-    A class representing an instance of the ``shift`` rule in a proof tree.
+    A class representing an instance of the ``fill`` rule in a proof tree.
     """
 
     proofTree: RuleInstance
@@ -1088,10 +1088,10 @@ class Shift(RuleInstance):
         self.variableName = name
 
     def __repr__(self) -> str:
-        return "Shift({}, {})".format(repr(self.proofTree), self.variableName)
+        return "Fill({}, {})".format(repr(self.proofTree), self.variableName)
 
     def __str__(self) -> str:
-        return "Shift({}, {})".format(str(self.proofTree), self.variableName)
+        return "Fill({}, {})".format(str(self.proofTree), self.variableName)
 
     def _toTex(self) -> str:
         """
@@ -1100,23 +1100,23 @@ class Shift(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
+            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
-        return shift(self.proofTree.eval(), self.variableName)
+        return fill(self.proofTree.eval(), self.variableName)
 
 
-class DegenShift(RuleInstance):
+class DegenFill(RuleInstance):
     """
-    A class representing an instance of the ``degen-shift`` rule in a proof
+    A class representing an instance of the ``degen-fill`` rule in a proof
     tree.
     """
 
     proofTree: RuleInstance
 
     def __init__(self, p: RuleInstance, name: str) -> None:
-        self.proofTree = Shift(Degen(p), name)
+        self.proofTree = Fill(Degen(p), name)
         self.eval()
 
     def __repr__(self) -> str:
@@ -1152,7 +1152,7 @@ class Graft(RuleInstance):
         Creates an instance of the ``graft`` rule at variable ``a``, and plugs
         proof tree ``p1`` on the first premise, and ``p2`` on the second.
 
-        :see: :func:`NamedOpetope.graft`.
+        :see: :func:`opetopy.NamedOpetope.graft`.
         """
         self.proofTree1 = p1
         self.proofTree2 = p2
@@ -1183,7 +1183,7 @@ class Graft(RuleInstance):
     def eval(self) -> Sequent:
         """
         Evaluates this instance of ``graft`` by first evaluating its premises,
-        and then applying :func:`NamedOpetope.graft` at variable
+        and then applying :func:`opetopy.NamedOpetope.graft` at variable
         ``self.variableName`` on the resulting sequents.
         """
         return graft(
@@ -1195,7 +1195,7 @@ def Arrow(pointName: str = "a", arrowName: str = "f") -> RuleInstance:
     Returns the proof tree of the arrow, with cell names as specified in the
     arguments.
     """
-    return Shift(Point(pointName), arrowName)
+    return Fill(Point(pointName), arrowName)
 
 
 def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
@@ -1218,7 +1218,7 @@ def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
             "Parameter n must be >=0 (is {n})",
             n=n)
     elif n == 0:
-        return DegenShift(Point(pointName), cellName)
+        return DegenFill(Point(pointName), cellName)
     else:
         def toTex(i: int) -> str:
             if 0 <= i and i < 10:
@@ -1227,9 +1227,9 @@ def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
                 return "{" + str(i) + "}"
         pointNames = [pointName + "_" + toTex(i) for i in range(1, n + 1)]
         arrowNames = [arrowName + "_" + toTex(i) for i in range(1, n + 1)]
-        arrows = [Shift(Point(pointNames[i - 1]), arrowNames[i - 1])
+        arrows = [Fill(Point(pointNames[i - 1]), arrowNames[i - 1])
                   for i in range(1, n + 1)]
-        res = arrows[0]  # type: Union[Shift, Graft]
+        res = arrows[0]  # type: Union[Fill, Graft]
         for i in range(1, n):
             res = Graft(res, arrows[i], pointNames[i - 1])
-        return Shift(res, cellName)
+        return Fill(res, cellName)

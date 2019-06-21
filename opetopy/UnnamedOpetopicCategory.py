@@ -19,8 +19,8 @@ from opetopy import UnnamedOpetopicSet
 
 class Type(UnnamedOpetopicSet.Type):
     """
-    Similar to :class:`UnnamedOpetopicSet.Type` except information about the
-    universality of faces is also stored/
+    Similar to :class:`opetopy.UnnamedOpetopicSet.Type` except information
+    about the universality of faces is also stored/
     """
 
     sourceUniversal: Set[UnnamedOpetope.Address]
@@ -29,8 +29,8 @@ class Type(UnnamedOpetopicSet.Type):
     def __init__(self, source: UnnamedOpetopicSet.PastingDiagram,
                  target: Optional[UnnamedOpetopicSet.Variable]) -> None:
         """
-        Inits the type as in :class:`UnnamedOpetopicSet.Type.__init__`, and
-        sets all faces (sources and target) as non universal.
+        Inits the type as in :class:`opetopy.UnnamedOpetopicSet.Type.__init__`,
+        and sets all faces (sources and target) as non universal.
         """
         super().__init__(source, target)
         self.sourceUniversal = set()
@@ -82,8 +82,9 @@ class Type(UnnamedOpetopicSet.Type):
 def isTargetUniversal(t: UnnamedOpetopicSet.Type) -> bool:
     """
     This convenient function allows to know if an instance of
-    :class:`UnnamedOpetopicSet.Type` is target universal, regardless of wether
-    or not it is an actual instance of :class:`UnnamedOpetopicCategory.Type`.
+    :class:`opetopy.UnnamedOpetopicSet.Type` is target universal, regardless of
+    wether or not it is an actual instance of
+    :class:`opetopy.UnnamedOpetopicCategory.Type`.
     """
     if isinstance(t, Type):
         return t.isTargetUniversal()
@@ -95,9 +96,9 @@ def isSourceUniversal(t: UnnamedOpetopicSet.Type,
                       addr: UnnamedOpetope.Address) -> bool:
     """
     This convenient function allows to know if an instance of
-    :class:`UnnamedOpetopicSet.Type` is source universal at a given address,
-    regardless of wether or not it is an actual instance of
-    :class:`UnnamedOpetopicCategory.Type`.
+    :class:`opetopy.UnnamedOpetopicSet.Type` is source universal at a given
+    address, regardless of wether or not it is an actual instance of
+    :class:`opetopy.UnnamedOpetopicCategory.Type`.
     """
     if isinstance(t, Type):
         return t.isSourceUniversal(addr)
@@ -108,9 +109,9 @@ def isSourceUniversal(t: UnnamedOpetopicSet.Type,
 def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
           fillerName: str) -> UnnamedOpetopicSet.Sequent:
     """
-    This function takes a :class:`UnnamedOpetopicSet.Sequent`, (recall that
-    the context of a sequent derivable in :math:`\\textbf{OptSet${}^?$}` is
-    a finite opetopic set) typing a pasting diagram :math:`\\mathbf{P}`, and
+    This function takes a :class:`opetopy.UnnamedOpetopicSet.Sequent`, (recall
+    that the context of a sequent derivable in :math:`\\textbf{OptSet${}^?$}`
+    is a finite opetopic set) typing a pasting diagram :math:`\\mathbf{P}`, and
     solves the Kan filler problem by adding
 
     * a new cell :math:`t` with name ``targetName``;
@@ -162,7 +163,7 @@ def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
         else:
             res = UnnamedOpetopicSet.graft(res, Q)
         # Derive t, target of alpha
-        res = UnnamedOpetopicSet.shift(res, u, targetName)
+        res = UnnamedOpetopicSet.fill(res, u, targetName)
 
     # Derive P, source of alpha
     if P.shape.isDegenerate:
@@ -171,7 +172,7 @@ def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
         res = UnnamedOpetopicSet.graft(res, P)
 
     # Derive alpha
-    res = UnnamedOpetopicSet.shift(res, targetName, fillerName)
+    res = UnnamedOpetopicSet.fill(res, targetName, fillerName)
 
     # Mark t as universal in the type of alpha
     rawFillerType = res.context[fillerName].type
@@ -187,10 +188,9 @@ def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
           factorizationName: str,
           fillerName: str) -> UnnamedOpetopicSet.Sequent:
     """
-    From a target universal cell :math:`\\alpha : \\mathbf{P}
-    \\longrightarrow t` (whose name is ``tuCell``), and another cell
-    :math:`\\beta : \\mathbf{P} \\longrightarrow u`, creates the universal
-    factorization.
+    From a target universal cell :math:`\\alpha : \\mathbf{P} \\longrightarrow
+    t` (whose name is ``tuCell``), and another cell :math:`\\beta : \\mathbf{P}
+    \\longrightarrow u`, creates the universal factorization.
     """
     # Inits
     typealpha = seq.context[tuCell].type
@@ -221,25 +221,25 @@ def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
     n = targetalpha.shape.dimension
     res = UnnamedOpetopicSet.graft(
         deepcopy(seq), UnnamedOpetopicSet.pastingDiagram(
-            UnnamedOpetope.Shift(targetalpha.shapeProof),
+            UnnamedOpetope.Fill(targetalpha.shapeProof),
             {
                 UnnamedOpetope.address([], n): targetalpha.name
             }))
-    res = UnnamedOpetopicSet.shift(res, targetbeta.name, factorizationName)
+    res = UnnamedOpetopicSet.fill(res, targetbeta.name, factorizationName)
 
     # Derive the filler
     res = UnnamedOpetopicSet.graft(
         res, UnnamedOpetopicSet.pastingDiagram(
             UnnamedOpetope.Graft(
-                UnnamedOpetope.Shift(
-                    UnnamedOpetope.Shift(targetalpha.shapeProof)),
+                UnnamedOpetope.Fill(
+                    UnnamedOpetope.Fill(targetalpha.shapeProof)),
                 P.shapeProof,
                 UnnamedOpetope.address([[]], n + 1)),
             {
                 UnnamedOpetope.address([], n + 1): factorizationName,
                 UnnamedOpetope.address([[]], n + 1): tuCell
             }))
-    res = UnnamedOpetopicSet.shift(res, cell, fillerName)
+    res = UnnamedOpetopicSet.fill(res, cell, fillerName)
 
     # Mark the filler as target universal and source universal at the facto.
     rawFillerType = res.context[fillerName].type
@@ -261,9 +261,9 @@ def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
     * an address :math:`[p]` (argument ``addr``);
     * a cell :math:`\\alpha : \\forall_{[p]} \\mathbf{P} \\longrightarrow u`
       (with name ``suCellName``);
-    * a cell :math:`\\beta : \\mathbf{P'} \\longrightarrow
-      u` (with name ``cellName``), where :math:`\\mathbf{P'}` is
-      :math:`\\mathbf{P}` except at address :math:`[p]` where it is :math:`s`;
+    * a cell :math:`\\beta : \\mathbf{P'} \\longrightarrow u` (with name
+      ``cellName``), where :math:`\\mathbf{P'}` is :math:`\\mathbf{P}` except
+      at address :math:`[p]` where it is :math:`s`;
 
     applies the source universal property of :math:`\\alpha` at :math:`[p]`
     over :math:`\\beta`, thus creating
@@ -328,32 +328,32 @@ def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
     xishapeproof = seq.context[Q.source(addr)].type.source.shapeProof
     res = UnnamedOpetopicSet.graft(
         seq, UnnamedOpetopicSet.pastingDiagram(
-            UnnamedOpetope.Shift(xishapeproof),
+            UnnamedOpetope.Fill(xishapeproof),
             {
                 UnnamedOpetope.address([], Q.shape.dimension - 1):
                     Q.source(addr)
             }))
-    res = UnnamedOpetopicSet.shift(res, P.source(addr), factorizationName)
+    res = UnnamedOpetopicSet.fill(res, P.source(addr), factorizationName)
 
     # Derive A
     omega = UnnamedOpetope.Graft(
-        UnnamedOpetope.Shift(P.shapeProof),
-        UnnamedOpetope.Shift(xishapeproof),
-        addr.shift())
+        UnnamedOpetope.Fill(P.shapeProof),
+        UnnamedOpetope.Fill(xishapeproof),
+        addr.fill())
     res = UnnamedOpetopicSet.graft(
         res, UnnamedOpetopicSet.pastingDiagram(
             omega,
             {
                 UnnamedOpetope.address([], P.shape.dimension): suCellName,
-                addr.shift(): factorizationName
+                addr.fill(): factorizationName
             }))
-    res = UnnamedOpetopicSet.shift(res, cellName, fillerName)
+    res = UnnamedOpetopicSet.fill(res, cellName, fillerName)
 
     # Mark A as source universal at xi and target universal
     rawFillerType = res.context[fillerName].type
     fillerType = Type(rawFillerType.source, rawFillerType.target)
     fillerType.targetUniversal = True
-    fillerType.sourceUniversal.add(addr.shift())
+    fillerType.sourceUniversal.add(addr.fill())
     res.context[fillerName].type = fillerType
 
     # Done
@@ -364,8 +364,8 @@ def tclose(seq: UnnamedOpetopicSet.Sequent,
            tuCell: str) -> UnnamedOpetopicSet.Sequent:
     """
     From a target universal cell :math:`A : \\mathbf{P} \\longrightarrow
-    \\forall u` such that all its faces are target universal but one,
-    turns that one target universal as well.
+    \\forall u` such that all its faces are target universal but one, turns
+    that one target universal as well.
     """
 
     # Inits
@@ -465,8 +465,7 @@ class TFill(UnnamedOpetopicSet.RuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
-        instead.
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex` instead.
         """
         return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{tfill}}\n\t\\UnaryInfC{$" + \
@@ -507,8 +506,7 @@ class TUniv(UnnamedOpetopicSet.RuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
-        instead.
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex` instead.
         """
         return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{tuniv-$" + self.tuCellName + "$/$" + \
@@ -553,8 +551,7 @@ class SUniv(UnnamedOpetopicSet.RuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
-        instead.
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex` instead.
         """
         return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{suniv-$" + self.suCellName + "$/$" + \
@@ -590,8 +587,7 @@ class TClose(UnnamedOpetopicSet.RuleInstance):
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
-        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex`
-        instead.
+        directly, use :meth:`UnnamedOpetopicSet.RuleInstance.toTex` instead.
         """
         return self.proofTree._toTex() + \
             "\n\t\\RightLabel{\\texttt{tclose-$" + self.tuCellName + \
