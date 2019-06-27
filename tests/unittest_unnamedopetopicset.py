@@ -21,7 +21,7 @@ class Test_UnnamedOpetopicSet_Variable(unittest.TestCase):
         self.i3 = UnnamedOpetopicSet.Variable(
             "i3", UnnamedOpetope.OpetopicInteger(3))
         self.c = UnnamedOpetopicSet.Variable("c", UnnamedOpetope.Graft(
-            UnnamedOpetope.Fill(UnnamedOpetope.OpetopicInteger(2)),
+            UnnamedOpetope.Shift(UnnamedOpetope.OpetopicInteger(2)),
             UnnamedOpetope.OpetopicInteger(2),
             UnnamedOpetope.Address.fromList([['*']], 2)))
 
@@ -122,12 +122,12 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
             UnnamedOpetope.OpetopicInteger(2),
             {
                 UnnamedOpetope.Address.epsilon(1): "a",
-                UnnamedOpetope.Address.epsilon(0).fill(): "b"
+                UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
         with self.assertRaises(DerivationError):
             d[UnnamedOpetope.Address.epsilon(0)]
         self.assertEqual(p[UnnamedOpetope.Address.epsilon(1)], "a")
-        self.assertEqual(p[UnnamedOpetope.Address.epsilon(0).fill()], "b")
+        self.assertEqual(p[UnnamedOpetope.Address.epsilon(0).shift()], "b")
 
     def test_degeneratePastingDiagram(self):
         UnnamedOpetopicSet.PastingDiagram.degeneratePastingDiagram(
@@ -144,7 +144,7 @@ class Test_UnnamedOpetopicSet_PastingDiagram(unittest.TestCase):
             UnnamedOpetope.OpetopicInteger(2),
             {
                 UnnamedOpetope.Address.epsilon(1): "a",
-                UnnamedOpetope.Address.epsilon(0).fill(): "b"
+                UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
         with self.assertRaises(DerivationError):
             UnnamedOpetopicSet.PastingDiagram.nonDegeneratePastingDiagram(
@@ -164,7 +164,7 @@ class Test_UnnamedOpetopicSet_Type(unittest.TestCase):
             UnnamedOpetope.OpetopicInteger(2),
             {
                 UnnamedOpetope.Address.epsilon(1): "a",
-                UnnamedOpetope.Address.epsilon(0).fill(): "b"
+                UnnamedOpetope.Address.epsilon(0).shift(): "b"
             })
 
     def test___init__(self):
@@ -188,7 +188,7 @@ class Test_UnnamedOpetopicSet_Typing(unittest.TestCase):
                 UnnamedOpetope.OpetopicInteger(2),
                 {
                     UnnamedOpetope.Address.epsilon(1): "a",
-                    UnnamedOpetope.Address.epsilon(0).fill(): "b"
+                    UnnamedOpetope.Address.epsilon(0).shift(): "b"
                 }),
             UnnamedOpetopicSet.Variable("t", UnnamedOpetope.Arrow()))
 
@@ -232,7 +232,7 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
                     UnnamedOpetope.OpetopicInteger(2),
                     {
                         UnnamedOpetope.Address.epsilon(1): "x",
-                        UnnamedOpetope.Address.epsilon(0).fill(): "y"
+                        UnnamedOpetope.Address.epsilon(0).shift(): "y"
                     }),
                 UnnamedOpetopicSet.Variable("z", UnnamedOpetope.Arrow())))
         self.ctx = UnnamedOpetopicSet.Context() + self.p + self.a + self.c
@@ -260,7 +260,7 @@ class Test_UnnamedOpetopicSet_Context(unittest.TestCase):
             self.ctx.source("c", UnnamedOpetope.Address.epsilon(1)),
             "x")
         self.assertEqual(
-            self.ctx.source("c", UnnamedOpetope.Address.epsilon(0).fill()),
+            self.ctx.source("c", UnnamedOpetope.Address.epsilon(0).shift()),
             "y")
 
     def test_target(self):
@@ -329,10 +329,10 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                     UnnamedOpetope.Address.epsilon(1): "ac"
                 }))
         with self.assertRaises(DerivationError):
-            UnnamedOpetopicSet.fill(s, "ab", "A")
+            UnnamedOpetopicSet.shift(s, "ab", "A")
         with self.assertRaises(DerivationError):
-            UnnamedOpetopicSet.fill(s, "bc", "A")
-        UnnamedOpetopicSet.fill(s, "ac", "A")
+            UnnamedOpetopicSet.shift(s, "bc", "A")
+        UnnamedOpetopicSet.shift(s, "ac", "A")
 
     def test_graft(self):
         with self.assertRaises(DerivationError):
@@ -356,7 +356,7 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                     UnnamedOpetope.OpetopicInteger(2),
                     {
                         UnnamedOpetope.Address.epsilon(1): "cd",
-                        UnnamedOpetope.Address.epsilon(0).fill(): "ab"
+                        UnnamedOpetope.Address.epsilon(0).shift(): "ab"
                     }))
         # Correct grafting: ab on top of bc
         UnnamedOpetopicSet.graft(
@@ -365,7 +365,7 @@ class Test_UnnamedOpetopicSet_InferenceRules(unittest.TestCase):
                 UnnamedOpetope.OpetopicInteger(2),
                 {
                     UnnamedOpetope.Address.epsilon(1): "bc",
-                    UnnamedOpetope.Address.epsilon(0).fill(): "ab"
+                    UnnamedOpetope.Address.epsilon(0).shift(): "ab"
                 }))
 
     def test_point(self):

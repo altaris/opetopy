@@ -114,17 +114,17 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
 
     def test_shift(self):
         with self.assertRaises(DerivationError):
-            self.a.fill(-1)
-        self.assertEqual(self.a.fill(0), self.a)
-        self.assertEqual(self.b.fill(0), self.b)
-        self.assertEqual(self.c.fill(0), self.c)
-        self.assertEqual(self.d.fill(0), self.d)
-        self.assertEqual(self.e.fill(0), self.e)
-        self.assertEqual(self.a.fill(), self.c)
-        self.assertEqual(self.a.fill(1), self.c)
+            self.a.shift(-1)
+        self.assertEqual(self.a.shift(0), self.a)
+        self.assertEqual(self.b.shift(0), self.b)
+        self.assertEqual(self.c.shift(0), self.c)
+        self.assertEqual(self.d.shift(0), self.d)
+        self.assertEqual(self.e.shift(0), self.e)
+        self.assertEqual(self.a.shift(), self.c)
+        self.assertEqual(self.a.shift(1), self.c)
         self.assertEqual(
-            (self.a.fill(2) + (self.a.fill(1) + self.a)) *
-            self.b.fill(1),
+            (self.a.shift(2) + (self.a.shift(1) + self.a)) *
+            self.b.shift(1),
             self.e
         )
 
@@ -137,8 +137,8 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
             UnnamedOpetope.Address.substitution(self.e, self.b, self.b)
         self.assertEqual(UnnamedOpetope.Address.substitution(
             self.e,
-            UnnamedOpetope.Address.epsilon(1).fill(),
-            UnnamedOpetope.Address.epsilon(1).fill() +
+            UnnamedOpetope.Address.epsilon(1).shift(),
+            UnnamedOpetope.Address.epsilon(1).shift() +
             UnnamedOpetope.Address.epsilon(1)),
             self.e
         )
@@ -147,7 +147,7 @@ class Test_UnnamedOpetope_Address(unittest.TestCase):
                          self.d)
         self.assertEqual(UnnamedOpetope.Address.substitution(
             self.e,
-            UnnamedOpetope.Address.epsilon(0).fill(2),
+            UnnamedOpetope.Address.epsilon(0).shift(2),
             self.e
         ),
             UnnamedOpetope.Address.fromList(
@@ -170,7 +170,7 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
             (UnnamedOpetope.Address.epsilon(2),
                 UnnamedOpetope.Address.fromList(['*'], 1))
         self.f = UnnamedOpetope.Context(3) + \
-            (UnnamedOpetope.Address.epsilon(1).fill(),
+            (UnnamedOpetope.Address.epsilon(1).shift(),
                 UnnamedOpetope.Address.epsilon(1))
 
     def test___add__(self):
@@ -188,7 +188,7 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
                       UnnamedOpetope.Address.epsilon(1))
         # Node already present
         with self.assertRaises(DerivationError):
-            self.e + (UnnamedOpetope.Address.epsilon(1).fill(),
+            self.e + (UnnamedOpetope.Address.epsilon(1).shift(),
                       UnnamedOpetope.Address.fromList(['*'], 1))
         self.assertEqual(
             self.b + (UnnamedOpetope.Address.epsilon(1),
@@ -201,7 +201,7 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
             self.d
         )
         self.assertEqual(
-            self.e + (UnnamedOpetope.Address.epsilon(1).fill(),
+            self.e + (UnnamedOpetope.Address.epsilon(1).shift(),
                       UnnamedOpetope.Address.epsilon(1)),
             self.f + (UnnamedOpetope.Address.epsilon(2),
                       UnnamedOpetope.Address.fromList(['*'], 1))
@@ -247,7 +247,7 @@ class Test_UnnamedOpetope_Context(unittest.TestCase):
         self.assertEqual(self.e - UnnamedOpetope.Address.epsilon(2),
                          UnnamedOpetope.Context(3))
         self.assertEqual(
-            self.f - UnnamedOpetope.Address.epsilon(1).fill(),
+            self.f - UnnamedOpetope.Address.epsilon(1).shift(),
             UnnamedOpetope.Context(3))
 
 
@@ -500,15 +500,15 @@ class Test_UnnamedOpetope_InferenceRules(unittest.TestCase):
                 UnnamedOpetope.Preopetope.point()))
         self.assertEqual(
             s.target,
-            UnnamedOpetope.fill(UnnamedOpetope.point()).source)
+            UnnamedOpetope.shift(UnnamedOpetope.point()).source)
 
     def test_shift(self):
-        s1 = UnnamedOpetope.fill(UnnamedOpetope.point())
-        s2 = UnnamedOpetope.fill(s1)
+        s1 = UnnamedOpetope.shift(UnnamedOpetope.point())
+        s2 = UnnamedOpetope.shift(s1)
         self.assertEqual(
             s2.context,
             UnnamedOpetope.Context(2) +
-            (UnnamedOpetope.Address.epsilon(0).fill(),
+            (UnnamedOpetope.Address.epsilon(0).shift(),
              UnnamedOpetope.Address.epsilon(0)))
         p = UnnamedOpetope.Preopetope.point()
         a = UnnamedOpetope.Preopetope(1)
@@ -523,7 +523,7 @@ class Test_UnnamedOpetope_InferenceRules(unittest.TestCase):
     def test_graft(self):
         i2 = UnnamedOpetope.OpetopicInteger(2).eval()
         i3 = UnnamedOpetope.OpetopicInteger(3).eval()
-        s = UnnamedOpetope.fill(i3)
+        s = UnnamedOpetope.shift(i3)
         s = UnnamedOpetope.graft(
             s, i2, UnnamedOpetope.Address.fromList([['*']], 2))
         s = UnnamedOpetope.graft(
@@ -577,13 +577,13 @@ class Test_UnnamedOpetope_Utils(unittest.TestCase):
         for i in range(5):
             self.assertEqual(
                 UnnamedOpetope.OpetopicTree([None] * i).eval(),
-                UnnamedOpetope.Fill(UnnamedOpetope.OpetopicInteger(i)).eval())
+                UnnamedOpetope.Shift(UnnamedOpetope.OpetopicInteger(i)).eval())
         for i in range(5):
             tree = [None] * i + [[None]] + [None] * (4 - i)
             self.assertEqual(
                 UnnamedOpetope.OpetopicTree(tree).eval(),
                 UnnamedOpetope.Graft(
-                    UnnamedOpetope.Fill(UnnamedOpetope.OpetopicInteger(5)),
+                    UnnamedOpetope.Shift(UnnamedOpetope.OpetopicInteger(5)),
                     UnnamedOpetope.OpetopicInteger(1),
                     UnnamedOpetope.address([['*'] * i], 2)).eval())
 

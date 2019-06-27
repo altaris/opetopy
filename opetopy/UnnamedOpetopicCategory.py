@@ -20,7 +20,7 @@ from opetopy import UnnamedOpetopicSet
 class Type(UnnamedOpetopicSet.Type):
     """
     Similar to :class:`opetopy.UnnamedOpetopicSet.Type` except information
-    about the universality of faces is also stored/
+    about the universality of faces is also stored.
     """
 
     sourceUniversal: Set[UnnamedOpetope.Address]
@@ -163,7 +163,7 @@ def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
         else:
             res = UnnamedOpetopicSet.graft(res, Q)
         # Derive t, target of alpha
-        res = UnnamedOpetopicSet.fill(res, u, targetName)
+        res = UnnamedOpetopicSet.shift(res, u, targetName)
 
     # Derive P, source of alpha
     if P.shape.isDegenerate:
@@ -172,7 +172,7 @@ def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
         res = UnnamedOpetopicSet.graft(res, P)
 
     # Derive alpha
-    res = UnnamedOpetopicSet.fill(res, targetName, fillerName)
+    res = UnnamedOpetopicSet.shift(res, targetName, fillerName)
 
     # Mark t as universal in the type of alpha
     rawFillerType = res.context[fillerName].type
@@ -221,25 +221,25 @@ def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
     n = targetalpha.shape.dimension
     res = UnnamedOpetopicSet.graft(
         deepcopy(seq), UnnamedOpetopicSet.pastingDiagram(
-            UnnamedOpetope.Fill(targetalpha.shapeProof),
+            UnnamedOpetope.Shift(targetalpha.shapeProof),
             {
                 UnnamedOpetope.address([], n): targetalpha.name
             }))
-    res = UnnamedOpetopicSet.fill(res, targetbeta.name, factorizationName)
+    res = UnnamedOpetopicSet.shift(res, targetbeta.name, factorizationName)
 
     # Derive the filler
     res = UnnamedOpetopicSet.graft(
         res, UnnamedOpetopicSet.pastingDiagram(
             UnnamedOpetope.Graft(
-                UnnamedOpetope.Fill(
-                    UnnamedOpetope.Fill(targetalpha.shapeProof)),
+                UnnamedOpetope.Shift(
+                    UnnamedOpetope.Shift(targetalpha.shapeProof)),
                 P.shapeProof,
                 UnnamedOpetope.address([[]], n + 1)),
             {
                 UnnamedOpetope.address([], n + 1): factorizationName,
                 UnnamedOpetope.address([[]], n + 1): tuCell
             }))
-    res = UnnamedOpetopicSet.fill(res, cell, fillerName)
+    res = UnnamedOpetopicSet.shift(res, cell, fillerName)
 
     # Mark the filler as target universal and source universal at the facto.
     rawFillerType = res.context[fillerName].type
@@ -328,32 +328,32 @@ def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
     xishapeproof = seq.context[Q.source(addr)].type.source.shapeProof
     res = UnnamedOpetopicSet.graft(
         seq, UnnamedOpetopicSet.pastingDiagram(
-            UnnamedOpetope.Fill(xishapeproof),
+            UnnamedOpetope.Shift(xishapeproof),
             {
                 UnnamedOpetope.address([], Q.shape.dimension - 1):
                     Q.source(addr)
             }))
-    res = UnnamedOpetopicSet.fill(res, P.source(addr), factorizationName)
+    res = UnnamedOpetopicSet.shift(res, P.source(addr), factorizationName)
 
     # Derive A
     omega = UnnamedOpetope.Graft(
-        UnnamedOpetope.Fill(P.shapeProof),
-        UnnamedOpetope.Fill(xishapeproof),
-        addr.fill())
+        UnnamedOpetope.Shift(P.shapeProof),
+        UnnamedOpetope.Shift(xishapeproof),
+        addr.shift())
     res = UnnamedOpetopicSet.graft(
         res, UnnamedOpetopicSet.pastingDiagram(
             omega,
             {
                 UnnamedOpetope.address([], P.shape.dimension): suCellName,
-                addr.fill(): factorizationName
+                addr.shift(): factorizationName
             }))
-    res = UnnamedOpetopicSet.fill(res, cellName, fillerName)
+    res = UnnamedOpetopicSet.shift(res, cellName, fillerName)
 
     # Mark A as source universal at xi and target universal
     rawFillerType = res.context[fillerName].type
     fillerType = Type(rawFillerType.source, rawFillerType.target)
     fillerType.targetUniversal = True
-    fillerType.sourceUniversal.add(addr.fill())
+    fillerType.sourceUniversal.add(addr.shift())
     res.context[fillerName].type = fillerType
 
     # Done

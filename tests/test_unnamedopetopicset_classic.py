@@ -2,11 +2,11 @@ import sys
 sys.path.insert(0, "../")
 
 from opetopy.UnnamedOpetopicSet import Graft, pastingDiagram, Point, \
-    RuleInstance, Fill
+    RuleInstance, Shift
 from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger, \
     OpetopicTree
 from opetopy.UnnamedOpetope import Graft as OptGraft
-from opetopy.UnnamedOpetope import Fill as OptShift
+from opetopy.UnnamedOpetope import Shift as OptShift
 
 # Derivation of ω
 omega = OptGraft(
@@ -28,7 +28,7 @@ classic = Graft(
         {
             address([], 0): "a"
         }))
-classic = Fill(classic, "a", "f")
+classic = Shift(classic, "a", "f")
 
 # Derivation of α
 classic = Graft(
@@ -39,7 +39,7 @@ classic = Graft(
             address([], 1): "f",
             address(['*']): "f"
         }))
-classic = Fill(classic, "f", "α")
+classic = Shift(classic, "f", "α")
 
 # Derivation of β
 classic = Graft(
@@ -51,7 +51,7 @@ classic = Graft(
             address(['*']): "f",
             address(['*', '*']): "f"
         }))
-classic = Fill(classic, "f", "β")
+classic = Shift(classic, "f", "β")
 
 # Derivation of A
 classic = Graft(
@@ -62,7 +62,7 @@ classic = Graft(
             address([], 2): "α",
             address([['*']]): "α"
         }))
-classic = Fill(classic, "β", "A")
+classic = Shift(classic, "β", "A")
 
 print(classic.eval())
 print()

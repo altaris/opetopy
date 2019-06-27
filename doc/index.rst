@@ -100,7 +100,7 @@ Each implement the following:
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
 |                                 | :math:`\texttt{degen}`       | :func:`opetopy.UnnamedOpetope.degen`           | :class:`opetopy.UnnamedOpetope.Degen`           |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
-|                                 | :math:`\texttt{fill}`        | :func:`opetopy.UnnamedOpetope.fill`            | :class:`opetopy.UnnamedOpetope.Fill`            |
+|                                 | :math:`\texttt{shift}`       | :func:`opetopy.UnnamedOpetope.shift`           | :class:`opetopy.UnnamedOpetope.Shift`           |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
 |                                 | :math:`\texttt{graft}`       | :func:`opetopy.UnnamedOpetope.graft`           | :class:`opetopy.UnnamedOpetope.Graft`           |
 +---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
@@ -110,7 +110,7 @@ Each implement the following:
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
 |                                 | :math:`\texttt{graft}`       | :func:`opetopy.UnnamedOpetopicSet.graft`       | :class:`opetopy.UnnamedOpetopicSet.Graft`       |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
-|                                 | :math:`\texttt{fill}`        | :func:`opetopy.UnnamedOpetopicSet.fill`        | :class:`opetopy.UnnamedOpetopicSet.Fill`        |
+|                                 | :math:`\texttt{shift}`       | :func:`opetopy.UnnamedOpetopicSet.shift`       | :class:`opetopy.UnnamedOpetopicSet.Shift`       |
 +---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
 | :math:`\textbf{OptCat${}^?$}`   | :math:`\texttt{tfill}`       | :func:`opetopy.UnnamedOpetopicCategory.tfill`  | :class:`opetopy.UnnamedOpetopicCategory.TFill`  |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
@@ -139,7 +139,7 @@ has the following expression:
 .. code-block:: python
 
     from opetopy.UnnamedOpetope import *
-    fill(point())
+    shift(point())
 
 
 which indeed evaluates without raising exceptions.
@@ -154,7 +154,7 @@ proof tree described above is written as:
 .. code-block:: python
 
     from opetopy.UnnamedOpetope import *
-    proof = Fill(Point())
+    proof = Shift(Point())
 
 
 and evaluated as:

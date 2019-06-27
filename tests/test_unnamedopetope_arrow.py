@@ -1,9 +1,9 @@
 import sys
 sys.path.insert(0, "../")
 
-from opetopy.UnnamedOpetope import Arrow, Point, Fill
+from opetopy.UnnamedOpetope import Arrow, Point, Shift
 
-ar = Fill(Point())
+ar = Shift(Point())
 
 # Faster way:
 # >>> ar = Arrow()

@@ -212,28 +212,28 @@ class Address:
                 "Address creation",
                 "Cannot create address from an empty list of addresses")
         else:
-            a = l[0].fill()
+            a = l[0].shift()
             for b in l[1:]:
                 a += b
             return a
 
-    def fill(self, n: int = 1) -> 'Address':
+    def shift(self, n: int = 1) -> 'Address':
         """
         Returns the curent address shifted by :math:`n` dimensions.
 
         Example:
-          :math:`[[][*]]` ``.fill(2)`` is
+          :math:`[[][*]]` ``.shift(2)`` is
           :math:`[[[[][*]]]]`
         """
         if n < 0:
             raise DerivationError(
-                "Address fill",
-                "Fill exponent must be >= 0 (is {dim})",
+                "Address shift",
+                "Shift exponent must be >= 0 (is {dim})",
                 dim=n)
         elif n == 0:
             return self
         else:
-            return Address.epsilon(self.dimension + n) + self.fill(n - 1)
+            return Address.epsilon(self.dimension + n) + self.shift(n - 1)
 
     @staticmethod
     def substitution(a: 'Address', b: 'Address', c: 'Address') -> 'Address':
@@ -820,9 +820,9 @@ def degen(seq: Sequent) -> Sequent:
     )
 
 
-def fill(seq: Sequent) -> Sequent:
+def shift(seq: Sequent) -> Sequent:
     """
-    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{fill}` rule.
+    The :math:`\\textbf{Opt${}^?$}` :math:`\\texttt{shift}` rule.
     From an :math:`n`-opetope :math:`\\omega`, creates the
     globular :math:`(n+1)`-opetope
     :math:`\\lbrace []: \\omega`.
@@ -830,7 +830,7 @@ def fill(seq: Sequent) -> Sequent:
     n = seq.source.dimension
     ctx = Context(n + 1)
     for a in seq.source.nodeAddresses():
-        ctx += (a.fill(), a)
+        ctx += (a.shift(), a)
 
     return Sequent(
         ctx,
@@ -956,25 +956,25 @@ class Degen(RuleInstance):
         return degen(self.proofTree.eval())
 
 
-class Fill(RuleInstance):
+class Shift(RuleInstance):
     """
-    A class representing an instance of the ``fill`` rule in a proof tree.
+    A class representing an instance of the ``shift`` rule in a proof tree.
     """
 
     proofTree: RuleInstance
 
     def __init__(self, p: RuleInstance) -> None:
         """
-        Creates an instance of the ``fill`` rule and plugs proof tree ``p``
+        Creates an instance of the ``shift`` rule and plugs proof tree ``p``
         on the unique premise.
         """
         self.proofTree = p
 
     def __repr__(self):
-        return "Fill({})".format(repr(self.proofTree))
+        return "Shift({})".format(repr(self.proofTree))
 
     def __str__(self):
-        return "Fill({})".format(str(self.proofTree))
+        return "Shift({})".format(str(self.proofTree))
 
     def _toTex(self) -> str:
         """
@@ -983,16 +983,16 @@ class Fill(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
+            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
         """
-        Evaluates this instance of ``fill`` by first evaluating its premise,
-        and then applying :func:`opetopy.UnnamedOpetope.fill` on the resulting
+        Evaluates this instance of ``shift`` by first evaluating its premise,
+        and then applying :func:`opetopy.UnnamedOpetope.shift` on the resulting
         sequent.
         """
-        return fill(self.proofTree.eval())
+        return shift(self.proofTree.eval())
 
 
 class Graft(RuleInstance):
@@ -1109,7 +1109,7 @@ def Arrow() -> RuleInstance:
     """
     Returns the proof tree of the arrow.
     """
-    return Fill(Point())
+    return Shift(Point())
 
 
 def OpetopicInteger(n: int) -> RuleInstance:
@@ -1123,7 +1123,7 @@ def OpetopicInteger(n: int) -> RuleInstance:
     elif n == 0:
         return Degen(Point())
     elif n == 1:
-        return Fill(Arrow())
+        return Shift(Arrow())
     else:
         return Graft(OpetopicInteger(n - 1), Arrow(), address(['*'] * (n - 1)))
 
@@ -1159,7 +1159,7 @@ def OpetopicTree(tree: Optional[List[Any]]) -> RuleInstance:
     else:
         d = toDict(tree)
         sa = sorted(d.keys())
-        res = Fill(d[address([], 2)])  # type: RuleInstance
+        res = Shift(d[address([], 2)])  # type: RuleInstance
         for i in range(1, len(sa)):
             res = Graft(res, d[sa[i]], sa[i])
         return res
@@ -1219,7 +1219,7 @@ def ProofTree(p: Dict[Optional[Address], Dict]) -> RuleInstance:
                 "Proof tree of a preopetope",
                 "Argument is not an opetope: doesn't contain address {e}. {p}",
                 e=Address.epsilon(a.dimension), p=p)
-        res = Fill(ProofTree(p[sa[0]]))  # type: RuleInstance
+        res = Shift(ProofTree(p[sa[0]]))  # type: RuleInstance
         for i in range(1, len(sa)):
             res = Graft(res, ProofTree(p[sa[i]]), sa[i])
         res.eval()

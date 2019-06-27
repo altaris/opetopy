@@ -587,13 +587,13 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
     return res
 
 
-def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
+def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
     """
-    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{fill}` rule.
+    The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{shift}` rule.
     """
     if seq.pastingDiagram is None:
         raise DerivationError(
-            "fill rule",
+            "shift rule",
             "Sequent must have a pasting diagram")
     P = seq.pastingDiagram
     omega = P.shape
@@ -604,19 +604,19 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
     Q = seq.context[targetName].type.source
     if x.shape != P.shapeTarget():
         raise DerivationError(
-            "fill rule",
+            "shift rule",
             "Target variable {var} has shape {shape} should have {should}",
             var=repr(x), shape=repr(x.shape),
             should=repr(P.shapeTarget()))
     if omega.isDegenerate:
         if a is None:  # x is a point
-            raise RuntimeError("[fill rule] Variable {x} has a degenerate "
+            raise RuntimeError("[shift rule] Variable {x} has a degenerate "
                                "shape but no target. In valid derivations, "
                                "this should not happen")
         # [Degen] axiom
         if Q.nodes != {UnnamedOpetope.Address.epsilon(n - 2): a.name}:
             raise DerivationError(
-                "fill rule",
+                "shift rule",
                 "Target variable {var}'s source is expected to be globular at "
                 "{var}'s target",
                 var=repr(x))
@@ -626,7 +626,7 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
         if a is None:  # x is a point
             if seq.context[r].type.target is not None:  # r must be a point
                 raise DerivationError(
-                    "fill rule",
+                    "shift rule",
                     "Axiom [Glob1] is not satisfied: variable {x} is a point, "
                     "should have target {should}",
                     x=repr(x), should=repr(seq.context[r].type.target))
@@ -634,7 +634,7 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
             b = seq.context.target(r)
             if b != a.name:
                 raise DerivationError(
-                    "fill rule",
+                    "shift rule",
                     "Axiom [Glob1] is not satisfied: variable {x} has target "
                     "{a}, should have {should}",
                     x=repr(x), a=a.name, should=repr(b))
@@ -645,7 +645,7 @@ def fill(seq: Sequent, targetName: str, name: str) -> Sequent:
             sx = seq.context.source(x.name, readdress(l))
             if sP != sx:
                 raise DerivationError(
-                    "fill rule",
+                    "shift rule",
                     "Axiom [Glob2] is not satisfied: variable {x} has {addr} "
                     "source {sx}, should have {should}",
                     x=repr(x), addr=repr(readdress(l)),
@@ -797,9 +797,9 @@ class Graft(RuleInstance):
         return graft(self.proofTree.eval(), self.pastingDiagram)
 
 
-class Fill(RuleInstance):
+class Shift(RuleInstance):
     """
-    A class representing an instance of the :math:`\\texttt{fill}` rule in a
+    A class representing an instance of the :math:`\\texttt{shift}` rule in a
     proof tree.
     """
 
@@ -813,10 +813,10 @@ class Fill(RuleInstance):
         self.targetName = targetName
 
     def __repr__(self) -> str:
-        return "Fill(" + repr(self.proofTree) + "," + self.name + ")"
+        return "Shift(" + repr(self.proofTree) + "," + self.name + ")"
 
     def __str__(self) -> str:
-        return "Fill(" + str(self.proofTree) + ", " + self.name + ")"
+        return "Shift(" + str(self.proofTree) + ", " + self.name + ")"
 
     def _toTex(self) -> str:
         """
@@ -825,14 +825,14 @@ class Fill(RuleInstance):
         instead.
         """
         return self.proofTree._toTex() + \
-            "\n\t\\RightLabel{\\texttt{fill}}\n\t\\UnaryInfC{$" + \
+            "\n\t\\RightLabel{\\texttt{shift}}\n\t\\UnaryInfC{$" + \
             self.eval().toTex() + "$}"
 
     def eval(self) -> Sequent:
         """
         Evaluates the proof tree.
         """
-        return fill(self.proofTree.eval(), self.targetName, self.name)
+        return shift(self.proofTree.eval(), self.targetName, self.name)
 
 
 def pastingDiagram(shapeProof: UnnamedOpetope.RuleInstance,

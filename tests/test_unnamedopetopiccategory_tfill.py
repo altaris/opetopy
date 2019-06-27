@@ -3,7 +3,7 @@ sys.path.insert(0, "../")
 
 from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger
 from opetopy.UnnamedOpetopicSet import Graft, pastingDiagram, Point, \
-    RuleInstance, Fill
+    RuleInstance, Shift
 from opetopy.UnnamedOpetopicCategory import TFill
 
 # Derive points
@@ -16,7 +16,7 @@ proof = Graft(
         {
             address('*'): "a"
         }))
-proof = Fill(proof, "b", "f")
+proof = Shift(proof, "b", "f")
 
 # Derive g
 proof = Graft(
@@ -25,7 +25,7 @@ proof = Graft(
         {
             address('*'): "b"
         }))
-proof = Fill(proof, "c", "g")
+proof = Shift(proof, "c", "g")
 
 # Derive the composition cells
 proof = Graft(

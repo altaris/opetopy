@@ -1,10 +1,10 @@
 import sys
 sys.path.insert(0, "../")
 
-from opetopy.UnnamedOpetope import address, Graft, OpetopicInteger, OpetopicTree, Fill
+from opetopy.UnnamedOpetope import address, Graft, OpetopicInteger, OpetopicTree, Shift
 
 classic = Graft(
-    Fill(OpetopicInteger(2)),
+    Shift(OpetopicInteger(2)),
     OpetopicInteger(2),
     address([['*']])
 )
