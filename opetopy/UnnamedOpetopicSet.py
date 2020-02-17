@@ -447,7 +447,7 @@ class Context(Set[Typing]):
         """
         variables = []  # type: List[str]
         for t in self:
-            variables += t.variable.name
+            variables.append(t.variable.name)
         return variables
 
 
