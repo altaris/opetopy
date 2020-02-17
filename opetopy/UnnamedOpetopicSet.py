@@ -9,6 +9,7 @@
 """
 
 from copy import deepcopy
+from operator import attrgetter
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 from opetopy.common import *
@@ -51,6 +52,13 @@ class Variable:
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def dimension(self) -> int:
+        """
+        Convenience function that returns the dimension of a variable.
+        """
+        return self.shape.dimension
 
     @property
     def shape(self) -> UnnamedOpetope.Preopetope:
@@ -411,7 +419,7 @@ class Context(Set[Typing]):
         return str(self)
 
     def __str__(self) -> str:
-        return ", ".join([str(self[v]) for v in sorted(self.variableNames())])
+        return ", ".join([str(self[v]) for v in self.variableNames()])
 
     def source(self, name: str, addr: UnnamedOpetope.Address) -> str:
         """
@@ -446,7 +454,8 @@ class Context(Set[Typing]):
         Return a list containing all variable names typed in this context.
         """
         variables = []  # type: List[str]
-        for t in self:
+        for t in sorted(self,
+                key=attrgetter('variable.dimension', 'variable.name')):
             variables.append(t.variable.name)
         return variables
 
@@ -486,10 +495,10 @@ class Sequent:
         pd = ""
         if self.pastingDiagram is not None:
             pd = str(self.pastingDiagram)
-        res = "ctx = {"
-        for v in sorted(self.context.variableNames()):
+        res = "ctx ="
+        for v in self.context.variableNames():
             res += "\n    " + str(self.context[v])
-        res += "\npd =" + pd
+        res += "\npd =\n    " + pd
         return res
 
     def toTex(self) -> str:
