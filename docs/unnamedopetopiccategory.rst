@@ -11,7 +11,7 @@ This part of ``opetopy`` implements finite opetopic categories as defined in [Ba
 Examples
 ========
 
-.. _uoptcat-ex-fill-tgt:
+.. _uoptcat-ex-shift-tgt:
 
 Filler of target horn
 ---------------------
@@ -35,7 +35,7 @@ Target universal property
 
 In this example, we have two cells of shape :math:`\mathbf{0}`:
 
-* :math:`\delta`, degenerate at :math:`a` with target :math:`f`, constructed via rules :math:`\texttt{degen}` and :math:`\texttt{fill}` of system :math:`\textbf{OptSet${}^?$}`;
+* :math:`\delta`, degenerate at :math:`a` with target :math:`f`, constructed via rules :math:`\texttt{degen}` and :math:`\texttt{shift}` of system :math:`\textbf{OptSet${}^?$}`;
 * :math:`\gamma`, constructed by filling the empty pasting diagram at :math:`a`, with universal target :math:`g`.
 
 We then apply the target universal property of :math:`\gamma` over :math:`\delta` to get a factorization cell :math:`\xi` and a filler :math:`A`.
@@ -53,7 +53,7 @@ Source universal property
 -------------------------
 
 
-This example is a continuation of that presented in :ref:`uoptcat-ex-fill-tgt`. We derive the following additional cells:
+This example is a continuation of that presented in :ref:`uoptcat-ex-shift-tgt`. We derive the following additional cells:
 
 * :math:`i`, parallel to :math:`h` (the composition of arrows :math:`f` and :math:`g`);
 * :math:`\beta`, from the :math:`fg` horn to :math:`i`.

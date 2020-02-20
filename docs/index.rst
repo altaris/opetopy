@@ -66,9 +66,9 @@ Each implement the following:
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
 |                                 | :math:`\texttt{degen}`       | :func:`opetopy.NamedOpetope.degen`             | :class:`opetopy.NamedOpetope.Degen`             |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
-|                                 | :math:`\texttt{degen-fill}`  | :func:`opetopy.NamedOpetope.degenfill`         | :class:`opetopy.NamedOpetope.DegenFill`         |
+|                                 | :math:`\texttt{degen-shift}` | :func:`opetopy.NamedOpetope.degenfill`         | :class:`opetopy.NamedOpetope.DegenFill`         |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
-|                                 | :math:`\texttt{fill}`        | :func:`opetopy.NamedOpetope.fill`              | :class:`opetopy.NamedOpetope.Fill`              |
+|                                 | :math:`\texttt{shift}`       | :func:`opetopy.NamedOpetope.shift`             | :class:`opetopy.NamedOpetope.Shift`             |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
 |                                 | :math:`\texttt{graft}`       | :func:`opetopy.NamedOpetope.graft`             | :class:`opetopy.NamedOpetope.Graft`             |
 +---------------------------------+------------------------------+------------------------------------------------+-------------------------------------------------+
@@ -88,7 +88,7 @@ Each implement the following:
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
 |                                 | :math:`\texttt{graft}`       | :func:`opetopy.NamedOpetopicSetM.graft`        | :class:`opetopy.NamedOpetopicSetM.Graft`        |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
-|                                 | :math:`\texttt{fill}`        | :func:`opetopy.NamedOpetopicSetM.fill`         | :class:`opetopy.NamedOpetopicSetM.Fill`         |
+|                                 | :math:`\texttt{shift}`       | :func:`opetopy.NamedOpetopicSetM.shift`        | :class:`opetopy.NamedOpetopicSetM.Shift`        |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+
 |                                 | :math:`\texttt{zero}`        | :func:`opetopy.NamedOpetopicSetM.zero`         | :class:`opetopy.NamedOpetopicSetM.Zero`         |
 +                                 +------------------------------+------------------------------------------------+-------------------------------------------------+

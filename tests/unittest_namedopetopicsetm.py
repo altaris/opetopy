@@ -48,7 +48,7 @@ class Test_NamedOpetopicSetM_InferenceRules(unittest.TestCase):
         pass
 
     def test_shift(self):
-        s = NamedOpetopicSetM.Fill(
+        s = NamedOpetopicSetM.Shift(
             NamedOpetopicSetM.Pd(
                 NamedOpetopicSetM.Point("x"),
                 "x"),
