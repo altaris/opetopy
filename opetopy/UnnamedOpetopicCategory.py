@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 .. module:: UnnamedOpetopicCategory
    :synopsis: Implementation of opetopic categories and groupoids using the
@@ -53,11 +52,13 @@ class Type(UnnamedOpetopicSet.Type):
                 lines = []  # type: List[str]
                 for addr in self.source.nodes.keys():
                     if self.isSourceUniversal(addr):
-                        lines += [str(addr) + " ← ∀" +
-                                  str(self.source.nodes[addr])]
+                        lines += [
+                            str(addr) + " ← ∀" + str(self.source.nodes[addr])
+                        ]
                     else:
-                        lines += [str(addr) + " ← " +
-                                  str(self.source.nodes[addr])]
+                        lines += [
+                            str(addr) + " ← " + str(self.source.nodes[addr])
+                        ]
                 srcstr = "{" + ", ".join(lines) + "}"
         else:
             srcstr = "{{" + str(self.source.degeneracy) + "}}"
@@ -145,8 +146,8 @@ def tfill(seq: UnnamedOpetopicSet.Sequent, targetName: str,
                 P.source(UnnamedOpetope.address([], P.shape.dimension - 1)))
         # Derive Q, source of t
         if P.shapeTarget().isDegenerate:
-            Q = UnnamedOpetopicSet.pastingDiagram(
-                tPshapeProof, seq.context.target(u))
+            Q = UnnamedOpetopicSet.pastingDiagram(tPshapeProof,
+                                                  seq.context.target(u))
         else:
             nodes = {}  # type: Dict[UnnamedOpetope.Address, str]
             if P.shape.isDegenerate:
@@ -201,13 +202,11 @@ def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
 
     # Checks
     if seq.pastingDiagram is not None:
-        raise DerivationError(
-            "Apply target univ. prop.",
-            "Sequent cannot type a pasting diagram")
+        raise DerivationError("Apply target univ. prop.",
+                              "Sequent cannot type a pasting diagram")
     elif not isTargetUniversal(typealpha):
-        raise DerivationError(
-            "Apply target univ. prop.",
-            "First cell is expected to be target universal")
+        raise DerivationError("Apply target univ. prop.",
+                              "First cell is expected to be target universal")
     elif typebeta.source != P:
         raise DerivationError(
             "Apply target univ. prop.",
@@ -220,25 +219,23 @@ def tuniv(seq: UnnamedOpetopicSet.Sequent, tuCell: str, cell: str,
     # Derive the factorization cell
     n = targetalpha.shape.dimension
     res = UnnamedOpetopicSet.graft(
-        deepcopy(seq), UnnamedOpetopicSet.pastingDiagram(
+        deepcopy(seq),
+        UnnamedOpetopicSet.pastingDiagram(
             UnnamedOpetope.Shift(targetalpha.shapeProof),
-            {
-                UnnamedOpetope.address([], n): targetalpha.name
-            }))
+            {UnnamedOpetope.address([], n): targetalpha.name}))
     res = UnnamedOpetopicSet.shift(res, targetbeta.name, factorizationName)
 
     # Derive the filler
     res = UnnamedOpetopicSet.graft(
-        res, UnnamedOpetopicSet.pastingDiagram(
+        res,
+        UnnamedOpetopicSet.pastingDiagram(
             UnnamedOpetope.Graft(
                 UnnamedOpetope.Shift(
                     UnnamedOpetope.Shift(targetalpha.shapeProof)),
-                P.shapeProof,
-                UnnamedOpetope.address([[]], n + 1)),
-            {
-                UnnamedOpetope.address([], n + 1): factorizationName,
-                UnnamedOpetope.address([[]], n + 1): tuCell
-            }))
+                P.shapeProof, UnnamedOpetope.address([[]], n + 1)), {
+                    UnnamedOpetope.address([], n + 1): factorizationName,
+                    UnnamedOpetope.address([[]], n + 1): tuCell
+                }))
     res = UnnamedOpetopicSet.shift(res, cell, fillerName)
 
     # Mark the filler as target universal and source universal at the facto.
@@ -296,54 +293,55 @@ def suniv(seq: UnnamedOpetopicSet.Sequent, suCellName: str, cellName: str,
             "Source universal cell {sucell} cannot be degenerate",
             sucell=suCellName)
     elif Q.nodes is None:
-        raise DerivationError(
-            "Apply source univ. prop.",
-            "Cell {cell} cannot be degenerate",
-            cell=cellName)
+        raise DerivationError("Apply source univ. prop.",
+                              "Cell {cell} cannot be degenerate",
+                              cell=cellName)
     elif addr not in P.nodes.keys():
-        raise DerivationError(
-            "Apply source univ. prop.",
-            "Address {addr} not in source of {sucell}",
-            addr=addr, sucell=suCellName)
+        raise DerivationError("Apply source univ. prop.",
+                              "Address {addr} not in source of {sucell}",
+                              addr=addr,
+                              sucell=suCellName)
     elif betatype.target != u:
         raise DerivationError(
             "Apply source univ. prop.",
             "Cells {sucell} and {cell} are not compatible: targets differ",
-            cell=cellName, sucell=suCellName)
+            cell=cellName,
+            sucell=suCellName)
     elif P.nodes.keys() != Q.nodes.keys():
         raise DerivationError(
             "Apply source univ. prop.",
             "Cells {sucell} and {cell} are not compatible: source pasting "
             "diagrams do not have the same addresses",
-            cell=cellName, sucell=suCellName)
+            cell=cellName,
+            sucell=suCellName)
     for a in P.nodes.keys():
         if a != addr and P.nodes[a] != Q.nodes[a]:
             raise DerivationError(
                 "Apply source univ. prop.",
                 "Cells {sucell} and {cell} are not compatible: source pasting "
                 "diagrams do not agree on address {a}",
-                cell=cellName, sucell=suCellName, a=a)
+                cell=cellName,
+                sucell=suCellName,
+                a=a)
 
     # Derive xi
     xishapeproof = seq.context[Q.source(addr)].type.source.shapeProof
     res = UnnamedOpetopicSet.graft(
-        seq, UnnamedOpetopicSet.pastingDiagram(
-            UnnamedOpetope.Shift(xishapeproof),
-            {
-                UnnamedOpetope.address([], Q.shape.dimension - 1):
-                    Q.source(addr)
-            }))
+        seq,
+        UnnamedOpetopicSet.pastingDiagram(UnnamedOpetope.Shift(xishapeproof), {
+            UnnamedOpetope.address([], Q.shape.dimension - 1):
+            Q.source(addr)
+        }))
     res = UnnamedOpetopicSet.shift(res, P.source(addr), factorizationName)
 
     # Derive A
-    omega = UnnamedOpetope.Graft(
-        UnnamedOpetope.Shift(P.shapeProof),
-        UnnamedOpetope.Shift(xishapeproof),
-        addr.shift())
+    omega = UnnamedOpetope.Graft(UnnamedOpetope.Shift(P.shapeProof),
+                                 UnnamedOpetope.Shift(xishapeproof),
+                                 addr.shift())
     res = UnnamedOpetopicSet.graft(
-        res, UnnamedOpetopicSet.pastingDiagram(
-            omega,
-            {
+        res,
+        UnnamedOpetopicSet.pastingDiagram(
+            omega, {
                 UnnamedOpetope.address([], P.shape.dimension): suCellName,
                 addr.shift(): factorizationName
             }))
@@ -407,8 +405,8 @@ def tclose(seq: UnnamedOpetopicSet.Sequent,
                     raise DerivationError(
                         "Apply target univ. closure",
                         "Source pasting diagram has at least two non target "
-                        "universal sources: {addr1} and {addr2}"
-                        .format(addr1=nonTuSource, addr2=addr))
+                        "universal sources: {addr1} and {addr2}".format(
+                            addr1=nonTuSource, addr2=addr))
 
     if isTargetUniversal(seq.context[u.name].type):
         if nonTuSource is None:
@@ -455,12 +453,14 @@ class TFill(UnnamedOpetopicSet.RuleInstance):
         self.targetName = targetName
 
     def __str__(self) -> str:
-        return "TFill({p}, {t}, {f})".format(
-            p=str(self.proofTree), t=self.targetName, f=self.fillerName)
+        return "TFill({p}, {t}, {f})".format(p=str(self.proofTree),
+                                             t=self.targetName,
+                                             f=self.fillerName)
 
     def __repr__(self) -> str:
-        return "TFill({p},{t},{f})".format(
-            p=repr(self.proofTree), t=self.targetName, f=self.fillerName)
+        return "TFill({p},{t},{f})".format(p=repr(self.proofTree),
+                                           t=self.targetName,
+                                           f=self.fillerName)
 
     def _toTex(self) -> str:
         """
@@ -496,12 +496,14 @@ class TUniv(UnnamedOpetopicSet.RuleInstance):
         self.tuCellName = tuCell
 
     def __str__(self) -> str:
-        return "TUniv({p}, {tu}, {c})".format(
-            p=str(self.proofTree), tu=self.tuCellName, c=self.cellName)
+        return "TUniv({p}, {tu}, {c})".format(p=str(self.proofTree),
+                                              tu=self.tuCellName,
+                                              c=self.cellName)
 
     def __repr__(self) -> str:
-        return "TUniv({p},{tu},{c})".format(
-            p=repr(self.proofTree), tu=self.tuCellName, c=self.cellName)
+        return "TUniv({p},{tu},{c})".format(p=repr(self.proofTree),
+                                            tu=self.tuCellName,
+                                            c=self.cellName)
 
     def _toTex(self) -> str:
         """
@@ -541,12 +543,14 @@ class SUniv(UnnamedOpetopicSet.RuleInstance):
         self.suCellName = suCellName
 
     def __str__(self) -> str:
-        return "SUniv({p}, {su}, {c})".format(
-            p=str(self.proofTree), su=self.suCellName, c=self.cellName)
+        return "SUniv({p}, {su}, {c})".format(p=str(self.proofTree),
+                                              su=self.suCellName,
+                                              c=self.cellName)
 
     def __repr__(self) -> str:
-        return "SUniv({p},{su},{c})".format(
-            p=repr(self.proofTree), su=self.suCellName, c=self.cellName)
+        return "SUniv({p},{su},{c})".format(p=repr(self.proofTree),
+                                            su=self.suCellName,
+                                            c=self.cellName)
 
     def _toTex(self) -> str:
         """
@@ -577,12 +581,12 @@ class TClose(UnnamedOpetopicSet.RuleInstance):
         self.tuCellName = tuCell
 
     def __str__(self) -> str:
-        return "TClose({p}, {tu})".format(
-            p=str(self.proofTree), tu=self.tuCellName)
+        return "TClose({p}, {tu})".format(p=str(self.proofTree),
+                                          tu=self.tuCellName)
 
     def __repr__(self) -> str:
-        return "TClose({p},{tu})".format(
-            p=repr(self.proofTree), tu=self.tuCellName)
+        return "TClose({p},{tu})".format(p=repr(self.proofTree),
+                                         tu=self.tuCellName)
 
     def _toTex(self) -> str:
         """

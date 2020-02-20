@@ -16,5 +16,3 @@ alpha = Shift(Graft(
 classic = Shift(Graft(beta, alpha, "i"), "A")
 
 print(classic.eval())
-print()
-print(classic.toTex())

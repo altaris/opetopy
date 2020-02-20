@@ -16,5 +16,3 @@ ar = Graft(
 ar = Shift(ar, "b", "f")
 
 print(ar.eval())
-print()
-print(ar.toTex())

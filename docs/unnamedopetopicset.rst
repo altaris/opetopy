@@ -15,7 +15,7 @@ The arrow
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetopicset_arrow.out
+.. literalinclude:: ../out/tests/test_unnamedopetopicset_arrow.out
     :linenos:
 
 
@@ -29,7 +29,7 @@ We start by deriving in :math:`\textbf{Opt${}^?$}` (see :mod:`UnnamedOpetope`) t
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetopicset_classic.out
+.. literalinclude:: ../out/tests/test_unnamedopetopicset_classic.out
     :linenos:
 
 

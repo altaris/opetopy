@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 .. module:: common
    :synopsis: Some utilities and global definitions
@@ -15,7 +14,6 @@ class AbstractRuleInstance:
     """
     Abstract class representing a rule instance in a proof tree.
     """
-
     def _toTex(self) -> str:
         raise NotImplementedError()
 
@@ -38,7 +36,6 @@ class DerivationError(Exception):
     This exception is raised whenever an illegal operation on syntactical
     constructs relevant to opetopes is performed.
     """
-
     def __init__(self, scope: str, message: str, **kwargs) -> None:
         self.message = message.format(**kwargs)
         self.scope = scope

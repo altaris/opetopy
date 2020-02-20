@@ -21,5 +21,3 @@ example = Glue(Glue(Glue(Glue(Glue(unglued,
                "tα")
 
 print(example.eval())
-print()
-print(example.toTex())

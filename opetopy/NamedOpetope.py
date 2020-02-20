@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-
 """
 .. module:: NamedOpetope
-   :synopsis: Implementation of the named approach
-              for opetopes
+   :synopsis: Implementation of the named approach for opetopes
 
 .. moduleauthor:: Cédric HT
 
@@ -43,8 +41,7 @@ class Variable:
         if dim < 0 and name is not None:
             raise DerivationError(
                 "Variable decrlaration",
-                "Dimension of new variable {name} must be >= 0 (is {dim})",
-                name=name, dim=dim)
+                f"Dimension of new variable {name} must be >= 0 (is {dim})")
         self.dimension = dim
         self.name = name
 
@@ -54,7 +51,7 @@ class Variable:
         return not (self == other)
 
     def __repr__(self) -> str:
-        return "{name}{dim}".format(name=self.name, dim=self.dimension)
+        return f"{self.name}{self.dimension}"
 
     def __str__(self) -> str:
         return self.name
@@ -143,7 +140,8 @@ class Term(Dict[Variable, 'Term']):
         else:
             return False
 
-    def __init__(self, var: Optional[Variable] = None,
+    def __init__(self,
+                 var: Optional[Variable] = None,
                  degen: bool = False) -> None:
         """
         Creates a term from a :class:`opetopy.NamedOpetope.Variable` ``var``.
@@ -167,8 +165,7 @@ class Term(Dict[Variable, 'Term']):
         elif len(self.keys()) == 0:
             return str(self.variable)
         else:
-            grafts = [str(k) + " ← " + str(self[k])
-                      for k in self.keys()]
+            grafts = [str(k) + " ← " + str(self[k]) for k in self.keys()]
             return str(self.variable) + "(" + ", ".join(grafts) + ")"
 
     @property
@@ -199,10 +196,9 @@ class Term(Dict[Variable, 'Term']):
                 a = self[k].variable
                 if a is None:
                     raise RuntimeError(
-                        "[Term, graftTuples] An invalid / null term has been "
-                        "grafted at variable {var} in term {term}. In valid "
-                        "proof trees, this should not happen"
-                        .format(var=str(k), term=str(self)))
+                        f"[Term, graftTuples] An invalid / null term has been "
+                        f"grafted at variable {str(k)} in term {str(self)}. In "
+                        f"valid proof trees, this should not happen")
                 res |= set({(k, a)}) | self[k].graftTuples()
         return res
 
@@ -224,8 +220,10 @@ class Term(Dict[Variable, 'Term']):
         elif len(self.keys()) == 0:
             return self.variable.toTex()
         else:
-            grafts = [k.toTex() + " \\leftarrow " + self[k].toTex()
-                      for k in self.keys()]
+            grafts = [
+                k.toTex() + " \\leftarrow " + self[k].toTex()
+                for k in self.keys()
+            ]
             return self.variable.toTex() + "(" + ", ".join(grafts) + ")"
 
     def variables(self, k) -> Set[Variable]:
@@ -282,20 +280,18 @@ class Type:
         whence the :math:`-1` correction factor).
         """
         if len(terms) < 1:
-            raise DerivationError(
-                "Type declaration",
-                "A type requires at least one term")
+            raise DerivationError("Type declaration",
+                                  "A type requires at least one term")
         self.dimension = len(terms) - 1
         self.terms = terms
         for i in range(len(self.terms)):
             if self.terms[i].dimension != self.dimension - i - 1:
                 raise DerivationError(
                     "Type declaration",
-                    "Invalid dimensions in term list: {i}th term {term} has "
-                    "dimension {dim}, sould have {should}",
-                    i=i, term=str(self.terms[i]),
-                    dim=self.terms[i].dimension,
-                    should=self.dimension - i - 1)
+                    f"Invalid dimensions in term list: {i}th term "
+                    f"{str(self.terms[i])} has "
+                    f"dimension {self.terms[i].dimension}, "
+                    f"sould have {self.dimension - i - 1}")
 
     def __repr__(self) -> str:
         return str(self)
@@ -340,9 +336,8 @@ class Typing:
         if term.dimension != type.dimension:
             raise DerivationError(
                 "Typing declaration",
-                "Dimension mismatch in typing: term has dimension {dterm}, "
-                "type has dimension {dtype}",
-                dterm=term.dimension, dtype=type.dimension)
+                "Dimension mismatch in typing: term has dimension "
+                f"{term.dimension}, type has dimension {type.dimension}")
         self.term = term
         self.type = type
 
@@ -360,7 +355,6 @@ class Context(Set[Typing]):
     """
     A context is a set of tyings (see :class:`opetopy.NamedOpetope.Typing`).
     """
-
     def __add__(self, typing: Typing) -> 'Context':
         """
         Adds a variable typing to a deep copy of the context context, if the
@@ -369,13 +363,14 @@ class Context(Set[Typing]):
         if not typing.term.isVariable():
             raise DerivationError(
                 "Context, new typing",
-                "Context typings only type variables, and {term} is not one",
-                term=str(typing.term))
+                f"Context typings only type variables, and {str(typing.term)} "
+                "is not one")
         elif typing.term.variable in self:
             raise DerivationError(
                 "Context, new typing",
-                "Variable {var} is already yped in this context",
-                var=str(typing.term.variable))
+                f"Variable {str(typing.term.variable)} is already typed in "
+                "this context"
+            )
         else:
             res = deepcopy(self)
             res.add(typing)
@@ -412,10 +407,8 @@ class Context(Set[Typing]):
                     typing.term.variable is not None and \
                     typing.term.variable.name == name:
                 return typing.term.variable
-        raise DerivationError(
-            "Context, get variable",
-            "Context types no variable named {name}",
-            name=name)
+        raise DerivationError("Context, get variable",
+                              f"Context types no variable named {name}")
 
     def __or__(self, other):
         """
@@ -457,14 +450,17 @@ class Context(Set[Typing]):
                 "Index out of bounds: dimension of variable {var} is {dim}, "
                 "so index should be between 0 and {max} included "
                 "(is {k})",
-                var=str(var), dim=var.dimension,
-                max=var.dimension + 1, k=k)
+                var=str(var),
+                dim=var.dimension,
+                max=var.dimension + 1,
+                k=k)
         elif var not in self:
             raise DerivationError(
                 "Context, source computation",
                 "Variable {var} with dimension {dim} is not typed in context, "
                 "so computing its source is not possible",
-                var=str(var), dim=var.dimension)
+                var=str(var),
+                dim=var.dimension)
         elif k == 0:
             return Term(var)
         else:
@@ -487,14 +483,17 @@ class Context(Set[Typing]):
             "Context, type computation",
             "Variable {var} with dimension {dim} is not typed in context, so "
             "computing its type is not possible",
-            var=str(var), dim=var.dimension)
+            var=str(var),
+            dim=var.dimension)
 
     def variables(self) -> Set[Variable]:
         """
         Return the set of all variables typed in the context.
         """
-        return set([typing.term.variable for typing in self
-                    if typing.term.variable is not None])
+        return set([
+            typing.term.variable for typing in self
+            if typing.term.variable is not None
+        ])
 
 
 class EquationalTheory:
@@ -517,18 +516,21 @@ class EquationalTheory:
                 "Eq. th. extension",
                 "Dimension mismatch in new equality {a} = {b}: respective "
                 "dimensions are {da} and {db}",
-                a=str(a), b=str(b), da=a.dimension, db=b.dimension)
+                a=str(a),
+                b=str(b),
+                da=a.dimension,
+                db=b.dimension)
         else:
             ia = self._index(a)
             ib = self._index(b)
             res = deepcopy(self)
-            if ia == -1 and ib == -1:       # Neither a nor b are in a class
+            if ia == -1 and ib == -1:  # Neither a nor b are in a class
                 res.classes += [set({a, b})]
-            elif ia == -1 and ib != -1:     # b is in a class but not a
+            elif ia == -1 and ib != -1:  # b is in a class but not a
                 res.classes[ib].add(a)
-            elif ia != -1 and ib == -1:     # a is in a class but not b
+            elif ia != -1 and ib == -1:  # a is in a class but not b
                 res.classes[ia].add(b)
-            elif ia != ib:                  # a and b are in different classes
+            elif ia != ib:  # a and b are in different classes
                 res.classes[ia] |= res.classes[ib]
                 del res.classes[ib]
             return res
@@ -551,8 +553,9 @@ class EquationalTheory:
         return str(self)
 
     def __str__(self) -> str:
-        cls = ["{" + ", ".join([str(x) for x in c]) + "}"
-               for c in self.classes]
+        cls = [
+            "{" + ", ".join([str(x) for x in c]) + "}" for c in self.classes
+        ]
         return ", ".join(cls)
 
     def _index(self, a: Variable) -> int:
@@ -600,8 +603,10 @@ class EquationalTheory:
         return False
 
     def toTex(self) -> str:
-        cls = ["\\left\\{" + ", ".join([x.toTex() for x in c]) +
-               "\\right\\}" for c in self.classes]
+        cls = [
+            "\\left\\{" + ", ".join([x.toTex() for x in c]) + "\\right\\}"
+            for c in self.classes
+        ]
         return ", ".join(cls)
 
 
@@ -711,7 +716,6 @@ class Sequent(OCMT):
     """
 
     typing: Typing
-
     """
     This variable specifies if contexts should be displayed in
     :meth:`NamedOpetope.Sequent.toTex`
@@ -743,11 +747,11 @@ class Sequent(OCMT):
                     "Sequent, grafting",
                     "Variable {var} in term {term} has already been used for "
                     "a grafting",
-                    var=str(x), term=str(t))
+                    var=str(x),
+                    term=str(t))
         if t.variable is None:
-            raise DerivationError(
-                "Sequent, grafting",
-                "Term to be grafted onto is empty")
+            raise DerivationError("Sequent, grafting",
+                                  "Term to be grafted onto is empty")
         elif t.degenerate:
             if t.variable == x:
                 return deepcopy(u)
@@ -756,7 +760,9 @@ class Sequent(OCMT):
                     "Sequent, grafting",
                     "Incompatible graft: term {term} is degenerate, so the "
                     "grafting variable must be {var} (is {x})",
-                    term=str(t), var=str(t.variable), x=str(x))
+                    term=str(t),
+                    var=str(t.variable),
+                    x=str(x))
         else:
             r = deepcopy(t)
             if self.isIn(x, self.source(t.variable, 1)):
@@ -779,13 +785,11 @@ class Sequent(OCMT):
         2. an new equality to add to the equational theory, or ``None``
         """
         if s.variable is None:
-            raise DerivationError(
-                "Sequent, substitute",
-                "Cannot substitute in the null term")
+            raise DerivationError("Sequent, substitute",
+                                  "Cannot substitute in the null term")
         elif u.variable is None:
-            raise DerivationError(
-                "Sequent, substitute",
-                "Cannot substitute with the null term")
+            raise DerivationError("Sequent, substitute",
+                                  "Cannot substitute with the null term")
         elif s.degenerate:
             if a in [v.variable for v in u.values()]:
                 # a appears grafted on the root of u
@@ -802,13 +806,13 @@ class Sequent(OCMT):
                     return (r, (s.variable, ka))
                 else:  # ta has graftings on its root a
                     if len(ta.values()) != 1:  # that grafting should be unique
-                        assert RuntimeError("[Sequent, substitution] Term "
-                                            "{term} was expected to be "
-                                            "globular... In valid proof "
-                                            "trees, this error shouldn't "
-                                            "happen, so congratulations, "
-                                            "you broke everything"
-                                            .format(term=repr(ta)))
+                        assert RuntimeError(
+                            "[Sequent, substitution] Term "
+                            "{term} was expected to be "
+                            "globular... In valid proof "
+                            "trees, this error shouldn't "
+                            "happen, so congratulations, "
+                            "you broke everything".format(term=repr(ta)))
                     r = deepcopy(u)
                     r[ka] = list(ta.values())[0]
                     return (r, (s.variable, ka))
@@ -860,10 +864,9 @@ def shift(seq: Sequent, name: str) -> Sequent:
     """
     var = Variable(name, seq.typing.term.dimension + 1)
     if var in seq.context:
-        raise DerivationError(
-            "shift rule",
-            "Variable {var} already typed in context",
-            var=name)
+        raise DerivationError("shift rule",
+                              "Variable {var} already typed in context",
+                              var=name)
     res = deepcopy(seq)
     typing = Typing(Term(var), Type([seq.typing.term] + seq.typing.type.terms))
     res.context += typing
@@ -885,8 +888,8 @@ def degen(seq: Sequent) -> Sequent:
             term=str(seq.typing.term))
     res = deepcopy(seq)
     var = res.typing.term.variable
-    res.typing = Typing(Term(var, True), Type([Term(var)] +
-                                              res.typing.type.terms))
+    res.typing = Typing(Term(var, True),
+                        Type([Term(var)] + res.typing.type.terms))
     return res
 
 
@@ -918,8 +921,7 @@ def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
     """
     if seqt.typing.term.variable is None:
         raise DerivationError(
-            "graft rule",
-            "First premiss sequent types an invalid / null term")
+            "graft rule", "First premiss sequent types an invalid / null term")
     elif seqx.typing.term.variable is None:
         raise DerivationError(
             "graft rule",
@@ -933,14 +935,15 @@ def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
             "graft rule",
             "Graft variable {var} not typed in first sequent",
             var=str(a))
-    for i in range(0, a.dimension):   # all variables in the type of a are in
+    for i in range(0, a.dimension):  # all variables in the type of a are in
         for v in typea.variables(i):  # the context intersection
             if v not in inter:
                 raise DerivationError(
                     "graft rule",
                     "Intersection of the two premiss contexts does not "
                     "type variable {v} necessary to define variable {a}",
-                    v=str(v), a=str(a))
+                    v=str(v),
+                    a=str(a))
     for typing in inter:  # all variables in the intersection are in that of a
         w = typing.term.variable
         if w not in typea:
@@ -948,7 +951,8 @@ def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
                 "graft rule",
                 "Intersection of the two premiss contexts, variable {v} "
                 "is typed, but is not required to type variable {a}",
-                v=str(w), a=a.toTex())
+                v=str(w),
+                a=a.toTex())
     # checking rule hypothesis
     if not seqx.typing.term.isVariable():
         raise DerivationError(
@@ -961,31 +965,36 @@ def graft(seqt: Sequent, seqx: Sequent, name: str) -> Sequent:
             "graft rule",
             "Graft variable {a} does not occur in the source of the term"
             "{term} grafted upon",
-            a=str(a), term=str(seqt.typing.term))
+            a=str(a),
+            term=str(seqt.typing.term))
     elif a in seqt.typing.term:
         raise DerivationError(
             "graft rule",
             "Graft variable {a} occurs first premiss term {term}, meaning it "
             " has already been used for grafting",
-            a=str(a), term=str(seqt.typing.term))
+            a=str(a),
+            term=str(seqt.typing.term))
     elif not seqt.equal(seqt.source(a, 1),
                         seqx.source(seqx.typing.term.variable, 2)):
         raise DerivationError(
             "graft rule",
             "Variables {a} and {x} have incompatible shapes: s{a} = {sa}, "
             "while ss{x} = {ssx}",
-            a=str(a), x=str(seqx.typing.term.variable),
+            a=str(a),
+            x=str(seqx.typing.term.variable),
             sa=str(seqt.source(a, 1)),
             ssx=str(seqx.source(seqx.typing.term.variable, 2)))
     # forming conclusion sequent
-    theory = seqt.theory | seqx.theory     # union of both theories
+    theory = seqt.theory | seqx.theory  # union of both theories
     context = seqt.context | seqx.context  # union of both contexts
     term = seqt.graft(seqt.typing.term, a, seqx.typing.term)  # new term
-    s1, eq = seqt.substitute(seqt.typing.type.terms[0],       # 1st source of
-                             seqx.typing.type.terms[0], a)    # that new term
+    s1, eq = seqt.substitute(
+        seqt.typing.type.terms[0],  # 1st source of
+        seqx.typing.type.terms[0],
+        a)  # that new term
     type = deepcopy(seqt.typing.type)  # the type of the new term is that of t
-    type.terms[0] = s1                 # except for the 1st source, which is s1
-    if eq is not None:                 # add new equation on theory if needed
+    type.terms[0] = s1  # except for the 1st source, which is s1
+    if eq is not None:  # add new equation on theory if needed
         theory += eq
     return Sequent(theory, context, Typing(term, type))
 
@@ -994,7 +1003,6 @@ class RuleInstance(AbstractRuleInstance):
     """
     A rule instance of system :math:`\\textbf{Opt${}^!$}`.
     """
-
     def eval(self) -> Sequent:
         """
         Pure virtual method evaluating a proof tree and returning the final
@@ -1146,8 +1154,7 @@ class Graft(RuleInstance):
     proofTree2: RuleInstance
     variableName: str
 
-    def __init__(self, p1: RuleInstance,
-                 p2: RuleInstance, a: str) -> None:
+    def __init__(self, p1: RuleInstance, p2: RuleInstance, a: str) -> None:
         """
         Creates an instance of the ``graft`` rule at variable ``a``, and plugs
         proof tree ``p1`` on the first premise, and ``p2`` on the second.
@@ -1186,8 +1193,8 @@ class Graft(RuleInstance):
         and then applying :func:`opetopy.NamedOpetope.graft` at variable
         ``self.variableName`` on the resulting sequents.
         """
-        return graft(
-            self.proofTree1.eval(), self.proofTree2.eval(), self.variableName)
+        return graft(self.proofTree1.eval(), self.proofTree2.eval(),
+                     self.variableName)
 
 
 def Arrow(pointName: str = "a", arrowName: str = "f") -> RuleInstance:
@@ -1198,7 +1205,9 @@ def Arrow(pointName: str = "a", arrowName: str = "f") -> RuleInstance:
     return Shift(Point(pointName), arrowName)
 
 
-def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
+def OpetopicInteger(n: int,
+                    pointName: str = "a",
+                    arrowName: str = "f",
                     cellName: str = "A") -> RuleInstance:
     """
     Returns the proof tree of the :math:`n`-th opetopic integer.
@@ -1213,22 +1222,25 @@ def OpetopicInteger(n: int, pointName: str = "a", arrowName: str = "f",
       unique :math:`2`-cell is named ``cellName`` (default ``A``).
     """
     if n < 0:
-        raise DerivationError(
-            "Opetopic integer",
-            "Parameter n must be >=0 (is {n})",
-            n=n)
+        raise DerivationError("Opetopic integer",
+                              "Parameter n must be >=0 (is {n})",
+                              n=n)
     elif n == 0:
         return DegenFill(Point(pointName), cellName)
     else:
+
         def toTex(i: int) -> str:
             if 0 <= i and i < 10:
                 return str(i)
             else:
                 return "{" + str(i) + "}"
+
         pointNames = [pointName + "_" + toTex(i) for i in range(1, n + 1)]
         arrowNames = [arrowName + "_" + toTex(i) for i in range(1, n + 1)]
-        arrows = [Shift(Point(pointNames[i - 1]), arrowNames[i - 1])
-                  for i in range(1, n + 1)]
+        arrows = [
+            Shift(Point(pointNames[i - 1]), arrowNames[i - 1])
+            for i in range(1, n + 1)
+        ]
         res = arrows[0]  # type: Union[Shift, Graft]
         for i in range(1, n):
             res = Graft(res, arrows[i], pointNames[i - 1])

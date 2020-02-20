@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-
 """
-.. module:: NamedOpetopicSet
-   :synopsis: Implementation of the mixed named approach
-              for opetopic sets
+.. module:: NamedOpetopicSetM
+   :synopsis: Implementation of the mixed named approach for opetopic sets
 
 .. moduleauthor:: Cédric HT
 
@@ -22,12 +20,10 @@ def point(name: str) -> NamedOpetope.OCMT:
     The :math:`\\textbf{OptSet${}^!_m$}` :math:`\\texttt{point}` rule.
     Introduces a :math:`0`-variable with name ``x``.
     """
-    t = NamedOpetope.Typing(
-        NamedOpetope.Term(NamedOpetope.Variable(name, 0)),
-        NamedOpetope.Type([NamedOpetope.Term()]))
-    return NamedOpetope.OCMT(
-        NamedOpetope.EquationalTheory(),
-        NamedOpetope.Context() + t)
+    t = NamedOpetope.Typing(NamedOpetope.Term(NamedOpetope.Variable(name, 0)),
+                            NamedOpetope.Type([NamedOpetope.Term()]))
+    return NamedOpetope.OCMT(NamedOpetope.EquationalTheory(),
+                             NamedOpetope.Context() + t)
 
 
 def degen(ocmt: NamedOpetope.OCMT, name: str) -> NamedOpetope.Sequent:
@@ -40,8 +36,8 @@ def degen(ocmt: NamedOpetope.OCMT, name: str) -> NamedOpetope.Sequent:
     t = NamedOpetope.Typing(
         NamedOpetope.Term(var, True),
         NamedOpetope.Type([NamedOpetope.Term(var)] + type.terms))
-    return NamedOpetope.Sequent(deepcopy(ocmt.theory),
-                                deepcopy(ocmt.context), t)
+    return NamedOpetope.Sequent(deepcopy(ocmt.theory), deepcopy(ocmt.context),
+                                t)
 
 
 def pd(ocmt: NamedOpetope.OCMT, name: str) -> NamedOpetope.Sequent:
@@ -51,8 +47,8 @@ def pd(ocmt: NamedOpetope.OCMT, name: str) -> NamedOpetope.Sequent:
     """
     var = ocmt.context[name]
     t = NamedOpetope.Typing(NamedOpetope.Term(var), ocmt.context.typeOf(var))
-    return NamedOpetope.Sequent(deepcopy(ocmt.theory),
-                                deepcopy(ocmt.context), t)
+    return NamedOpetope.Sequent(deepcopy(ocmt.theory), deepcopy(ocmt.context),
+                                t)
 
 
 def graft(seqt: NamedOpetope.Sequent, seqx: NamedOpetope.Sequent,
@@ -136,7 +132,6 @@ class RuleInstance(AbstractRuleInstance):
     """
     A rule instance of system :math:`\\textbf{OptSet${}^!_m$}`.
     """
-
     def eval(self) -> Union[NamedOpetope.OCMT, NamedOpetope.Sequent]:
         """
         Pure virtual method evaluating a proof tree and returning the final
@@ -218,9 +213,8 @@ class Degen(RuleInstance):
         """
         ocmt = self.proofTree.eval()
         if not isinstance(ocmt, NamedOpetope.OCMT):
-            raise DerivationError(
-                "degen rule",
-                "Premiss expected to be an OCMT")
+            raise DerivationError("degen rule",
+                                  "Premiss expected to be an OCMT")
         else:
             return degen(ocmt, self.variableName)
 
@@ -265,9 +259,7 @@ class Pd(RuleInstance):
         """
         ocmt = self.proofTree.eval()
         if not isinstance(ocmt, NamedOpetope.OCMT):
-            raise DerivationError(
-                "pd rule",
-                "Premiss expected to be an OCMT")
+            raise DerivationError("pd rule", "Premiss expected to be an OCMT")
         else:
             return pd(ocmt, self.variableName)
 
@@ -281,8 +273,7 @@ class Graft(RuleInstance):
     proofTree2: RuleInstance
     variableName: str
 
-    def __init__(self, p1: RuleInstance,
-                 p2: RuleInstance, a: str) -> None:
+    def __init__(self, p1: RuleInstance, p2: RuleInstance, a: str) -> None:
         """
         Creates an instance of the ``graft`` rule at variable ``a``, and plugs
         proof tree ``p1`` on the first premise, and ``p2`` on the second.
@@ -323,13 +314,11 @@ class Graft(RuleInstance):
         seq1 = self.proofTree1.eval()
         seq2 = self.proofTree2.eval()
         if not isinstance(seq1, NamedOpetope.Sequent):
-            raise DerivationError(
-                "graft rule",
-                "First premiss expected to be a sequent")
+            raise DerivationError("graft rule",
+                                  "First premiss expected to be a sequent")
         elif not isinstance(seq2, NamedOpetope.Sequent):
-            raise DerivationError(
-                "graft rule",
-                "Second premiss expected to be a sequent")
+            raise DerivationError("graft rule",
+                                  "Second premiss expected to be a sequent")
         else:
             return graft(seq1, seq2, self.variableName)
 
@@ -365,9 +354,8 @@ class Shift(RuleInstance):
     def eval(self) -> NamedOpetope.OCMT:
         seq = self.proofTree.eval()
         if not isinstance(seq, NamedOpetope.Sequent):
-            raise DerivationError(
-                "shift rule",
-                "Premiss expected to be an sequent")
+            raise DerivationError("shift rule",
+                                  "Premiss expected to be an sequent")
         else:
             return shift(seq, self.variableName)
 
@@ -376,7 +364,6 @@ class Zero(RuleInstance):
     """
     A class representing an instance of the ``zero`` rule in a proof tree.
     """
-
     def _toTex(self) -> str:
         """
         Converts the proof tree in TeX code. This method should not be called
@@ -415,12 +402,12 @@ class Sum(RuleInstance):
         self.proofTree2 = p2
 
     def __repr__(self) -> str:
-        return "Sum({p1}, {p2})".format(
-            p1=repr(self.proofTree1), p2=repr(self.proofTree2))
+        return "Sum({p1}, {p2})".format(p1=repr(self.proofTree1),
+                                        p2=repr(self.proofTree2))
 
     def __str__(self) -> str:
-        return "Sum({p1}, {p2})".format(
-            p1=str(self.proofTree1), p2=str(self.proofTree2))
+        return "Sum({p1}, {p2})".format(p1=str(self.proofTree1),
+                                        p2=str(self.proofTree2))
 
     def _toTex(self) -> str:
         """
@@ -436,13 +423,11 @@ class Sum(RuleInstance):
         ocmt1 = self.proofTree1.eval()
         ocmt2 = self.proofTree2.eval()
         if not isinstance(ocmt1, NamedOpetope.OCMT):
-            raise DerivationError(
-                "sum rule",
-                "First premiss expected to be an OCMT")
+            raise DerivationError("sum rule",
+                                  "First premiss expected to be an OCMT")
         elif not isinstance(ocmt2, NamedOpetope.OCMT):
-            raise DerivationError(
-                "sum rule",
-                "Second premiss expected to be an OCMT")
+            raise DerivationError("sum rule",
+                                  "Second premiss expected to be an OCMT")
         else:
             return sum(ocmt1, ocmt2)
 
@@ -490,9 +475,7 @@ class Glue(RuleInstance):
         """
         ocmt = self.proofTree.eval()
         if not isinstance(ocmt, NamedOpetope.OCMT):
-            raise DerivationError(
-                "pd rule",
-                "Premiss expected to be an OCMT")
+            raise DerivationError("pd rule", "Premiss expected to be an OCMT")
         else:
             return glue(ocmt, self.aName, self.bName)
 

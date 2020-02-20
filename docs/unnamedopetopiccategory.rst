@@ -25,7 +25,7 @@ In this simple example, we use the target filling of a pasting diagram of shape 
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_tfill.out
+.. literalinclude:: ../out/tests/test_unnamedopetopiccategory_tfill.out
     :linenos:
 
 
@@ -45,7 +45,7 @@ We then apply the target universal property of :math:`\gamma` over :math:`\delta
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_tuniv.out
+.. literalinclude:: ../out/tests/test_unnamedopetopiccategory_tuniv.out
     :linenos:
 
 
@@ -66,7 +66,7 @@ This hints that any two factorization in the application of the target universal
     :language: python
     :linenos:
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_suniv.out
+.. literalinclude:: ../out/tests/test_unnamedopetopiccategory_suniv.out
     :linenos:
 
 
@@ -81,7 +81,7 @@ In this example, we derive two target universal arrows :math:`f` and :math:`g`, 
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetopiccategory_tclose.out
+.. literalinclude:: ../out/tests/test_unnamedopetopiccategory_tclose.out
     :linenos:
 
 

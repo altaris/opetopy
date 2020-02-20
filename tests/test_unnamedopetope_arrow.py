@@ -9,5 +9,3 @@ ar = Shift(Point())
 # >>> ar = Arrow()
 
 print(ar.eval())
-print()
-print(ar.toTex())

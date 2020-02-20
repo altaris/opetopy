@@ -12,5 +12,3 @@ classic = Graft(
 # >>> classic = OpetopicTree([None, [None, None]])
 
 print(classic.eval())
-print()
-print(classic.toTex())

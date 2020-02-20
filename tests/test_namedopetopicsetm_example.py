@@ -17,5 +17,3 @@ example = Glue(example, "g", "tɑ")
 example = Glue(example, "a", "th")
 
 print(example.eval())
-print()
-print(example.toTex())

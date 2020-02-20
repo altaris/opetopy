@@ -15,7 +15,7 @@ The point
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_namedopetope_point.out
+.. literalinclude:: ../out/tests/test_namedopetope_point.out
     :linenos:
 
 
@@ -28,7 +28,7 @@ A classic
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_namedopetope_classic.out
+.. literalinclude:: ../out/tests/test_namedopetope_classic.out
     :linenos:
 
 

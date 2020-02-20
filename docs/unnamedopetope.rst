@@ -21,7 +21,7 @@ The arrow
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetope_arrow.out
+.. literalinclude:: ../out/tests/test_unnamedopetope_arrow.out
     :linenos:
 
 
@@ -34,7 +34,7 @@ A classic
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetope_classic.out
+.. literalinclude:: ../out/tests/test_unnamedopetope_classic.out
     :linenos:
 
 
@@ -54,7 +54,7 @@ This is exactly the implementation of :func:`opetopy.UnnamedOpetope.OpetopicInte
     :language: python
     :linenos:
 
-.. literalinclude:: build/tests/test_unnamedopetope_opetopicinteger.out
+.. literalinclude:: ../out/tests/test_unnamedopetope_opetopicinteger.out
     :linenos:
 
 
@@ -76,7 +76,7 @@ Here, we construct the proof tree of :math:`\mathsf{Y}_{\mathbf{2}}
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_unnamedopetope_decision_valid.out
+.. literalinclude:: ../out/tests/test_unnamedopetope_decision_valid.out
     :linenos:
 
 Here, we try to construct the proof tree of the invalid :math:`\mathsf{Y}_{\mathbf{1}} \circ_{[[***]]} \mathsf{Y}_{\mathbf{1}}`

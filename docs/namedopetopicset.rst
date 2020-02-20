@@ -11,7 +11,7 @@ Example
     :linenos:
     :lines: 4-
 
-.. literalinclude:: build/tests/test_namedopetopicset_example.out
+.. literalinclude:: ../out/tests/test_namedopetopicset_example.out
     :linenos:
 
 

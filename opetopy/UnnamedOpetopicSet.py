@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """
 .. module:: UnnamedOpetopicSet
    :synopsis: Implementation of the unnamed approach for opetopic sets
@@ -129,7 +128,8 @@ class PastingDiagram:
             raise DerivationError(
                 "Pasting diagram, source",
                 "Address {addr} is not an address of the pasting diagram {pd}",
-                addr=repr(addr), pd=repr(self))
+                addr=repr(addr),
+                pd=repr(self))
         else:
             return self.nodes[addr]
 
@@ -149,8 +149,10 @@ class PastingDiagram:
             if self.shape == UnnamedOpetope.point().source:
                 return "⧫"
             else:
-                lines = [str(addr) + " ← " + str(self.nodes[addr])
-                         for addr in self.nodes.keys()]
+                lines = [
+                    str(addr) + " ← " + str(self.nodes[addr])
+                    for addr in self.nodes.keys()
+                ]
                 return "{" + ", ".join(lines) + "}"
         else:
             return "{{" + str(self.degeneracy) + "}}"
@@ -161,16 +163,14 @@ class PastingDiagram:
         diagram is not degenerate.
         """
         if self.degeneracy is None:
-            raise DerivationError(
-                "Degenerate pasting diagram, get degeneracy",
-                "Pasting diagram is not degenerate")
+            raise DerivationError("Degenerate pasting diagram, get degeneracy",
+                                  "Pasting diagram is not degenerate")
         else:
             return self.degeneracy
 
     @staticmethod
-    def degeneratePastingDiagram(
-            shapeProof: UnnamedOpetope.RuleInstance,
-            degeneracy: str) -> 'PastingDiagram':
+    def degeneratePastingDiagram(shapeProof: UnnamedOpetope.RuleInstance,
+                                 degeneracy: str) -> 'PastingDiagram':
         """
         Creates a degenerate pasting diagram.
         """
@@ -179,9 +179,8 @@ class PastingDiagram:
         res.shapeProof = shapeProof
         res.shapeSequent = shapeProof.eval()
         if not res.shape.isDegenerate:
-            raise DerivationError(
-                "Degenerate pasting diagram, creation",
-                "Provided shape is not degenerate")
+            raise DerivationError("Degenerate pasting diagram, creation",
+                                  "Provided shape is not degenerate")
         elif res.shape.degeneracy is None:
             raise RuntimeError("[Degenerate pasting diagram, creation] "
                                "Provided shape is degenerate but does not "
@@ -210,9 +209,8 @@ class PastingDiagram:
         res.shapeProof = shapeProof
         res.shapeSequent = shapeProof.eval()
         if res.shape.isDegenerate:
-            raise DerivationError(
-                "Non degenerate pasting diagram, creation",
-                "Provided shape is degenerate")
+            raise DerivationError("Non degenerate pasting diagram, creation",
+                                  "Provided shape is degenerate")
         elif set(res.shape.nodes.keys()) != set(nodes.keys()):
             raise DerivationError(
                 "Non degenerate pasting diagram, creation",
@@ -246,14 +244,13 @@ class PastingDiagram:
         if the pasting diagram is degenerate
         """
         if self.nodes is None:
-            raise DerivationError(
-                "Non degenerate pasting diagram, get source",
-                "Pasting diagram is degenerate")
+            raise DerivationError("Non degenerate pasting diagram, get source",
+                                  "Pasting diagram is degenerate")
         elif addr not in self.nodes.keys():
-            raise DerivationError(
-                "Non degenerate pasting diagram, get source",
-                "Address {addr} not in pasting diagram {pd}",
-                addr=addr, pd=self)
+            raise DerivationError("Non degenerate pasting diagram, get source",
+                                  "Address {addr} not in pasting diagram {pd}",
+                                  addr=addr,
+                                  pd=self)
         else:
             return self.nodes[addr]
 
@@ -267,8 +264,10 @@ class PastingDiagram:
             if self.shape == UnnamedOpetope.point().source:
                 return "\\optZero"
             else:
-                lines = [addr.toTex() + " \\sep " + self.nodes[addr]
-                         for addr in self.nodes.keys()]
+                lines = [
+                    addr.toTex() + " \\sep " + self.nodes[addr]
+                    for addr in self.nodes.keys()
+                ]
                 return "\\opetope{" + " \\\\ ".join(lines) + "}"
         else:
             return "\\degenopetope{" + self.degeneracy + "}"
@@ -307,7 +306,8 @@ class Type:
                 "Type, creation",
                 "Target variable {var} has shape {shape}, should have "
                 "{should}",
-                var=str(target), shape=target.shape,
+                var=str(target),
+                shape=target.shape,
                 should=source.shapeTarget())
         self.source = source
         self.target = target
@@ -319,15 +319,15 @@ class Type:
         if self.target is None:
             return repr(self.source)
         else:
-            return "{src} → {tgt}".format(
-                src=repr(self.source), tgt=repr(self.target))
+            return "{src} → {tgt}".format(src=repr(self.source),
+                                          tgt=repr(self.target))
 
     def __str__(self) -> str:
         if self.target is None:
             return str(self.source)
         else:
-            return "{src} → {tgt}".format(
-                src=str(self.source), tgt=str(self.target))
+            return "{src} → {tgt}".format(src=str(self.source),
+                                          tgt=str(self.target))
 
     def toTex(self) -> str:
         if self.target is None:
@@ -357,7 +357,8 @@ class Typing:
                 "Typing, creation",
                 "Variable {var} cannot have type {type} as shapes do not "
                 "match",
-                var=str(variable), type=type)
+                var=str(variable),
+                type=type)
         self.type = type
         self.variable = variable
 
@@ -368,15 +369,14 @@ class Typing:
         return str(self.variable) + " : " + str(self.type)
 
     def toTex(self) -> str:
-        return "{var} : {type}".format(
-            var=self.variable.toTex(), type=self.type.toTex())
+        return "{var} : {type}".format(var=self.variable.toTex(),
+                                       type=self.type.toTex())
 
 
 class Context(Set[Typing]):
     """
     A context is a set of tyings (see :class:`opetopy.UnnamedOpetopicSet.Typing`).
     """
-
     def __add__(self, typing: Typing) -> 'Context':
         """
         Adds a variable typing to a deep copy of the context context, if the
@@ -410,10 +410,9 @@ class Context(Set[Typing]):
         for t in self:
             if t.variable.name == name:
                 return t
-        raise DerivationError(
-            "Context, get typing",
-            "Variable {name} not typed in context",
-            name=name)
+        raise DerivationError("Context, get typing",
+                              "Variable {name} not typed in context",
+                              name=name)
 
     def __repr__(self) -> str:
         return str(self)
@@ -440,10 +439,10 @@ class Context(Set[Typing]):
                 "Variable {var} is a point, and do not have a target",
                 var=name)
         elif res is None:
-            raise RuntimeError("[Context, target of variable] Variable {var} "
-                               "is not a point, but has no target. In valid "
-                               "derivations, this should not happen".format(
-                                   var=name))
+            raise RuntimeError(
+                "[Context, target of variable] Variable {var} "
+                "is not a point, but has no target. In valid "
+                "derivations, this should not happen".format(var=name))
         return res.name
 
     def toTex(self) -> str:
@@ -455,7 +454,7 @@ class Context(Set[Typing]):
         """
         variables = []  # type: List[str]
         for t in sorted(self,
-                key=attrgetter('variable.dimension', 'variable.name')):
+                        key=attrgetter('variable.dimension', 'variable.name')):
             variables.append(t.variable.name)
         return variables
 
@@ -505,8 +504,7 @@ class Sequent:
         pd = ""
         if self.pastingDiagram is not None:
             pd = self.pastingDiagram.toTex()
-        return "{ctx} \\vdash {pd}".format(
-            ctx=self.context.toTex(), pd=pd)
+        return "{ctx} \\vdash {pd}".format(ctx=self.context.toTex(), pd=pd)
 
 
 def point(seq: Sequent, name: Union[str, List[str]]) -> Sequent:
@@ -525,19 +523,19 @@ def point(seq: Sequent, name: Union[str, List[str]]) -> Sequent:
         return res
     elif isinstance(name, str):
         if seq.pastingDiagram is not None:
-            raise DerivationError(
-                "point rule",
-                "Sequent cannot have a pasting diagram")
+            raise DerivationError("point rule",
+                                  "Sequent cannot have a pasting diagram")
         var = Variable(name, UnnamedOpetope.Point())
         if var in seq.context:
             raise DerivationError(
                 "point rule",
                 "Point shaped variable {name} is already typed in context "
                 "{ctx}",
-                name=name, ctx=str(seq.context))
+                name=name,
+                ctx=str(seq.context))
         res = deepcopy(seq)
-        res.context = res.context + Typing(
-            var, Type(PastingDiagram.point(), None))
+        res.context = res.context + Typing(var,
+                                           Type(PastingDiagram.point(), None))
         return res
     else:
         raise DerivationError(
@@ -550,9 +548,8 @@ def degen(seq: Sequent, name: str) -> Sequent:
     The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{degen}` rule.
     """
     if seq.pastingDiagram is not None:
-        raise DerivationError(
-            "degen rule",
-            "Sequent cannot have a pasting diagram")
+        raise DerivationError("degen rule",
+                              "Sequent cannot have a pasting diagram")
     res = deepcopy(seq)
     res.pastingDiagram = PastingDiagram.degeneratePastingDiagram(
         UnnamedOpetope.Degen(seq.context[name].variable.shapeProof), name)
@@ -565,8 +562,7 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
     """
     if pd.nodes is None:
         raise DerivationError(
-            "graft rule",
-            "Parameter pasting diagram cannot be degenerate")
+            "graft rule", "Parameter pasting diagram cannot be degenerate")
     # Shape checking
     omega = pd.shape
     for addr in pd.nodes.keys():
@@ -576,7 +572,8 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
                 "graft rule",
                 "Variable {var} has incompatible shape {psi}, should have "
                 "{should}",
-                var=seq[pd.nodes[addr]].name, psi=repr(psi),
+                var=seq[pd.nodes[addr]].name,
+                psi=repr(psi),
                 should=repr(omega.source(addr)))
     # [Inner] axiom
     for pj in pd.nodes.keys():
@@ -590,7 +587,9 @@ def graft(seq: Sequent, pd: PastingDiagram) -> Sequent:
                     "Parameter pasting diagram doesn't satisfy axiom [Inner]: "
                     "variables {xi} and {xj} don't agree on the decoration of "
                     "edge {edge}",
-                    xi=repr(xi), xj=repr(xj), edge=repr(pj))
+                    xi=repr(xi),
+                    xj=repr(xj),
+                    edge=repr(pj))
     res = deepcopy(seq)
     res.pastingDiagram = deepcopy(pd)
     return res
@@ -601,9 +600,8 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
     The :math:`\\textbf{OptSet${}^?$}` :math:`\\texttt{shift}` rule.
     """
     if seq.pastingDiagram is None:
-        raise DerivationError(
-            "shift rule",
-            "Sequent must have a pasting diagram")
+        raise DerivationError("shift rule",
+                              "Sequent must have a pasting diagram")
     P = seq.pastingDiagram
     omega = P.shape
     readdress = P.shapeProof.eval().context
@@ -615,7 +613,8 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
         raise DerivationError(
             "shift rule",
             "Target variable {var} has shape {shape} should have {should}",
-            var=repr(x), shape=repr(x.shape),
+            var=repr(x),
+            shape=repr(x.shape),
             should=repr(P.shapeTarget()))
     if omega.isDegenerate:
         if a is None:  # x is a point
@@ -638,7 +637,8 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
                     "shift rule",
                     "Axiom [Glob1] is not satisfied: variable {x} is a point, "
                     "should have target {should}",
-                    x=repr(x), should=repr(seq.context[r].type.target))
+                    x=repr(x),
+                    should=repr(seq.context[r].type.target))
         else:
             b = seq.context.target(r)
             if b != a.name:
@@ -646,7 +646,9 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
                     "shift rule",
                     "Axiom [Glob1] is not satisfied: variable {x} has target "
                     "{a}, should have {should}",
-                    x=repr(x), a=a.name, should=repr(b))
+                    x=repr(x),
+                    a=a.name,
+                    should=repr(b))
         # [Glob2] axiom
         for l in omega.leafAddresses():
             p, q = l.edgeDecomposition()
@@ -657,8 +659,10 @@ def shift(seq: Sequent, targetName: str, name: str) -> Sequent:
                     "shift rule",
                     "Axiom [Glob2] is not satisfied: variable {x} has {addr} "
                     "source {sx}, should have {should}",
-                    x=repr(x), addr=repr(readdress(l)),
-                    sx=repr(sx), should=repr(sP))
+                    x=repr(x),
+                    addr=repr(readdress(l)),
+                    sx=repr(sx),
+                    should=repr(sP))
     res = Sequent()
     res.context = seq.context + Typing(
         Variable(name, seq.pastingDiagram.shapeProof),
@@ -670,7 +674,6 @@ class RuleInstance(AbstractRuleInstance):
     """
     A rule instance of system :math:`\\textbf{OptSet${}^?$}`.
     """
-
     def eval(self) -> Sequent:
         """
         Pure virtual method evaluating a proof tree and returning the final
@@ -856,8 +859,7 @@ def pastingDiagram(shapeProof: UnnamedOpetope.RuleInstance,
     shape = shapeProof.eval().source
     if shape.isDegenerate:
         if isinstance(args, str):
-            return PastingDiagram.degeneratePastingDiagram(
-                shapeProof, args)
+            return PastingDiagram.degeneratePastingDiagram(shapeProof, args)
         else:
             raise DerivationError(
                 "Pasting diagram creation",
@@ -865,8 +867,7 @@ def pastingDiagram(shapeProof: UnnamedOpetope.RuleInstance,
                 "shape is degenerate")
     else:
         if isinstance(args, dict):
-            return PastingDiagram.nonDegeneratePastingDiagram(
-                shapeProof, args)
+            return PastingDiagram.nonDegeneratePastingDiagram(shapeProof, args)
         else:
             raise DerivationError(
                 "Pasting diagram creation",

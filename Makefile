@@ -25,7 +25,7 @@ TESTS			= 							\
 all: typecheck unittest
 
 .PHONY: docs
-docs: $(TESTS)
+docs: tests
 	sphinx-build -b html $(DIR_DOCS)/ $(DIR_OUT_DOCS)/html/
 	-@xdg-open $(DIR_OUT_DOCS)/html/index.html
 
@@ -37,7 +37,7 @@ test_%:
 	@mkdir -p $(DIR_OUT_TEST)
 	$(PYTHON) -m tests.$@ > $(DIR_OUT_TEST)/$@.out
 
-test: $(TESTS)
+tests: $(TESTS)
 
 .PHONY: typecheck
 typecheck:

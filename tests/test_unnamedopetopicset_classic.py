@@ -65,5 +65,3 @@ classic = Graft(
 classic = Shift(classic, "β", "A")
 
 print(classic.eval())
-print()
-print(classic.toTex())
