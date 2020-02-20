@@ -1,3 +1,7 @@
 coverage
 coveralls
 mypy
+pylint
+sphinx
+sphinxcontrib-napoleon
+yapf

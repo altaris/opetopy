@@ -1,6 +1,5 @@
-# Docs
-doc/_build
-doc/build
+# Outputs
+out/
 
 # VSCode
 *.code-workspace
