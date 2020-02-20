@@ -15,6 +15,187 @@ Thanh](https://hothanh.fr/cedric), and [Samuel
 Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram), and some other
 work in progress.
 
+# Examples
+
+## An unnamed opetope
+
+In system 'Opt?', deriving the 'classic' 3-opetope
+
+![A 3 opetope](.imgs/unnamed_classic_ps.png)
+
+can be done with the following code
+```python
+from opetopy.UnnamedOpetope import address, Graft, OpetopicInteger, OpetopicTree, Shift
+
+proof = Graft(
+    Shift(OpetopicInteger(2)),
+    OpetopicInteger(2),
+    address([['*']])
+)
+```
+which corresponds to the proof tree
+
+![A 3 opetope's proof](.imgs/unnamed_classic_proof.png)
+
+Since the proof is valid, the code executes without throwing exceptions. To get
+the final sequent, simply run
+```python
+print(proof.eval())
+```
+which outputs
+
+```
+ctx = {
+    [[]] ↦ []
+    [[*][]] ↦ [*]
+    [[*][*]] ↦ [**]
+}
+src = {
+    []: {
+        []: ■
+        [*]: ■
+    }
+    [[*]]: {
+        []: ■
+        [*]: ■
+    }
+}
+tgt = {
+    []: ■
+    [*]: ■
+    [**]: ■
+}
+```
+
+## A named opetopic set
+
+The following opetopic set,
+
+![An opetopic set](.imgs/named_opetopicset_graphical.png)
+
+can be derived in 'OptSet!' as follows:
+
+```python
+from opetopy.NamedOpetope import Point, Shift
+from opetopy.NamedOpetopicSet import Glue, Repr, Sum
+
+# Derive the main cells
+alpha = Shift(Shift(Point("a"), "f"), "α")
+g = Shift(Point("c"), "g")
+h = Shift(Point("b"), "h")
+
+# Sum them to obtain an 'unfolded' version
+unglued = Sum(Sum(Repr(alpha), Repr(g)), Repr(h))
+
+# Apply the `glue` rule repeatedly
+example = Glue(
+    Glue(
+        Glue(
+            Glue(
+                Glue(
+                    unglued, "a", "c"   # Glue a to c
+                ), "b", "tf"            # Glue b to the target of f
+            ), "b", "tg"                # etc.
+        ), "a", "th"
+    ), "g", "tα"
+)
+
+```
+
+The final sequent is
+
+![The final OCMT](.imgs/named_opetopicset_final.png)
+
+which can be retrived by running
+
+```python
+print(example.eval())
+```
+
+```
+{tg, b, tf, ttα}, {th, a, c}, {tα, g} ▷ a : ∅, g : c ⊷ ∅, α : f ⊷ a ⊷ ∅, f : a ⊷ ∅, tf : ∅, ttα : ∅, th : ∅, c : ∅, tα : a ⊷ ∅, tg : ∅, h : b ⊷ ∅, b : ∅
+```
+
+## A coherence cell
+
+We show how the ``tfill`` rule can be applied to derived weak composites of
+1-cells:
+
+```python
+from opetopy.UnnamedOpetope import address, Arrow, OpetopicInteger
+from opetopy.UnnamedOpetopicSet import (
+    Graft, pastingDiagram, Point, RuleInstance, Shift)
+from opetopy.UnnamedOpetopicCategory import TFill
+
+# Derive points.
+# This convenient syntax allows us to derive multiple points at once.
+proof = Point(None, ["a", "b", "c"])
+
+# Derive f.
+# Recall that in the graft rule, we must derive the shape of the pasting
+# diagram in system Opt? beforehand. We use the helper function Arrow() which
+# returns the proof tree of an arrow.
+proof = Graft(
+    proof,
+    pastingDiagram(
+        Arrow(),
+        {
+            address('*'): "a"
+        }
+    )
+)
+proof = Shift(proof, "b", "f")
+
+# Derive g.
+proof = Graft(
+    proof,
+    pastingDiagram(
+        Arrow(),
+        {
+            address('*'): "b"
+        }
+    )
+)
+proof = Shift(proof, "c", "g")
+
+# Derive the composition and the compositor.
+# As for f and g, we need to derive the shape of the compositor α before adding
+# it. Here, we use the function OpetopicInteger which returns proof trees for
+# opetopic integers.
+proof = Graft(
+    proof,
+    pastingDiagram(
+        OpetopicInteger(2),
+        {
+            address([], 1): "g",
+            address(['*']): "f"
+        }
+    )
+)
+proof = TFill(proof, "h", "α")
+```
+
+The resulting sequent is
+
+```python
+print(proof.eval())
+```
+
+```
+ctx =
+    a : ⧫
+    b : ⧫
+    c : ⧫
+    f : {* ← a} → b
+    g : {* ← b} → c
+    h : {* ← a} → c
+    α : {[] ← g, [*] ← f} → ∀h
+pd =
+```
+We see that ``α`` is a target universal cell that witnesses the composition of
+``f`` and ``g``.
+
+
 # Documentation
 
 Available at [readthedocs.io](https://readthedocs.io/en/latest/?badge=latest).
@@ -23,7 +204,6 @@ Generating the documentation requires
 ```sh
 make docs
 ```
-
 the HTML documentation should be located at `doc/build/html/index.html`.
 
 # Tests
