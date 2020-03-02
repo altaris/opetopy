@@ -7,13 +7,13 @@ opetopy
 ![Python 3](https://badgen.net/badge/Python/3/blue)
 [![MIT License](https://badgen.net/badge/license/MIT/blue)](https://choosealicense.com/licenses/mit/)
 
-This project is the Python implementation of the opetope derivation systems
-presented in [**Syntactic approaches to
+This project is the Python implementation and proof of concept of the opetope
+derivation systems presented in [**Syntactic approaches to
 opetopes**](https://arxiv.org/abs/1903.05848), by [Pierre-Louis
 Curien](https://www.irif.fr/~curien/), [Cédric Ho
 Thanh](https://hothanh.fr/cedric), and [Samuel
-Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram), and some other
-work in progress.
+Mimram](http://www.lix.polytechnique.fr/Labo/Samuel.Mimram). It also includes
+some other work in progress.
 
 # Examples
 
@@ -31,6 +31,7 @@ proof = Graft(
     Shift(OpetopicInteger(2)),
     OpetopicInteger(2),
     address([['*']])
+result = proof.eval()
 )
 ```
 which corresponds to the proof tree
@@ -40,7 +41,7 @@ which corresponds to the proof tree
 Since the proof is valid, the code executes without throwing exceptions. To get
 the final sequent, simply run
 ```python
-print(proof.eval())
+print(result)
 ```
 which outputs
 
@@ -99,6 +100,7 @@ example = Glue(
         ), "a", "th"
     ), "g", "tα"
 )
+result = example.eval()
 
 ```
 
@@ -109,7 +111,7 @@ The final sequent is
 which can be retrived by running
 
 ```python
-print(example.eval())
+print(result)
 ```
 
 ```
@@ -173,12 +175,13 @@ proof = Graft(
     )
 )
 proof = TFill(proof, "h", "α")
+result = proof.eval()
 ```
 
 The resulting sequent is
 
 ```python
-print(proof.eval())
+print(result)
 ```
 
 ```
